@@ -169,6 +169,9 @@ class IntentionMessage {
   std::string freeField;
 };
 
+/**
+ * Global task of the robot
+ */
 enum Role {
   UNSPECIFIED = 0, // Unknown role
   GOALIE      = 1, // The robot is a goalie
@@ -177,10 +180,26 @@ enum Role {
 };
 
 /**
+ * Current status of the robot
+ */
+enum Status {
+  UNSPECIFIED      = 0, // Unknown status
+  OKAY             = 1, // Robot is playing without any disfunction
+  FALLING          = 2, // Robot is currently falling
+  FALLEN           = 3, // Robot is fallen on the ground and is not attempting to stand up
+  STANDING_UP      = 4, // Robot is actively trying to stand up
+  FREEZE           = 5, // Robot is freezing all motion in order to fulfill the rules
+  HANDLED          = 6, // Robot is handled (carried by the handler)
+  HARDWARE_FAILURE = 7  // Robot has a major hardware failure
+};
+
+/**
  * Should we include the possiblity of having a captain in the protocol?
  */
 class TeamPlayMessage {
   Role role;
+
+  Status status;
   
   /**
    * Up to teams
