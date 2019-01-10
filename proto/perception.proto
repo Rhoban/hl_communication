@@ -1,0 +1,59 @@
+syntax = "proto2";
+
+package hl_communication;
+
+import "position.proto";
+import "robot_estimation.proto";
+
+/**
+ * Estimation of the pose of the robot in the field referential allowing
+ * multiple candidates.
+ * - First element represents the probability of the pose
+ * - Second element describes the pose
+ */
+message WeightedPose {
+  required float probability = 1;
+  required PoseEstimation pose = 2;
+}
+
+/**
+ * Perception of the world state by the robot
+ */
+message Perception {
+  required PositionEstimation ball_in_self = 1;
+
+
+  /**
+   * All the estimated pose inside the field weighted by their probability
+   */
+  repeated WeightedPose self_in_field = 2;
+
+  /**
+   * Position of the opponent goal in self basis.
+   *
+   * Note: might be inconsistent with 'self_in_field'
+   */
+  optional PositionEstimation opp_goal_in_self = 3;
+
+
+  /**
+   * Weighted Robot pose.
+   * - First element represents the probability that the information is accurate
+   * - Second element describes the robot with its Estimation pose 
+   */
+  message WeightedRobotPose {
+    required float probability = 1;
+    required RobotEstimation robot = 2;
+  }
+  /**
+   * Belief regarding positions of other robots in self referential
+   * - First element represents the probability that the information is accurate
+   * - Second element describes the robot
+   */
+  repeated WeightedRobotPose robots = 4;
+
+  /**
+   * Up to teams
+   */
+  required string free_field = 5;
+}

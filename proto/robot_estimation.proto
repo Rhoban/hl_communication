@@ -1,0 +1,32 @@
+syntax = "proto2";
+
+package hl_communication;
+
+import "position.proto";
+
+enum TeamID {
+  UNKNOWN_TEAM = 0;
+  ALLY = 1;
+  OPPONENT = 2;
+  OFFICIAL = 3;// Used to indicate that a referee or a handler has been detected
+}
+
+message RobotEstimation {
+  /**
+   * Team identifier
+   */
+  required TeamID teamId = 1;
+
+  /**
+   * Identifier of the robot:
+   * - 0: unknown id
+   * - 1+: Identifier of the robot
+   */
+  required uint32 robotId = 2;
+  
+  /**
+   * Pose of the robots in self referential
+   */
+  required PoseEstimation robotInSelf = 3;
+  
+}

@@ -1,0 +1,41 @@
+syntax = "proto2";
+
+package hl_communication;
+
+/**
+ * Global task of the robot
+ */
+enum Role {
+  UNSPECIFIED_ROLE = 0; // Unknown role
+  GOALIE      = 1; // The robot is a goalie
+  DEFENDER    = 2; // Robot is only defending its own goal
+  OFFENDER    = 3; // Robot is actively trying to score goals
+}
+
+/**
+ * Current status of the robot
+ */
+enum Status {
+  UNSPECIFIED_STATUS = 0; // Unknown status
+  OKAY             = 1; // Robot is playing without any disfunction
+  FALLING          = 2; // Robot is currently falling
+  FALLEN           = 3; // Robot is fallen on the ground and is not attempting to stand up
+  STANDING_UP      = 4; // Robot is actively trying to stand up
+  FREEZE           = 5; // Robot is freezing all motion in order to fulfill the rules
+  HANDLED          = 6; // Robot is handled (carried by the handler)
+  HARDWARE_FAILURE = 7; // Robot has a major hardware failure
+}
+
+/**
+ * Should we include the possiblity of having a captain in the protocol?
+ */
+message TeamPlay {
+  required Role role = 1;
+
+  required Status status = 2;
+  
+  /**
+   * Up to teams
+   */
+  required string freeField = 3;
+}

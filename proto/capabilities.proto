@@ -1,0 +1,15 @@
+syntax = "proto2";
+
+package hl_communication;
+
+message Capabilities {
+  // Maximal walking speed of the robot [m/s]
+  required float maxWalkingSpeed = 1;
+  // Average kicking distance for robot kicks [m]
+  required float avgKickDistance = 2;
+
+  /**
+   * Up to teams
+   */
+  required string freeField = 4;
+}

@@ -12,7 +12,13 @@ catkin_destinations()
 file(MAKE_DIRECTORY ${CATKIN_DEVEL_PREFIX}/${CATKIN_PACKAGE_INCLUDE_DESTINATION})
 
 set (PROTOBUF_MESSAGES
-  proto/protocol.proto
+  proto/capabilities.proto
+  proto/intention.proto
+	proto/perception.proto
+	proto/position.proto
+	proto/robot_estimation.proto
+	proto/team_play.proto
+	proto/wrapper.proto
   )
 
 protobuf_generate_cpp(PROTO_SOURCES PROTO_HEADERS ${PROTOBUF_MESSAGES})

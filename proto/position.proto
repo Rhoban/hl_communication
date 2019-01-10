@@ -1,0 +1,50 @@
+syntax = "proto2";
+
+package hl_communication;
+
+/**
+ * Estimation of the position of an object with uncertainty
+ */
+message PositionEstimation {
+  /**
+   * Position x [m]
+   */
+  required float x = 1;
+  /**
+   * Position y [m]
+   */
+  required float y = 2;
+
+  /**
+   * - If empty: not informed
+   * - If size 2: ( std_dev_x , std_dev_y )
+   * - If size 3: ( covar_x , covar_xy, covar_y)
+   */
+  repeated float uncertainty = 3;
+}
+
+/**
+ * Estimation of the pose of an object (position + orientation)
+ */
+message PoseEstimation {
+  /**
+   * Position x [m]
+   */
+  required float x = 1;
+  /**
+   * Position y [m]
+   */
+  required float y = 2;
+  /**
+   * Direction of the object [rad]
+   */
+  optional float dir = 3;
+
+  /**
+   * Note: Use of std_dev and covar for direction are not satisfying here (see Von Mises)
+   * - If empty: not informed
+   * - If size 3: ( std_dev_x , std_dev_y, std_dev_dir )
+   * - If size 6: ( covar_x , covar_xy, covar_xdir, covar_y, covar_ydir, covar_dir)
+   */
+  repeated float uncertainty = 4;
+}

@@ -1,0 +1,66 @@
+syntax = "proto2";
+
+package hl_communication;
+
+import "capabilities.proto";
+import "intention.proto";
+import "perception.proto";
+import "robot_estimation.proto";
+import "team_play.proto";
+
+/**
+ * Robots can send messages containing only part or all of the information at once
+ */
+message GameWrapper {
+  optional Capabilities capabilities = 1;
+  optional Intention intention = 2;
+  optional Perception perception = 3;
+  optional RobotEstimation robot_estimation = 4;
+  optional TeamPlay team_play = 5;
+}
+
+/**
+ * Is used to identify properly each team
+ */
+message RobotIdentifier {
+  /**
+   * The team_id as defined by the game controller
+   */
+  required uint32 team_id = 1;
+
+  /**
+   * The number of the robot inside its own team
+   */
+  required uint32 robot_id = 2;
+}
+
+message IdentifiedMessage {
+  /**
+   * The robot who sent the message
+   */
+  required RobotIdentifier identifier = 1;
+
+  /**
+   * The content of the message sent
+   */
+  required GameWrapper message = 2;
+}
+
+message TimeStampedMessage {
+  /**
+   * A local time stamp indicating the moment the message was received [s]
+   */
+  required double time_stamp = 1;
+
+  /**
+   * The content of the message
+   */
+  required GameWrapper message = 2;
+}
+
+message TimedCollection {
+  /**
+   * The messages should be ordered by time
+   */
+  repeated TimeStampedMessage messages = 1;
+}
