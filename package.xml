@@ -1,0 +1,16 @@
+<?xml version="1.0"?>
+<package>
+  <name>hl_communication</name>
+  <version>0.0.1</version>
+  <description>Communication protocol based on ProtoBuf for RoboCup humanoid
+  league communication</description>
+
+  <maintainer email="lhofer@labri.fr">Ludovic Hofer</maintainer>
+
+  <license>MIT</license>
+
+  <author email="lhofer@labri.fr">Ludovic Hofer</author>
+
+  <buildtool_depend>catkin</buildtool_depend>
+
+</package>

@@ -1,6 +1,6 @@
 syntax = "proto2";
 
-package rhl;
+package hl_communication;
 
 /**
  * 2 Referential are considered, self and field, but only SI units are used
@@ -118,7 +118,7 @@ message PerceptionMessage {
 
 
   /**
-   * Wheighted Robot pose.
+   * Weighted Robot pose.
    * - First element represents the probability that the information is accurate
    * - Second element describes the robot with its Estimation pose 
    */
