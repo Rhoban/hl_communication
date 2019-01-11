@@ -1,5 +1,7 @@
 #include "hl_communication/message_manager.h"
 
+#include <fstream>
+
 namespace hl_communication
 {
 
@@ -9,6 +11,7 @@ bool operator<(const RobotIdentifier & id1, const RobotIdentifier & id2) {
 }
 
 MessageManager::MessageManager(const std::string & file_path) {
+  loadMessages(file_path);
 }
 
 MessageManager::MessageManager(int port) {
@@ -49,6 +52,17 @@ void MessageManager::push(const GameMsgCollection & collection) {
 }
 
 void MessageManager::loadMessages(const std::string & file_path) {
+  std::ifstream in(file_path, std::ios::binary);
+  if (!in.good()) {
+    throw std::runtime_error("Failed to open file at '" + file_path + "'");
+  }
+  GameMsgCollection messages_collection;
+  if (!messages_collection.ParseFromIstream(&in)) {
+    throw std::runtime_error("Failed to parse messages in file '" + file_path + "'");
+  }
+  for (const GameMsg msg : messages_collection.messages()) {
+    push(msg);
+  }
 }
 
 }
