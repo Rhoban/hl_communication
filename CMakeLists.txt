@@ -13,6 +13,7 @@ file(MAKE_DIRECTORY ${CATKIN_DEVEL_PREFIX}/${CATKIN_PACKAGE_INCLUDE_DESTINATION}
 
 set (PROTOBUF_MESSAGES
   proto/capabilities.proto
+  proto/game_controller.proto
   proto/intention.proto
 	proto/perception.proto
 	proto/position.proto
@@ -33,10 +34,26 @@ add_custom_target(${PROJECT_NAME}_generate_headers ALL
 set(${PROJECT_NAME}_EXPORTED_TARGETS ${PROJECT_NAME}_generate_headers)
 
 catkin_package(
-  INCLUDE_DIRS ${PROTOBUF_INCLUDE_DIR} ${CATKIN_DEVEL_PREFIX}/${CATKIN_GLOBAL_INCLUDE_DESTINATION}
+  INCLUDE_DIRS include ${PROTOBUF_INCLUDE_DIR} ${CATKIN_DEVEL_PREFIX}/${CATKIN_GLOBAL_INCLUDE_DESTINATION}
   LIBRARIES ${PROJECT_NAME} ${PROTOBUF_LIBRARY}
-)
+  )
+
+include_directories(include ${catkin_INCLUDE_DIRS} ${CATKIN_DEVEL_PREFIX}/${CATKIN_GLOBAL_INCLUDE_DESTINATION})
+
+set(SOURCES_DIRECTORIES
+  src/hl_communication
+  )
+
+#Include Sources sub sources
+foreach (DIRECTORY ${SOURCES_DIRECTORIES})
+    include (${DIRECTORY}/Sources.cmake)
+    set (PREFIXED_SOURCES)
+    foreach (SOURCE ${SOURCES})
+        set (PREFIXED_SOURCES ${PREFIXED_SOURCES} ${DIRECTORY}/${SOURCE})
+    endforeach (SOURCE)
+    set (ALL_SOURCES ${ALL_SOURCES} ${PREFIXED_SOURCES})
+endforeach (DIRECTORY)
 
 #Build the kid_size main library
-add_library (${PROJECT_NAME} SHARED ${PROTO_SOURCES})
+add_library (${PROJECT_NAME} SHARED ${PROTO_SOURCES} ${ALL_SOURCES})
 target_link_libraries(${PROJECT_NAME} ${PROTOBUF_LIBRARIES})

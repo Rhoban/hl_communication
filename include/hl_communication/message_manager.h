@@ -6,6 +6,11 @@ namespace hl_communication
 {
 
 /**
+ * RobotIdentifier are ordered by team and then by robot_id
+ */ 
+bool operator<(const RobotIdentifier & id1, const RobotIdentifier & id2);
+
+/**
  * Manages an history of message based either on logs or on a server
  */
 class MessageManager {
@@ -25,9 +30,9 @@ public:
 private:
 
   void push(const RobotMsg & msg);
-  void push(const RobotMsgCollection & collection);
-  void push(const GameControllerMsg & msg);
-  void push(const GameControllerMsgCollection & collection);
+  void push(const GCMsg & msg);
+  void push(const GameMsg & msg);
+  void push(const GameMsgCollection & collection);
 
   void loadMessages(const std::string & file_path);
   
@@ -37,9 +42,9 @@ private:
   std::map<RobotIdentifier, TimedRobotMsgCollection> messages_by_robot;
 
   /**
-   * Messages received ordered 
+   * Game Controller messages received ordered by time_stamp
    */
-  GameControllerMsgCollection game_controller_messages;
+  std::map<double, GCMsg> game_controller_messages;
 
   //TODO: add UDP listener
 };

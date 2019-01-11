@@ -2,9 +2,33 @@ syntax = "proto2";
 
 package hl_communication;
 
-import "capabilities.proto";
-import "intention.proto";
-import "perception.proto";
-import "robot_estimation.proto";
-import "team_play.proto";
+message GCRobotMsg {
+  optional int32 m_penalty = 1;
+  optional int32 secs_till_unpenalised = 2;
+  optional int32 yellow_card_count = 3;
+  optional int32 red_card_count = 4;
+}
 
+message GCTeamMsg {
+  optional int32 team_number = 1;
+  optional int32 team_color = 2;
+  optional int32 score = 3;
+  repeated GCRobotMsg robots = 4;
+}
+
+message GCMsg {
+  optional double time_stamp = 1;
+  optional int32 struct_version = 2;
+  optional int32 game_type = 3;
+  optional int32 num_player = 4;
+  optional int32 first_half = 5;
+  optional int32 kick_off_team = 6;
+  optional int32 sec_game_state = 7;
+  optional int32 drop_in_team = 8;
+  optional int32 drop_in_time = 9;
+  optional int32 estimated_secs = 10;
+  optional int32 secondary_secs = 11;
+  optional int32 secondary_team = 12;
+  optional int32 secondary_mode = 13;
+  repeated GCTeamMsg teams = 14;
+}

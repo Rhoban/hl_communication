@@ -3,6 +3,7 @@ syntax = "proto2";
 package hl_communication;
 
 import "capabilities.proto";
+import "game_controller.proto";
 import "intention.proto";
 import "perception.proto";
 import "robot_estimation.proto";
@@ -36,18 +37,13 @@ message RobotMsg {
   optional double time_stamp = 7;
 }
 
-message RobotMsgCollection {
-  /**
-   * The messages should be ordered by time
-   */
-  repeated RobotMsg messages = 1;
+message GameMsg {
+  oneof content {
+    RobotMsg robot_msg = 1;
+    GCMsg gc_msg = 2;
+  }
 }
 
-/**
- * The entire collection of messages received during a game
- */
-//message GameCollection {
-//  //TODO: GameControllerTimedCollection
-//  repeated IdentifiedTimeCollection robot_messages = 1;
-//}
-
+message GameMsgCollection {
+  repeated GameMsg messages = 1;
+}
