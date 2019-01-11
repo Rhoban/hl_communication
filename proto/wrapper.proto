@@ -9,18 +9,7 @@ import "robot_estimation.proto";
 import "team_play.proto";
 
 /**
- * Robots can send messages containing only part or all of the information at once
- */
-message GameWrapper {
-  optional Capabilities capabilities = 1;
-  optional Intention intention = 2;
-  optional Perception perception = 3;
-  optional RobotEstimation robot_estimation = 4;
-  optional TeamPlay team_play = 5;
-}
-
-/**
- * Is used to identify properly each team
+ * Is used to identify uniquely each robot
  */
 message RobotIdentifier {
   /**
@@ -34,33 +23,31 @@ message RobotIdentifier {
   required uint32 robot_id = 2;
 }
 
-message IdentifiedMessage {
-  /**
-   * The robot who sent the message
-   */
-  required RobotIdentifier identifier = 1;
-
-  /**
-   * The content of the message sent
-   */
-  required GameWrapper message = 2;
+/**
+ * Robots can send messages containing only part or all of the information at once
+ */
+message RobotMsg {
+  optional Capabilities capabilities = 1;
+  optional Intention intention = 2;
+  optional Perception perception = 3;
+  optional RobotEstimation robot_estimation = 4;
+  optional TeamPlay team_play = 5;
+  optional RobotIdentifier robot_id = 6;
+  optional double time_stamp = 7;
 }
 
-message TimeStampedMessage {
-  /**
-   * A local time stamp indicating the moment the message was received [s]
-   */
-  required double time_stamp = 1;
-
-  /**
-   * The content of the message
-   */
-  required GameWrapper message = 2;
-}
-
-message TimedCollection {
+message RobotMsgCollection {
   /**
    * The messages should be ordered by time
    */
-  repeated TimeStampedMessage messages = 1;
+  repeated RobotMsg messages = 1;
 }
+
+/**
+ * The entire collection of messages received during a game
+ */
+//message GameCollection {
+//  //TODO: GameControllerTimedCollection
+//  repeated IdentifiedTimeCollection robot_messages = 1;
+//}
+
