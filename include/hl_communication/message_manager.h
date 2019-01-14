@@ -1,6 +1,6 @@
 #pragma once
 
-#include "hl_communication/wrapper.pb.h"
+#include <hl_communication/wrapper.pb.h>
 
 namespace hl_communication
 {

@@ -11,5 +11,5 @@ message Capabilities {
   /**
    * Up to teams
    */
-  required string freeField = 4;
+  optional string freeField = 3;
 }
