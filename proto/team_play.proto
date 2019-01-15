@@ -30,12 +30,12 @@ enum Status {
  * Should we include the possiblity of having a captain in the protocol?
  */
 message TeamPlay {
-  required Role role = 1;
+  optional Role role = 1;
 
-  required Status status = 2;
+  optional Status status = 2;
   
   /**
    * Up to teams
    */
-  required string freeField = 3;
+  optional string freeField = 3;
 }

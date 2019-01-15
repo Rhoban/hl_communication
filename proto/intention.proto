@@ -21,7 +21,7 @@ message Intention {
   /**
    * Destination of the robot in field referential
    */
-  required PoseEstimation target_pose_in_field = 1;
+  optional PoseEstimation target_pose_in_field = 1;
 
   /**
    * List of waypoints in field referential (useful when avoiding an obstacle
@@ -32,7 +32,7 @@ message Intention {
   /**
    * Current action planned by the robot
    */
-  required Action action_planned = 3;
+  optional Action action_planned = 3;
 
   /**
    * Estimated result for the ball position after next kick, when ball has
@@ -43,5 +43,5 @@ message Intention {
   /**
    * Up to teams
    */
-  required string free_field = 5;
+  optional string free_field = 5;
 }
