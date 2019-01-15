@@ -1,7 +1,11 @@
 #include <hl_communication/udp_message_manager.h>
+
+#include <chrono>
 #include <iostream>
 
 #define PACKET_MAX_SIZE 10000
+
+using namespace std::chrono;
 
 namespace hl_communication {
 
@@ -10,7 +14,6 @@ Udp_message_manager::Udp_message_manager(int portRead, int portWrite){
     _portRead = portRead;
     _portWrite = portWrite;
     _broadcaster = new hl_communication::UDPBroadcast(portRead, portWrite);
-    _start = std::chrono::system_clock::now();
     if(portRead != -1 ){
         _broadcaster->openRead();
         _thread = new std::thread( [this](){this->_run();} ); 
@@ -31,22 +34,23 @@ void Udp_message_manager::_run(){
             std::cout << "Packet are too long !" << std::endl;
             continue;
         }
-        std::string string_data((char*) data);
+        std::string string_data((char*) data, len);
         hl_communication::GameMsg game_msg;
         if( ! game_msg.ParseFromString( string_data ) ){
-            std::cerr << "Invalid format for the packet" << std::endl;
+            std::cerr << "Invalid format for a packet of size: " << len << std::endl;
             continue;
         }
+        std::cout << "Valid format for the packet" << std::endl;
 
-        auto end = std::chrono::system_clock::now();
-        std::chrono::duration<double> diff = end - _start;
+        double time_stamp =
+          duration_cast<duration<double>>(steady_clock::now().time_since_epoch()).count();
         
         //Assign reception timestamp
         if( game_msg.has_gc_msg() ){
-            game_msg.mutable_gc_msg()->set_time_stamp( diff.count() );
+            game_msg.mutable_gc_msg()->set_time_stamp(time_stamp);
         }
         if( game_msg.has_robot_msg() ){
-            game_msg.mutable_robot_msg()->set_time_stamp(  diff.count() );
+            game_msg.mutable_robot_msg()->set_time_stamp(time_stamp);
         }
         _mutex.lock();
         _messages.push( game_msg );

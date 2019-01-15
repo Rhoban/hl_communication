@@ -5,7 +5,6 @@
 #include <google/protobuf/text_format.h>
 #include <queue>
 #include <hl_communication/udp_broadcast.h>
-#include <chrono>
 #include <mutex>
 #include <thread>
 
@@ -23,7 +22,6 @@ class Udp_message_manager {
     std::queue<hl_communication::GameMsg> _messages;
 
     hl_communication::UDPBroadcast* _broadcaster;
-    std::chrono::time_point<std::chrono::system_clock> _start;
 
     void _run();
 
