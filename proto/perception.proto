@@ -55,5 +55,5 @@ message Perception {
   /**
    * Up to teams
    */
-  required string free_field = 5;
+  optional string free_field = 5;
 }
