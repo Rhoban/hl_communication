@@ -41,7 +41,9 @@ catkin_package(
   LIBRARIES ${PROJECT_NAME} ${PROTOBUF_LIBRARY}
   )
 
-include_directories(include ${catkin_INCLUDE_DIRS} ${CATKIN_DEVEL_PREFIX}/${CATKIN_GLOBAL_INCLUDE_DESTINATION})
+include_directories(include
+  ${catkin_INCLUDE_DIRS}
+  ${CATKIN_DEVEL_PREFIX}/${CATKIN_GLOBAL_INCLUDE_DESTINATION})
 
 set(SOURCES_DIRECTORIES
   src/hl_communication

@@ -25,7 +25,9 @@ public:
   /**
    * Open a message manager which will listen to messages on the given port
    */
-  MessageManager(int port);
+  MessageManager(int port_read);
+
+  void update();
   
 private:
 

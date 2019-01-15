@@ -14,7 +14,11 @@ MessageManager::MessageManager(const std::string & file_path) {
   loadMessages(file_path);
 }
 
-MessageManager::MessageManager(int port) {
+MessageManager::MessageManager(int port_read) {
+}
+
+void MessageManager::update() {
+  //TODO: update from listener
 }
 
 void MessageManager::push(const RobotMsg & msg) {
