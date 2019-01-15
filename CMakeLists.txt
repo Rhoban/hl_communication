@@ -62,3 +62,10 @@ endforeach (DIRECTORY)
 #Build the kid_size main library
 add_library (${PROJECT_NAME} SHARED ${PROTO_SOURCES} ${ALL_SOURCES})
 target_link_libraries(${PROJECT_NAME} ${PROTOBUF_LIBRARIES})
+
+add_executable(server_example src/hl_communication/server_example.cpp)
+target_link_libraries(server_example ${PROJECT_NAME} ${PROTOBUF_LIBRARIES})
+
+add_executable(client_example src/hl_communication/client_example.cpp)
+target_link_libraries(client_example ${PROJECT_NAME} ${PROTOBUF_LIBRARIES})
+

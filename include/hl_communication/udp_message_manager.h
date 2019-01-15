@@ -11,7 +11,7 @@
 
 namespace hl_communication {
 
-class UDPLoadConfig {
+class Udp_message_manager {
     private:
     int _portRead;
     int _portWrite;
@@ -31,8 +31,8 @@ class UDPLoadConfig {
     bool receive_message( hl_communication::GameMsg* message );
     void send_message( const hl_communication::GameMsg & message );
 
-    UDPLoadConfig(int portRead, int portWrite);
-    ~UDPLoadConfig();
+    Udp_message_manager(int portRead, int portWrite);
+    ~Udp_message_manager();
 };
 
 }
