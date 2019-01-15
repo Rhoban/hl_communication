@@ -1,11 +1,12 @@
 #include <hl_communication/udp_message_manager.h>
 #include <iostream>
 
-#define PACKET_MAX_SIZE 1000
+#define PACKET_MAX_SIZE 10000
 
 namespace hl_communication {
 
-UDPLoadConfig::UDPLoadConfig(int portRead, int portWrite){
+Udp_message_manager::Udp_message_manager(int portRead, int portWrite){
+    _continue_to_run = true;
     _portRead = portRead;
     _portWrite = portWrite;
     _broadcaster = new hl_communication::UDPBroadcast(portRead, portWrite);
@@ -19,12 +20,13 @@ UDPLoadConfig::UDPLoadConfig(int portRead, int portWrite){
     }
 }
 
-void UDPLoadConfig::_run(){
+void Udp_message_manager::_run(){
     //Receiving informations
     unsigned char data[PACKET_MAX_SIZE+1];
     data[PACKET_MAX_SIZE] = '\0';
     size_t len = PACKET_MAX_SIZE; // TODO !
-    while (_broadcaster->checkMessage(data, len) and _continue_to_run) {
+    while ( _continue_to_run) {
+        if( ! _broadcaster->checkMessage(data, len) ) continue;
         if (len == PACKET_MAX_SIZE) {
             std::cout << "Packet are too long !" << std::endl;
             continue;
@@ -33,6 +35,7 @@ void UDPLoadConfig::_run(){
         hl_communication::GameMsg game_msg;
         if( ! game_msg.ParseFromString( string_data ) ){
             std::cerr << "Invalid format for the packet" << std::endl;
+            continue;
         }
 
         auto end = std::chrono::system_clock::now();
@@ -51,22 +54,27 @@ void UDPLoadConfig::_run(){
     }
 }
 
-UDPLoadConfig::~UDPLoadConfig(){
+Udp_message_manager::~Udp_message_manager(){
     _continue_to_run = false;
-    _thread->join();
-    delete _thread;
-    _broadcaster->closeRead();
-    _broadcaster->closeWrite();
+    if(_portRead != -1){
+        _broadcaster->closeRead();
+        _thread->join();
+        delete _thread;
+    }
+    if(_portWrite != -1){
+        _broadcaster->closeWrite();
+    }
     delete _broadcaster;
 }
 
  
-bool UDPLoadConfig::receive_message( hl_communication::GameMsg * message ){
+bool Udp_message_manager::receive_message( hl_communication::GameMsg * message ){
     bool res = false;
     if(_portRead != -1 ){
         _mutex.lock();
         if( !_messages.empty() ){
-            *message = _messages.front();
+            message->Clear();
+            message->CopyFrom( _messages.front() ); 
             _messages.pop();
             res = true;
         }
@@ -75,7 +83,7 @@ bool UDPLoadConfig::receive_message( hl_communication::GameMsg * message ){
     return res;
 }
 
-void UDPLoadConfig::send_message(
+void Udp_message_manager::send_message(
     const hl_communication::GameMsg & message
 ){
     std::string raw_message;
