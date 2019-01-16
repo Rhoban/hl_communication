@@ -61,11 +61,12 @@ class UDPBroadcast
 
         /**
          * Return true of the given bufffer has been 
-         * filled with incomming data and len has been
-         * updated
+         * filled with incomming data. Len should contain the size of the buffer.
+         * At the end of the function len is updated and contain the size of
+         * the received message.
          */
         bool checkMessage(
-            char* data, size_t& len,
+            char* data, size_t* len,
             unsigned long* src_address=NULL, unsigned short* src_port=NULL
         );
 

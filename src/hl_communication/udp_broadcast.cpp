@@ -177,7 +177,7 @@ void UDPBroadcast::broadcastMessage(const char* data, size_t len)
 }
         
 bool UDPBroadcast::checkMessage(
-    char* data, size_t& len,
+    char* data, size_t* len,
     unsigned long* src_address, unsigned short* src_port
 )
 {
@@ -194,7 +194,7 @@ bool UDPBroadcast::checkMessage(
     struct sockaddr_in src_addr;
     socklen_t addr_len = sizeof(src_addr);
     int size = recvfrom(
-        _readFd, (char *) data, len, MSG_DONTWAIT,
+        _readFd, (char *) data, *len, MSG_DONTWAIT,
         (struct sockaddr *) &src_addr, &addr_len
     );
 
@@ -212,7 +212,7 @@ bool UDPBroadcast::checkMessage(
             inet_lnaof( ((struct sockaddr_in*)&src_addr)->sin_addr )
         );
         if(src_port) *src_port = ntohs(((struct sockaddr_in*)&src_addr)->sin_port);
-        len = size;
+        *len = size;
         return true;
     }
 }

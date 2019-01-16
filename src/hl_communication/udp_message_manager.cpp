@@ -31,12 +31,13 @@ Udp_message_manager::Udp_message_manager(int portRead, int portWrite){
 void Udp_message_manager::_run(){
     //Receiving informations
     char data[PACKET_MAX_SIZE];
-    size_t len = PACKET_MAX_SIZE; // TODO !
+    size_t len;
     unsigned long src_address;
     unsigned short src_port;
     hl_communication::GameMsg game_msg;
     while ( _continue_to_run) {
-        if( ! _broadcaster->checkMessage(data, len, &src_address, &src_port) ) continue;
+        len = PACKET_MAX_SIZE;
+        if( ! _broadcaster->checkMessage(data, &len, &src_address, &src_port) ) continue;
         if (len >= PACKET_MAX_SIZE) {
             std::cout << "Packet are too long !" << std::endl;
             continue;
