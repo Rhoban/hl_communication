@@ -12,6 +12,13 @@ namespace hl_communication
 bool operator<(const RobotIdentifier & id1, const RobotIdentifier & id2);
 
 /**
+ * Order first by ip, then by port and finally by packet_no
+ *
+ * Throws an error if src_ip or src_port of one of the message is not set
+ */
+bool operator<(const MsgIdentifier & id1, const MsgIdentifier & id2);
+
+/**
  * Manages an history of message based either on logs or on a server
  */
 class MessageManager {
@@ -48,7 +55,14 @@ public:
 
 private:
 
+  /**
+   * Message should be stored in received_messages
+   */
   void push(const RobotMsg & msg);
+
+  /**
+   * Message should be stored in received_messages
+   */
   void push(const GCMsg & msg);
   void push(const GameMsg & msg);
   void push(const GameMsgCollection & collection);
@@ -69,6 +83,11 @@ private:
    * Game Controller messages received ordered by time_stamp
    */
   std::map<double, GCMsg> gc_messages;
+
+  /**
+   * Stock all the received messages, making sure they are unique
+   */
+  std::map<MsgIdentifier, GameMsg> received_messages;
 
   std::unique_ptr<Udp_message_manager> udp_receiver;
 };

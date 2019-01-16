@@ -11,6 +11,19 @@ bool operator<(const RobotIdentifier & id1, const RobotIdentifier & id2) {
     id1.team_id() < id2.team_id();
 }
 
+bool operator<(const MsgIdentifier & id1, const MsgIdentifier & id2) {
+  if (!id1.has_src_ip() || !id2.has_src_ip() || !id1.has_src_port() || !id2.has_src_port()) {
+    throw std::runtime_error("Incomplete message identifier");
+  }
+  if (id1.src_ip() != id2.src_ip()) {
+    return id1.src_ip() < id2.src_ip();
+  }
+  if (id1.src_port() != id2.src_port()) {
+    return id1.src_port() < id2.src_port();
+  }
+  return id1.packet_no() < id2.packet_no();
+}
+
 MessageManager::MessageManager(const std::string & file_path) {
   loadMessages(file_path);
 }
@@ -100,6 +113,13 @@ void MessageManager::push(const GCMsg & msg) {
 }
 
 void MessageManager::push(const GameMsg & msg) {
+  // Avoid to store twice duplicated message and print warning
+  if (received_messages.count(msg.identifier()) > 0) {
+    std::cerr << "Duplicated message received" << std::endl;
+    //TODO: show message identifier
+    return;
+  }
+  received_messages[msg.identifier()] = msg;
   if (msg.has_robot_msg()) {
     push(msg.robot_msg());
     
@@ -133,13 +153,8 @@ void MessageManager::loadMessages(const std::string & file_path) {
 
 GameMsgCollection MessageManager::buildGameMsgCollection() const {
   GameMsgCollection result;
-  for (const auto & gc_entry : gc_messages) {
-    result.add_messages()->mutable_gc_msg()->CopyFrom(gc_entry.second);
-  }
-  for (const auto & robot_entry : messages_by_robot) {
-    for (const auto & robot_msg_entry : robot_entry.second) {
-      result.add_messages()->mutable_robot_msg()->CopyFrom(robot_msg_entry.second);
-    }
+  for (const auto & entry : received_messages) {
+    result.add_messages()->CopyFrom(entry.second);
   }
   return result;
 }

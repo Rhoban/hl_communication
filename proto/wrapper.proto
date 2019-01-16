@@ -37,11 +37,30 @@ message RobotMsg {
   optional double time_stamp = 7;
 }
 
+/**
+ * Is used to identify uniquely every message
+ */
+message MsgIdentifier {
+  /**
+   * The number of the message
+   */
+  required uint64 packet_no = 1;
+  /**
+   * Source ip address (filled/checked automatically by receiver)
+   */
+  optional uint64 src_ip = 2;
+  /**
+   * Source port number (filled/checked automatically by receiver)
+   */
+  optional uint32 src_port = 3;
+}
+
 message GameMsg {
   oneof content {
     RobotMsg robot_msg = 1;
     GCMsg gc_msg = 2;
   }
+  required MsgIdentifier identifier = 3;
 }
 
 message GameMsgCollection {
