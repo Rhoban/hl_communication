@@ -56,8 +56,8 @@ void MessageManager::saveMessages(const std::string & path) {
 
 uint64_t MessageManager::getStart() const {
   uint64_t min_ts = std::numeric_limits<uint64_t>::max();
-  if (gcmessages.size() > 0) {
-    min_ts = std::min(min_ts, gcmessages.begin()->first);
+  if (gc_messages.size() > 0) {
+    min_ts = std::min(min_ts, gc_messages.begin()->first);
   }
   for (const auto & robot_collection : messages_by_robot) {
     if (robot_collection.second.size() > 0) {
@@ -81,13 +81,13 @@ MessageManager::Status MessageManager::getStatus(uint64_t time_stamp) const {
         continue;
       it--;
     }
-    status.robotmessages[robot_entry.first] = it->second;
+    status.robot_messages[robot_entry.first] = it->second;
   }
-  auto it = gcmessages.upper_bound(time_stamp);
-  if (it == gcmessages.end())
+  auto it = gc_messages.upper_bound(time_stamp);
+  if (it == gc_messages.end())
     return status;
   if (it->first > time_stamp) {
-    if (it == gcmessages.begin())
+    if (it == gc_messages.begin())
       return status;
     it--;
   }
@@ -109,17 +109,17 @@ void MessageManager::push(const GCMsg & msg) {
   if (!msg.has_time_stamp()) {
     throw std::runtime_error("MessageManager can only handle time_stamped GCMsg");
   }
-  gcmessages[msg.time_stamp()] = msg;
+  gc_messages[msg.time_stamp()] = msg;
 }
 
 void MessageManager::push(const GameMsg & msg) {
   // Avoid to store twice duplicated message and print warning
-  if (receivedmessages.count(msg.identifier()) > 0) {
+  if (received_messages.count(msg.identifier()) > 0) {
     std::cerr << "Duplicated message received" << std::endl;
     //TODO: show message identifier
     return;
   }
-  receivedmessages[msg.identifier()] = msg;
+  received_messages[msg.identifier()] = msg;
   if (msg.has_robot_msg()) {
     push(msg.robot_msg());
     
@@ -153,7 +153,7 @@ void MessageManager::loadMessages(const std::string & file_path) {
 
 GameMsgCollection MessageManager::buildGameMsgCollection() const {
   GameMsgCollection result;
-  for (const auto & entry : receivedmessages) {
+  for (const auto & entry : received_messages) {
     result.add_messages()->CopyFrom(entry.second);
   }
   return result;
