@@ -9,6 +9,9 @@ find_package(catkin REQUIRED)
 #Enable C++11
 set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra -std=c++11")
 
+# Protobuf generate files with unused parameters
+set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-unused-parameter")
+
 # Handling generated headers is based on Dirk Thomas answer on topic:
 # - https://answers.ros.org/answers/123416/revisions/
 catkin_destinations()
@@ -63,9 +66,12 @@ endforeach (DIRECTORY)
 add_library (${PROJECT_NAME} SHARED ${PROTO_SOURCES} ${ALL_SOURCES})
 target_link_libraries(${PROJECT_NAME} ${PROTOBUF_LIBRARIES})
 
-add_executable(server_example src/hl_communication/server_example.cpp)
-target_link_libraries(server_example ${PROJECT_NAME} ${PROTOBUF_LIBRARIES})
+option(BUILD_HL_COMMUNICATION_EXAMPLES "Building hl_communication examples" OFF)
 
-add_executable(client_example src/hl_communication/client_example.cpp)
-target_link_libraries(client_example ${PROJECT_NAME} ${PROTOBUF_LIBRARIES})
+if (BUILD_HL_COMMUNICATION_EXAMPLES)
+  add_executable(server_example examples/server_example.cpp)
+  target_link_libraries(server_example ${PROJECT_NAME} ${PROTOBUF_LIBRARIES})
 
+  add_executable(client_example examples/client_example.cpp)
+  target_link_libraries(client_example ${PROJECT_NAME} ${PROTOBUF_LIBRARIES})
+endif()
