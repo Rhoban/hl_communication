@@ -17,6 +17,9 @@ message GCTeamMsg {
 }
 
 message GCMsg {
+  /**
+   * Reception time of the messages: microseconds since epoch
+   */
   optional uint64 time_stamp = 1;
   optional int32 struct_version = 2;
   optional int32 game_type = 3;
