@@ -4,12 +4,12 @@ package hl_communication;
 
 message Capabilities {
   // Maximal walking speed of the robot [m/s]
-  optional float maxWalkingSpeed = 1;
+  optional float max_walking_speed = 1;
   // Average kicking distance for robot kicks [m]
-  optional float avgKickDistance = 2;
+  optional float avg_kick_distance = 2;
 
   /**
    * Up to teams
    */
-  optional string freeField = 3;
+  optional string free_field = 3;
 }

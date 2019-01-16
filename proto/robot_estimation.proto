@@ -14,19 +14,21 @@ enum TeamID {
 message RobotEstimation {
   /**
    * Team identifier
+   * - 0: unknown team
+   * - 1+: id of the team
    */
-  required TeamID teamId = 1;
+  required TeamID team_id = 1;
 
   /**
    * Identifier of the robot:
    * - 0: unknown id
    * - 1+: Identifier of the robot
    */
-  required uint32 robotId = 2;
+  required uint32 robot_id = 2;
   
   /**
    * Pose of the robots in self referential
    */
-  required PoseEstimation robotInSelf = 3;
+  required PoseEstimation robot_in_self = 3;
   
 }

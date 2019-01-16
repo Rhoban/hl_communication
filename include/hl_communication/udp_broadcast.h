@@ -1,5 +1,4 @@
-#ifndef HL_COMMUNICATION_UDPBROADCAST_HPP
-#define HL_COMMUNICATION_UDPBROADCAST_HPP
+#pragma once
 
 #include <vector>
 
@@ -9,15 +8,6 @@
 #include <arpa/inet.h>
 #include <netdb.h>
 #include <stdio.h>
-
-#define SOCKET int
-#define SOCKET_ERROR -1
-#define INVALID_SOCKET -1
-#define closesocket(s) close(s)
-
-typedef struct sockaddr_in SOCKADDR_IN;
-typedef struct sockaddr SOCKADDR;
-typedef struct in_addr IN_ADDR;
 
 namespace hl_communication {
 
@@ -29,81 +19,76 @@ namespace hl_communication {
  */
 class UDPBroadcast
 {
-    public:
+public:
 
-        /**
-         * Initializing with listening port
-         */
-        UDPBroadcast(int portRead, int portWrite);
+  /**
+   * Initializing with listening port
+   */
+  UDPBroadcast(int port_read, int port_write);
 
-        /**
-         * Close opened connections
-         */
-        ~UDPBroadcast();
+  /**
+   * Close opened connections
+   */
+  ~UDPBroadcast();
         
-        /**
-         * Start or restart the listening and ouput
-         * connection
-         */
-        void openRead();
-        void openWrite();
+  /**
+   * Start or restart the listening and ouput
+   * connection
+   */
+  void openRead();
+  void openWrite();
 
-        /**
-         * Close listening and output connection
-         */
-        void closeRead();
-        void closeWrite();
+  /**
+   * Close listening and output connection
+   */
+  void closeRead();
+  void closeWrite();
 
-        /**
-         * Broadcast given UDP message
-         */
-        void broadcastMessage(const char* data, size_t len);
+  /**
+   * Broadcast given UDP message
+   */
+  void broadcastMessage(const char* data, size_t len);
 
-        /**
-         * Return true of the given bufffer has been 
-         * filled with incomming data. Len should contain the size of the buffer.
-         * At the end of the function len is updated and contain the size of
-         * the received message.
-         */
-        bool checkMessage(
-            char* data, size_t* len,
-            unsigned long* src_address=NULL, unsigned short* src_port=NULL
-        );
+  /**
+   * Return true of the given bufffer has been 
+   * filled with incomming data. Len should contain the size of the buffer.
+   * At the end of the function len is updated and contain the size of
+   * the received message.
+   */
+  bool checkMessage(char* data, size_t* len,
+                    unsigned long* src_address=NULL, unsigned short* src_port=NULL);
 
-    private:
+private:
 
-        /**
-         * Listening and writting port.
-         * If _portWrite is -1, packet sending 
-         * is disabled
-         */
-        int _portRead;
-        int _portWrite;
+  /**
+   * Listening and writting port.
+   * If port_write is -1, packet sending 
+   * is disabled
+   */
+  int port_read;
+  int port_write;
         
-        /**
-         * Incomming and outcomming connection
-         */
-        SOCKET _readFd;
-        SOCKET _writeFd;
+  /**
+   * Incoming and outcoming connection
+   */
+  int read_fd;
+  int write_fd;
 
-        /**
-         * Count the number of send packets since
-         * last interface listing
-         */
-        int _countSend;
+  /**
+   * Count the number of send packets since
+   * last interface listing
+   */
+  int count_send;
 
-        /**
-         * Broadcast address list
-         */
-        std::vector<int> _broadcastAddr;
+  /**
+   * Broadcast address list
+   */
+  std::vector<int> broadcast_addr;
 
-        /**
-         * Retrieve for all interfaces the broadcast address
-         */
-        void retrieveBroadcastAddress();
+  /**
+   * Retrieve for all interfaces the broadcast address
+   */
+  void retrieveBroadcastAddress();
 };
 
 }
-
-#endif
-

@@ -29,14 +29,14 @@ MessageManager::MessageManager(const std::string & file_path) {
 }
 
 MessageManager::MessageManager(int port_read)
-  : udp_receiver(new Udp_message_manager(port_read, -1))
+  : udp_receiver(new UDPMessageManager(port_read, -1))
 {
 }
 
 void MessageManager::update() {
   if (udp_receiver) {
     GameMsg msg;
-    while(udp_receiver->receive_message(&msg)) {
+    while(udp_receiver->receiveMessage(&msg)) {
       push(msg);
     }
   }
@@ -56,8 +56,8 @@ void MessageManager::saveMessages(const std::string & path) {
 
 uint64_t MessageManager::getStart() const {
   uint64_t min_ts = std::numeric_limits<uint64_t>::max();
-  if (gc_messages.size() > 0) {
-    min_ts = std::min(min_ts, gc_messages.begin()->first);
+  if (gcmessages.size() > 0) {
+    min_ts = std::min(min_ts, gcmessages.begin()->first);
   }
   for (const auto & robot_collection : messages_by_robot) {
     if (robot_collection.second.size() > 0) {
@@ -81,13 +81,13 @@ MessageManager::Status MessageManager::getStatus(uint64_t time_stamp) const {
         continue;
       it--;
     }
-    status.robot_messages[robot_entry.first] = it->second;
+    status.robotmessages[robot_entry.first] = it->second;
   }
-  auto it = gc_messages.upper_bound(time_stamp);
-  if (it == gc_messages.end())
+  auto it = gcmessages.upper_bound(time_stamp);
+  if (it == gcmessages.end())
     return status;
   if (it->first > time_stamp) {
-    if (it == gc_messages.begin())
+    if (it == gcmessages.begin())
       return status;
     it--;
   }
@@ -109,17 +109,17 @@ void MessageManager::push(const GCMsg & msg) {
   if (!msg.has_time_stamp()) {
     throw std::runtime_error("MessageManager can only handle time_stamped GCMsg");
   }
-  gc_messages[msg.time_stamp()] = msg;
+  gcmessages[msg.time_stamp()] = msg;
 }
 
 void MessageManager::push(const GameMsg & msg) {
   // Avoid to store twice duplicated message and print warning
-  if (received_messages.count(msg.identifier()) > 0) {
+  if (receivedmessages.count(msg.identifier()) > 0) {
     std::cerr << "Duplicated message received" << std::endl;
     //TODO: show message identifier
     return;
   }
-  received_messages[msg.identifier()] = msg;
+  receivedmessages[msg.identifier()] = msg;
   if (msg.has_robot_msg()) {
     push(msg.robot_msg());
     
@@ -153,7 +153,7 @@ void MessageManager::loadMessages(const std::string & file_path) {
 
 GameMsgCollection MessageManager::buildGameMsgCollection() const {
   GameMsgCollection result;
-  for (const auto & entry : received_messages) {
+  for (const auto & entry : receivedmessages) {
     result.add_messages()->CopyFrom(entry.second);
   }
   return result;

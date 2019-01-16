@@ -1,5 +1,4 @@
-#ifndef HL_COMMUNICATION_UDPLOADCONFIG_H
-#define  HL_COMMUNICATION_UDPLOADCONFIG_H
+#pragma once
 
 #include <hl_communication/wrapper.pb.h>
 #include <google/protobuf/text_format.h>
@@ -15,41 +14,39 @@ namespace hl_communication {
  */
 int getDefaultTeamPort(int team_id);
 
-class Udp_message_manager {
-    private:
-    unsigned long int _packet_no; 
+class UDPMessageManager {
+private:
+  uint64_t packet_no; 
 
-    int _portRead;
-    int _portWrite;
+  int port_read;
+  int port_write;
 
-    bool _continue_to_run;
-    std::thread * _thread;
-    std::mutex _mutex;
+  bool continue_to_run;
+  std::unique_ptr<std::thread> thread;
+  std::mutex mutex;
 
-    std::queue<hl_communication::GameMsg> _messages;
+  std::queue<hl_communication::GameMsg> messages;
 
-    hl_communication::UDPBroadcast* _broadcaster;
+  std::unique_ptr<hl_communication::UDPBroadcast> broadcaster;
 
-    void _run();
+  void run();
 
-    public:
-    bool receive_message( hl_communication::GameMsg* message );
+public:
+  bool receiveMessage(hl_communication::GameMsg* message);
 
-    /**
-     * Send a message, Packet number is not filled automatically.
-     * You have to fill it before sending the message.
-     */
-    void send_message( const hl_communication::GameMsg & message );
+  /**
+   * Send a message, Packet number is not filled automatically.
+   * You have to fill it before sending the message.
+   */
+  void sendMessage(const hl_communication::GameMsg & message);
 
-    /**
-     * Fill automatically the Packet Number and send the message.
-     */
-    void send_message( hl_communication::GameMsg * message );
+  /**
+   * Fill automatically the Packet Number and send the message.
+   */
+  void sendMessage(hl_communication::GameMsg * message);
 
-    Udp_message_manager(int portRead, int portWrite);
-    ~Udp_message_manager();
+  UDPMessageManager(int port_read, int port_write);
+  ~UDPMessageManager();
 };
 
 }
-
-#endif

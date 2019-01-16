@@ -27,7 +27,7 @@ public:
 
   class Status {
   public:
-    std::map<RobotIdentifier, RobotMsg> robot_messages;
+    std::map<RobotIdentifier, RobotMsg> robotmessages;
     GCMsg gc_message;
   };
   
@@ -56,12 +56,12 @@ public:
 private:
 
   /**
-   * Message should be stored in received_messages
+   * Message should be stored in receivedmessages
    */
   void push(const RobotMsg & msg);
 
   /**
-   * Message should be stored in received_messages
+   * Message should be stored in receivedmessages
    */
   void push(const GCMsg & msg);
   void push(const GameMsg & msg);
@@ -82,14 +82,14 @@ private:
   /**
    * Game Controller messages received ordered by time_stamp
    */
-  std::map<uint64_t, GCMsg> gc_messages;
+  std::map<uint64_t, GCMsg> gcmessages;
 
   /**
    * Stock all the received messages, making sure they are unique
    */
-  std::map<MsgIdentifier, GameMsg> received_messages;
+  std::map<MsgIdentifier, GameMsg> receivedmessages;
 
-  std::unique_ptr<Udp_message_manager> udp_receiver;
+  std::unique_ptr<UDPMessageManager> udp_receiver;
 };
 
 
