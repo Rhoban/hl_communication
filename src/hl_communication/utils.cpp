@@ -7,8 +7,8 @@ using namespace std::chrono;
 namespace hl_communication
 {
 
-double getTimeStamp() {
-  return duration_cast<duration<double>>(steady_clock::now().time_since_epoch()).count();
+uint64_t getTimeStamp() {
+  return duration_cast<duration<uint64_t,std::micro>>(steady_clock::now().time_since_epoch()).count();
 }
 
 std::string getBaseName(const std::string & path) {

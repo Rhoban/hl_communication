@@ -17,8 +17,8 @@ namespace hl_communication
 std::string getBaseName(const std::string & path);
 
 /**
- * Return time_since_epoch in a double value (unit: seconds)
+ * Return time_since_epoch in a integer value (unit: microseconds)
  */
-double getTimeStamp();
+uint64_t getTimeStamp();
 
 }

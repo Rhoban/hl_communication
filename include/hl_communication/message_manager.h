@@ -23,7 +23,7 @@ bool operator<(const MsgIdentifier & id1, const MsgIdentifier & id2);
  */
 class MessageManager {
 public:
-  typedef std::map<double, RobotMsg> TimedRobotMsgCollection;
+  typedef std::map<uint64_t, RobotMsg> TimedRobotMsgCollection;
 
   class Status {
   public:
@@ -45,13 +45,13 @@ public:
 
   void saveMessages(const std::string & path);
 
-  double getStart() const;
+  uint64_t getStart() const;
 
   /**
    * Build a global game status with the last message of each entity prior to
    * the given time_stamp
    */
-  Status getStatus(double time_stamp) const;
+  Status getStatus(uint64_t time_stamp) const;
 
 private:
 
@@ -82,7 +82,7 @@ private:
   /**
    * Game Controller messages received ordered by time_stamp
    */
-  std::map<double, GCMsg> gc_messages;
+  std::map<uint64_t, GCMsg> gc_messages;
 
   /**
    * Stock all the received messages, making sure they are unique

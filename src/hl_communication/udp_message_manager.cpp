@@ -44,7 +44,7 @@ void Udp_message_manager::_run(){
             continue;
         }
 
-        double time_stamp =
+        uint64_t time_stamp =
           duration_cast<duration<double>>(steady_clock::now().time_since_epoch()).count();
         
         //Assign reception timestamp
