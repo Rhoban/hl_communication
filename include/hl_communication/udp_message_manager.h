@@ -10,6 +10,11 @@
 
 namespace hl_communication {
 
+/**
+ * Return the default team_port
+ */
+int getDefaultTeamPort(int team_id);
+
 class Udp_message_manager {
     private:
     int _portRead;

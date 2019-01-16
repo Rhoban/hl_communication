@@ -9,6 +9,10 @@ using namespace std::chrono;
 
 namespace hl_communication {
 
+int getDefaultTeamPort(int team_id) {
+  return 35000 + team_id;
+}
+
 Udp_message_manager::Udp_message_manager(int portRead, int portWrite){
     _continue_to_run = true;
     _portRead = portRead;
