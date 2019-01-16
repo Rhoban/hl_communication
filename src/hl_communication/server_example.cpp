@@ -10,11 +10,13 @@ int main(){
     
     int i=0;
     while(true){
-        msg.mutable_robot_msg()->mutable_robot_id()->set_robot_id( i );
-        msg.mutable_robot_msg()->mutable_robot_id()->set_team_id( 100 + i );
+        msg.Clear();
+        msg.mutable_robot_msg()->mutable_robot_id()->set_robot_id( 100+i );
+        msg.mutable_robot_msg()->mutable_robot_id()->set_team_id( 1000+i );
         
+        udp_sender.send_message( &msg ); 
         std::cout << "Send message : " << msg.DebugString() << std::endl;
-        udp_sender.send_message( msg ); 
+        std::cout << std::endl;
         
         usleep(1000000.0);
         i++;

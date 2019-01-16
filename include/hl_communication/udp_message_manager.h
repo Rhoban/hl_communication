@@ -12,6 +12,8 @@ namespace hl_communication {
 
 class Udp_message_manager {
     private:
+    unsigned long int _packet_no; 
+
     int _portRead;
     int _portWrite;
 
@@ -27,7 +29,17 @@ class Udp_message_manager {
 
     public:
     bool receive_message( hl_communication::GameMsg* message );
+
+    /**
+     * Send a message, Packet number is not filled automatically.
+     * You have to fill it before sending the message.
+     */
     void send_message( const hl_communication::GameMsg & message );
+
+    /**
+     * Fill automatically the Packet Number and send the message.
+     */
+    void send_message( hl_communication::GameMsg * message );
 
     Udp_message_manager(int portRead, int portWrite);
     ~Udp_message_manager();

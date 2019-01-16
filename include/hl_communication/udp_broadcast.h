@@ -64,7 +64,10 @@ class UDPBroadcast
          * filled with incomming data and len has been
          * updated
          */
-        bool checkMessage(unsigned char* data, size_t& len);
+        bool checkMessage(
+            unsigned char* data, size_t& len,
+            unsigned long* src_address=NULL, unsigned short* src_port=NULL
+        );
 
     private:
 

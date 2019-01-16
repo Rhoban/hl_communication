@@ -176,7 +176,10 @@ void UDPBroadcast::broadcastMessage(unsigned char* data, size_t len)
     _countSend++;
 }
         
-bool UDPBroadcast::checkMessage(unsigned char* data, size_t& len)
+bool UDPBroadcast::checkMessage(
+    unsigned char* data, size_t& len,
+    unsigned long* src_address, unsigned short* src_port
+)
 {
     if (_portRead == -1) {
         return false;
@@ -187,9 +190,14 @@ bool UDPBroadcast::checkMessage(unsigned char* data, size_t& len)
         openRead();
         return false;
     }
-   
 
-    int size = recvfrom(_readFd, (char *) data, len, MSG_DONTWAIT, NULL, NULL);
+    struct sockaddr_in src_addr;
+    socklen_t addr_len = sizeof(src_addr);
+    int size = recvfrom(
+        _readFd, (char *) data, len, MSG_DONTWAIT,
+        (struct sockaddr *) &src_addr, &addr_len
+    );
+
     if (size == -1) {
         if (errno != EAGAIN && errno != EWOULDBLOCK) {
             std::cout << 
@@ -198,6 +206,12 @@ bool UDPBroadcast::checkMessage(unsigned char* data, size_t& len)
         } 
         return false;
     } else {
+        if(src_address) *src_address =(
+            inet_netof( ((struct sockaddr_in*)&src_addr)->sin_addr ) << 24  
+            |
+            inet_lnaof( ((struct sockaddr_in*)&src_addr)->sin_addr )
+        );
+        if(src_port) *src_port = ntohs(((struct sockaddr_in*)&src_addr)->sin_port);
         len = size;
         return true;
     }

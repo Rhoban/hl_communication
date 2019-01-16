@@ -10,6 +10,7 @@ using namespace std::chrono;
 namespace hl_communication {
 
 Udp_message_manager::Udp_message_manager(int portRead, int portWrite){
+    _packet_no = 0; 
     _continue_to_run = true;
     _portRead = portRead;
     _portWrite = portWrite;
@@ -27,14 +28,17 @@ void Udp_message_manager::_run(){
     //Receiving informations
     unsigned char data[PACKET_MAX_SIZE];
     size_t len = PACKET_MAX_SIZE; // TODO !
+    unsigned long src_address;
+    unsigned short src_port;
+    hl_communication::GameMsg game_msg;
     while ( _continue_to_run) {
-        if( ! _broadcaster->checkMessage(data, len) ) continue;
-        if (len == PACKET_MAX_SIZE) {
+        if( ! _broadcaster->checkMessage(data, len, &src_address, &src_port) ) continue;
+        if (len >= PACKET_MAX_SIZE) {
             std::cout << "Packet are too long !" << std::endl;
             continue;
         }
+        game_msg.Clear();
         std::string string_data((char*) data, len);
-        hl_communication::GameMsg game_msg;
         if( ! game_msg.ParseFromString( string_data ) ){
             std::cerr << "Invalid format for a packet of size: " << len << std::endl;
             continue;
@@ -43,6 +47,8 @@ void Udp_message_manager::_run(){
         double time_stamp =
           duration_cast<duration<double>>(steady_clock::now().time_since_epoch()).count();
         
+        game_msg.mutable_identifier()->set_src_ip( src_address );
+        game_msg.mutable_identifier()->set_src_port( ntohs(src_port) );
         //Assign reception timestamp
         if( game_msg.has_gc_msg() ){
             game_msg.mutable_gc_msg()->set_time_stamp(time_stamp);
@@ -96,6 +102,14 @@ void Udp_message_manager::send_message(
     _broadcaster->broadcastMessage(
         (unsigned char*) raw_message.c_str(), raw_message.size()
     );
+}
+
+void Udp_message_manager::send_message(
+    hl_communication::GameMsg * message
+){
+    message->mutable_identifier()->set_packet_no(_packet_no);
+    _packet_no ++ ; 
+    send_message( *message );
 }
 
 }
