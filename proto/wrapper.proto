@@ -34,7 +34,7 @@ message RobotMsg {
   optional RobotEstimation robot_estimation = 4;
   optional TeamPlay team_play = 5;
   optional RobotIdentifier robot_id = 6;
-  optional double time_stamp = 7;
+  optional uint64 time_stamp = 7;
 }
 
 /**

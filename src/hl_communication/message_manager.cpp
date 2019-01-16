@@ -54,8 +54,8 @@ void MessageManager::saveMessages(const std::string & path) {
   }
 }
 
-double MessageManager::getStart() const {
-  double min_ts = std::numeric_limits<double>::max();
+uint64_t MessageManager::getStart() const {
+  uint64_t min_ts = std::numeric_limits<uint64_t>::max();
   if (gc_messages.size() > 0) {
     min_ts = std::min(min_ts, gc_messages.begin()->first);
   }
@@ -67,7 +67,7 @@ double MessageManager::getStart() const {
   return min_ts;
 }
 
-MessageManager::Status MessageManager::getStatus(double time_stamp) const {
+MessageManager::Status MessageManager::getStatus(uint64_t time_stamp) const {
   Status status;
   for (const auto & robot_entry : messages_by_robot) {
     std::cout << "-> Checking messages from robot " << robot_entry.first.robot_id()

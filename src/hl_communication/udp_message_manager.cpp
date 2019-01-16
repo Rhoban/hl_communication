@@ -9,6 +9,10 @@ using namespace std::chrono;
 
 namespace hl_communication {
 
+int getDefaultTeamPort(int team_id) {
+  return 35000 + team_id;
+}
+
 Udp_message_manager::Udp_message_manager(int portRead, int portWrite){
     _packet_no = 0; 
     _continue_to_run = true;
@@ -44,7 +48,7 @@ void Udp_message_manager::_run(){
             continue;
         }
 
-        double time_stamp =
+        uint64_t time_stamp =
           duration_cast<duration<double>>(steady_clock::now().time_since_epoch()).count();
         
         game_msg.mutable_identifier()->set_src_ip( src_address );
