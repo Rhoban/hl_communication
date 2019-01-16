@@ -25,8 +25,7 @@ Udp_message_manager::Udp_message_manager(int portRead, int portWrite){
 
 void Udp_message_manager::_run(){
     //Receiving informations
-    unsigned char data[PACKET_MAX_SIZE+1];
-    data[PACKET_MAX_SIZE] = '\0';
+    unsigned char data[PACKET_MAX_SIZE];
     size_t len = PACKET_MAX_SIZE; // TODO !
     while ( _continue_to_run) {
         if( ! _broadcaster->checkMessage(data, len) ) continue;
@@ -40,7 +39,6 @@ void Udp_message_manager::_run(){
             std::cerr << "Invalid format for a packet of size: " << len << std::endl;
             continue;
         }
-        std::cout << "Valid format for the packet" << std::endl;
 
         double time_stamp =
           duration_cast<duration<double>>(steady_clock::now().time_since_epoch()).count();
