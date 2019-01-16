@@ -57,7 +57,7 @@ class UDPBroadcast
         /**
          * Broadcast given UDP message
          */
-        void broadcastMessage(unsigned char* data, size_t len);
+        void broadcastMessage(const char* data, size_t len);
 
         /**
          * Return true of the given bufffer has been 
@@ -65,7 +65,7 @@ class UDPBroadcast
          * updated
          */
         bool checkMessage(
-            unsigned char* data, size_t& len,
+            char* data, size_t& len,
             unsigned long* src_address=NULL, unsigned short* src_port=NULL
         );
 

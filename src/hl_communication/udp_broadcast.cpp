@@ -127,7 +127,7 @@ void UDPBroadcast::closeWrite()
     }
 }
         
-void UDPBroadcast::broadcastMessage(unsigned char* data, size_t len)
+void UDPBroadcast::broadcastMessage(const char* data, size_t len)
 {
     if (_portWrite == -1) {
         return;
@@ -157,7 +157,7 @@ void UDPBroadcast::broadcastMessage(unsigned char* data, size_t len)
         addr.sin_addr.s_addr = _broadcastAddr[i];
         addr.sin_port = htons(_portWrite);
           
-        int error = sendto(_writeFd, (const char *) data, len, MSG_DONTWAIT,
+        int error = sendto(_writeFd, data, len, MSG_DONTWAIT,
             (struct sockaddr*)&addr, sizeof(addr));
 
         if (error == EAGAIN || error == EWOULDBLOCK) {
@@ -177,7 +177,7 @@ void UDPBroadcast::broadcastMessage(unsigned char* data, size_t len)
 }
         
 bool UDPBroadcast::checkMessage(
-    unsigned char* data, size_t& len,
+    char* data, size_t& len,
     unsigned long* src_address, unsigned short* src_port
 )
 {

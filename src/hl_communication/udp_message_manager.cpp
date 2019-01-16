@@ -26,7 +26,7 @@ Udp_message_manager::Udp_message_manager(int portRead, int portWrite){
 
 void Udp_message_manager::_run(){
     //Receiving informations
-    unsigned char data[PACKET_MAX_SIZE];
+    char data[PACKET_MAX_SIZE];
     size_t len = PACKET_MAX_SIZE; // TODO !
     unsigned long src_address;
     unsigned short src_port;
@@ -38,7 +38,7 @@ void Udp_message_manager::_run(){
             continue;
         }
         game_msg.Clear();
-        std::string string_data((char*) data, len);
+        std::string string_data(data, len);
         if( ! game_msg.ParseFromString( string_data ) ){
             std::cerr << "Invalid format for a packet of size: " << len << std::endl;
             continue;
@@ -99,9 +99,7 @@ void Udp_message_manager::send_message(
         std::cerr << "Invalid Message !" << std::endl;
         return;
     }
-    _broadcaster->broadcastMessage(
-        (unsigned char*) raw_message.c_str(), raw_message.size()
-    );
+    _broadcaster->broadcastMessage( raw_message.c_str(), raw_message.size() );
 }
 
 void Udp_message_manager::send_message(
