@@ -16,7 +16,16 @@ int getDefaultTeamPort(int team_id);
 
 class UDPMessageManager {
 private:
-  uint64_t packet_no; 
+  /**
+   * Counts the number of messages sent and 
+   */
+  uint64_t packet_sent_no; 
+
+  /**
+   * Counts the number of messages received by the game controller which is not
+   * using protobuf. Required because the GC is not currently sending packet_no
+   */
+  uint64_t packet_gc_no;
 
   int port_read;
   int port_write;

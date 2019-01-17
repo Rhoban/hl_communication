@@ -14,12 +14,9 @@
 
 namespace hl_communication {
 
-UDPBroadcast::UDPBroadcast(int port_read, int port_write)
+UDPBroadcast::UDPBroadcast(int port_read_, int port_write_)
+  : port_read(port_read_), port_write(port_write_), count_send(0)
 {
-  port_read = port_read;
-  port_write = port_write;
-  count_send++;
-
   //Network initialization
   read_fd = -1;
   write_fd = -1;
@@ -71,6 +68,7 @@ void UDPBroadcast::openRead()
   }
 
   //Bind socket to listening port
+  std::cout << "Opening socket on port: " << port_read << std::endl;
   struct sockaddr_in addr;
   bzero(&addr, sizeof(addr));
   addr.sin_family = AF_INET;
@@ -191,7 +189,7 @@ bool UDPBroadcast::checkMessage(
     if (errno != EAGAIN && errno != EWOULDBLOCK) {
       std::cout << "ERROR: UDPBroadcast: receive failed" << std::endl;
       std::cout << strerror(errno) << std::endl;
-    } 
+    }
     return false;
   } else {
     if(src_address) {

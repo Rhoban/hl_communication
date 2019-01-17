@@ -1,5 +1,8 @@
 #include <hl_communication/udp_message_manager.h>
 
+#include <hl_communication/game_controller_utils.h>
+#include <hl_communication/utils.h>
+
 #include <chrono>
 #include <iostream>
 
@@ -14,7 +17,8 @@ int getDefaultTeamPort(int team_id) {
 }
 
 UDPMessageManager::UDPMessageManager(int port_read, int port_write){
-  packet_no = 0; 
+  packet_sent_no = 0;
+  packet_gc_no = 0;
   continue_to_run = true;
   port_read = port_read;
   port_write = port_write;
@@ -44,14 +48,20 @@ void UDPMessageManager::run(){
     }
     game_msg.Clear();
     std::string string_data(data, len);
-    if(! game_msg.ParseFromString(string_data)){
+    uint64_t time_stamp = getTimeStamp();
+    GameState game_state;
+    // Disabling error message when ParseFromString fails
+    google::protobuf::LogSilencer silencer;
+    if(game_msg.ParseFromString(string_data)){
+    } else if (game_state.updateFromMessage(data)) {
+      game_state.exportToGCMsg(game_msg.mutable_gc_msg());
+      game_msg.mutable_identifier()->set_packet_no(packet_gc_no);
+      packet_gc_no++;
+    } else {
       std::cerr << "Invalid format for a packet of size: " << len << std::endl;
       continue;
     }
 
-    uint64_t time_stamp =
-      duration_cast<duration<double>>(steady_clock::now().time_since_epoch()).count();
-        
     game_msg.mutable_identifier()->set_src_ip(src_address);
     game_msg.mutable_identifier()->set_src_port(ntohs(src_port));
     //Assign reception timestamp
@@ -61,6 +71,7 @@ void UDPMessageManager::run(){
     if(game_msg.has_robot_msg()){
       game_msg.mutable_robot_msg()->set_time_stamp(time_stamp);
     }
+      
     mutex.lock();
     messages.push(game_msg);
     mutex.unlock();
@@ -103,8 +114,8 @@ void UDPMessageManager::sendMessage(const hl_communication::GameMsg & message){
 }
 
 void UDPMessageManager::sendMessage(hl_communication::GameMsg * message){
-  message->mutable_identifier()->set_packet_no(packet_no);
-  packet_no++; 
+  message->mutable_identifier()->set_packet_no(packet_sent_no);
+  packet_sent_no++; 
   sendMessage(*message);
 }
 

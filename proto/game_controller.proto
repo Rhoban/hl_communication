@@ -3,7 +3,7 @@ syntax = "proto2";
 package hl_communication;
 
 message GCRobotMsg {
-  optional int32 m_penalty = 1;
+  optional int32 penalty = 1;
   optional int32 secs_till_unpenalised = 2;
   optional int32 yellow_card_count = 3;
   optional int32 red_card_count = 4;
