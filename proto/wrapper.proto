@@ -9,20 +9,6 @@ import "perception.proto";
 import "robot_estimation.proto";
 import "team_play.proto";
 
-/**
- * Is used to identify uniquely each robot
- */
-message RobotIdentifier {
-  /**
-   * The team_id as defined by the game controller
-   */
-  required uint32 team_id = 1;
-
-  /**
-   * The number of the robot inside its own team
-   */
-  required uint32 robot_id = 2;
-}
 
 /**
  * Robots can send messages containing only part or all of the information at once
@@ -31,7 +17,7 @@ message RobotMsg {
   optional Capabilities capabilities = 1;
   optional Intention intention = 2;
   optional Perception perception = 3;
-  optional RobotEstimation robot_estimation = 4;
+  repeated RobotEstimation robot_estimation = 4;
   optional TeamPlay team_play = 5;
   optional RobotIdentifier robot_id = 6;
   /**

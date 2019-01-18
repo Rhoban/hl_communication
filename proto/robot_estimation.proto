@@ -4,31 +4,29 @@ package hl_communication;
 
 import "position.proto";
 
-enum TeamID {
-  UNKNOWN_TEAM = 0;
-  ALLY = 1;
-  OPPONENT = 2;
-  OFFICIAL = 3;// Used to indicate that a referee or a handler has been detected
+/**
+ * Is used to identify uniquely each robot.
+ */
+message RobotIdentifier {
+  /**
+   * The team_id as defined by the game controller
+   */
+  optional uint32 team_id = 1;
+
+  /**
+   * The number of the robot inside its own team (1-...)
+   */
+  optional uint32 robot_id = 2;
 }
 
 message RobotEstimation {
   /**
-   * Team identifier
-   * - 0: unknown team
-   * - 1+: id of the team
+   * The identifier of the robot detected
    */
-  required TeamID team_id = 1;
-
-  /**
-   * Identifier of the robot:
-   * - 0: unknown id
-   * - 1+: Identifier of the robot
-   */
-  required uint32 robot_id = 2;
-  
+  optional RobotIdentifier robot_id = 1;
   /**
    * Pose of the robots in self referential
    */
-  required PoseEstimation robot_in_self = 3;
+  required PoseEstimation robot_in_self = 2;
   
 }
