@@ -21,11 +21,12 @@ set (PROTOBUF_MESSAGES
   proto/capabilities.proto
   proto/game_controller.proto
   proto/intention.proto
-	proto/perception.proto
-	proto/position.proto
-	proto/robot_estimation.proto
-	proto/team_play.proto
-	proto/wrapper.proto
+  proto/labelling.proto
+  proto/perception.proto
+  proto/position.proto
+  proto/robot_estimation.proto
+  proto/team_play.proto
+  proto/wrapper.proto
   )
 
 protobuf_generate_cpp(PROTO_SOURCES PROTO_HEADERS ${PROTOBUF_MESSAGES})
@@ -39,8 +40,13 @@ add_custom_target(${PROJECT_NAME}_generate_headers ALL
 
 set(${PROJECT_NAME}_EXPORTED_TARGETS ${PROJECT_NAME}_generate_headers)
 
+set(DELEGATE_INCLUDE_DIRS
+  include
+  ${PROTOBUF_INCLUDE_DIR}
+  ${CATKIN_DEVEL_PREFIX}/${CATKIN_GLOBAL_INCLUDE_DESTINATION})
+
 catkin_package(
-  INCLUDE_DIRS include ${PROTOBUF_INCLUDE_DIR} ${CATKIN_DEVEL_PREFIX}/${CATKIN_GLOBAL_INCLUDE_DESTINATION}
+  INCLUDE_DIRS ${DELEGATE_INCLUDE_DIRS}
   LIBRARIES ${PROJECT_NAME} ${PROTOBUF_LIBRARY}
   )
 

@@ -1,0 +1,100 @@
+syntax="proto2";
+
+import "robot_estimation.proto";
+
+package hl_monitoring;
+
+/**
+ * Represents the position of a point inside an image
+ */
+message Point2DMsg {
+  required uint32 x = 1;
+  required uint32 y = 2;
+}
+
+/**
+ * Represents a rotated rectangle inside an image
+ */
+message RotatedRectMsg {
+  /**
+   * The center of the ball in the image. This is not the position of the ball
+   * on the ground.
+   */
+  optional Point2DMsg center = 1;
+  optional double length = 2;
+  optional double width = 3;
+  /**
+   * The direction of the 'length' axis [rad]
+   * - angle:    0 -> length is aligned with 'x' axis
+   * - angle: pi/2 -> length is aligned with 'y' axis
+   */
+  optional double angle = 4;
+
+}
+
+message BallMsg {
+  /**
+   * The center of the ball in the image. This is not the position of the ball
+   * on the ground.
+   */
+  optional Point2DMsg center = 1;
+  /**
+   * The apparent radius of the ball inside the image
+   */
+  optional double radius = 2;
+  /**
+   * Is the ball handled by an official of the game
+   */
+  optional bool handled = 3;
+}
+
+message RobotMessage {
+  /**
+   * Position of the robot on the ground
+   */
+  optional Point2DMsg ground_position = 1;
+  /**
+   * Bounding box entirely containing the robot
+   */
+  optional RotatedRectMsg bounding_box = 2;
+
+  optional hl_communication.RobotIdentifier robot_id = 3;
+
+  enum RobotStatus {
+    KICKING = 1;
+    FALLEN = 2;
+    STANDING_UP = 3;
+    MOVING = 4;
+    WAITING = 5;
+  }
+  optional RobotStatus robot_status = 4;
+}
+
+message LabelMsg {
+  /**
+   * Has the data been generated manually?
+   */
+  optional uint32 frame_index = 1;
+  optional bool is_manual = 2;
+  optional BallMsg ball = 3;
+  repeated RobotMessage robot = 4;
+}
+
+/**
+ * Identifies the identity of the person who performed the labeling
+ */
+message LabelIdentifier {
+  required string nick_name = 1;
+}
+
+message LabelCollection {
+  required LabelIdentifier labeler_identity = 1;
+  repeated LabelMsg labels = 2;
+}
+
+message MovieLabelCollection {
+  optional string date = 1;
+  optional uint32 team1 = 2;
+  optional uint32 team2 = 3;
+  repeated LabelCollection label_collections = 4;
+}
