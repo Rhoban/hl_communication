@@ -1,7 +1,10 @@
 #include <hl_communication/message_manager.h>
 
+#include <hl_communication/utils.h>
+
 #include <fstream>
 #include <iostream>
+#include <sstream>
 
 namespace hl_communication
 {
@@ -29,14 +32,21 @@ MessageManager::MessageManager(const std::string & file_path) {
 }
 
 MessageManager::MessageManager(int port_read)
-  : udp_receiver(new UDPMessageManager(port_read, -1))
 {
+  udp_receivers.push_back(std::unique_ptr<UDPMessageManager>(new UDPMessageManager(port_read, -1)));
+}
+
+MessageManager::MessageManager(const std::vector<int> & ports)
+{
+  for (int p : ports) {
+    udp_receivers.push_back(std::unique_ptr<UDPMessageManager>(new UDPMessageManager(p, -1)));
+  }
 }
 
 void MessageManager::update() {
-  if (udp_receiver) {
+  for (size_t idx = 0; idx < udp_receivers.size(); idx++) {
     GameMsg msg;
-    while(udp_receiver->receiveMessage(&msg)) {
+    while(udp_receivers[idx]->receiveMessage(&msg)) {
       push(msg);
     }
   }
@@ -124,6 +134,19 @@ void MessageManager::push(const GameMsg & msg) {
     push(msg.robot_msg());
     
   } else if (msg.has_gc_msg()) {
+    SourceIdentifier source_id;
+    source_id.src_ip = msg.identifier().src_ip();
+    source_id.src_port = msg.identifier().src_port();
+    gc_sources.insert(source_id);
+    if (gc_sources.size() > 1) {
+      std::ostringstream oss;
+      oss << HL_DEBUG << " more than one different source of GameController messages has been found"
+          << " sources: " << std::endl;
+      for (const SourceIdentifier & id : gc_sources) {
+        oss << "\t" << "ip: " << ipToString(id.src_ip) << " port: " << id.src_port << std::endl;
+      }
+      std::cerr << oss.str();
+    }
     push(msg.gc_msg());
   } else {
     throw std::runtime_error("Failed to read GameMsg, not a RobotMsg neither a GCMsg");
@@ -157,6 +180,15 @@ GameMsgCollection MessageManager::buildGameMsgCollection() const {
     result.add_messages()->CopyFrom(entry.second);
   }
   return result;
+}
+
+bool operator<(const MessageManager::SourceIdentifier & id1,
+               const MessageManager::SourceIdentifier & id2)
+{
+  if (id1.src_ip != id2.src_ip) {
+    return id1.src_ip < id2.src_ip;
+  }
+  return id1.src_port < id2.src_port;
 }
 
 }

@@ -11,6 +11,7 @@
 #include <string.h>
 
 #include <hl_communication/udp_broadcast.h>
+#include <hl_communication/utils.h>
 
 namespace hl_communication {
 
@@ -168,7 +169,7 @@ void UDPBroadcast::broadcastMessage(const char* data, size_t len)
         
 bool UDPBroadcast::checkMessage(
   char* data, size_t* len,
-  unsigned long* src_address, unsigned short* src_port
+  uint64_t * src_address, uint32_t * src_port
   )
 {
   if (port_read == -1) {
@@ -193,12 +194,16 @@ bool UDPBroadcast::checkMessage(
     return false;
   } else {
     if(src_address) {
-      *src_address =
-        ( inet_netof(((struct sockaddr_in*)&src_addr)->sin_addr) << 24  
-          | inet_lnaof(((struct sockaddr_in*)&src_addr)->sin_addr));
+      char addr_str[16];// XXX.XXX.XXX.XXX + \0
+      socklen_t addr_len = 16;
+      if (inet_ntop(AF_INET, &(src_addr.sin_addr), addr_str, addr_len) == nullptr) {
+        std::cout << "ERROR: UDPBroadcast: receive failed" << std::endl;
+        std::cout << strerror(errno) << std::endl;
+      }
+      *src_address = stringToIP(std::string(addr_str,addr_len));
     }
     if(src_port) {
-      *src_port = ntohs(((struct sockaddr_in*)&src_addr)->sin_port);
+      *src_port = ntohs(src_addr.sin_port);
     }
     *len = size;
     return true;

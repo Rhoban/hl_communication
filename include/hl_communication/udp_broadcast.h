@@ -56,7 +56,7 @@ public:
    * the received message.
    */
   bool checkMessage(char* data, size_t* len,
-                    unsigned long* src_address=NULL, unsigned short* src_port=NULL);
+                    uint64_t * src_address=NULL, uint32_t * src_port=NULL);
 
 private:
 

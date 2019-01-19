@@ -25,6 +25,15 @@ class MessageManager {
 public:
   typedef std::map<uint64_t, RobotMsg> TimedRobotMsgCollection;
 
+  /**
+   * Uniquely identify a source of packets
+   */
+  class SourceIdentifier {
+  public:
+    uint64_t src_ip;
+    uint32_t src_port;
+  };
+
   class Status {
   public:
     std::map<RobotIdentifier, RobotMsg> robot_messages;
@@ -40,6 +49,11 @@ public:
    * Open a message manager which will listen to messages on the given port
    */
   MessageManager(int port_read);
+
+  /**
+   * Specifies multiple ports for reading entries
+   */
+  MessageManager(const std::vector<int> & ports);
 
   void update();
 
@@ -89,8 +103,15 @@ private:
    */
   std::map<MsgIdentifier, GameMsg> received_messages;
 
-  std::unique_ptr<UDPMessageManager> udp_receiver;
+  std::vector<std::unique_ptr<UDPMessageManager>> udp_receivers;
+
+  /**
+   * Stores the list of providers of game controller messages.
+   */
+  std::set<SourceIdentifier> gc_sources;
 };
 
+bool operator<(const MessageManager::SourceIdentifier & id1,
+               const MessageManager::SourceIdentifier & id2);
 
 }

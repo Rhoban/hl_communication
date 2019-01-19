@@ -21,4 +21,15 @@ std::string getBaseName(const std::string & path);
  */
 uint64_t getTimeStamp();
 
+/**
+ * Convert a human readable string to a 8 bytes ip address
+ */
+uint64_t stringToIP(const std::string & str);
+
+/**
+ * Convert a 8 bytes ip address to a human readable string
+ */
+std::string ipToString(uint64_t ip_address);
+
+
 }

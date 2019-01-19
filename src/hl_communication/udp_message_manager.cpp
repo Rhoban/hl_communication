@@ -36,8 +36,8 @@ void UDPMessageManager::run(){
   //Receiving informations
   char data[PACKET_MAX_SIZE];
   size_t len;
-  unsigned long src_address;
-  unsigned short src_port;
+  uint64_t src_address;
+  uint32_t src_port;
   hl_communication::GameMsg game_msg;
   while (continue_to_run) {
     len = PACKET_MAX_SIZE;

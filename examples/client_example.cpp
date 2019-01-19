@@ -1,6 +1,7 @@
 #include <iostream>
 #include <hl_communication/message_manager.h>
 #include <hl_communication/udp_message_manager.h>
+#include <hl_communication/utils.h>
 #include <unistd.h>
 
 int main(int argc, char ** argv){
@@ -32,13 +33,8 @@ int main(int argc, char ** argv){
         unsigned int ip = msg.identifier().src_ip();
         std::cout << "Packet no : " << msg.identifier().packet_no()  << std::endl;
         std::cout << "Src port : " << msg.identifier().src_port()  << std::endl;
-        std::cout 
-          << "Src ip : " 
-          << (ip>>24 &0xFF)  << "."
-          << (ip>>16 &0xFF)  << "."
-          << (ip>>8  &0xFF)  << "."
-          << (ip     &0xFF)  
-          << std::endl;
+        std::cout << "Src ip (int64): "  << ip << std::endl;
+        std::cout << "Src ip (human): "  << hl_communication::ipToString(ip) << std::endl;
         std::cout << std::endl;
       } else if (msg.has_gc_msg()) {
         std::cout << msg.DebugString() << std::endl;
