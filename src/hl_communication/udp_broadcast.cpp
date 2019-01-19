@@ -69,7 +69,6 @@ void UDPBroadcast::openRead()
   }
 
   //Bind socket to listening port
-  std::cout << "Opening socket on port: " << port_read << std::endl;
   struct sockaddr_in addr;
   bzero(&addr, sizeof(addr));
   addr.sin_family = AF_INET;
