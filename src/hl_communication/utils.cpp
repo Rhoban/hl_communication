@@ -4,12 +4,30 @@
 #include <sstream>
 
 
+#include <fstream>
 #include <iostream>
 
 using namespace std::chrono;
 
 namespace hl_communication
 {
+
+void readFromFile(const std::string & path, google::protobuf::Message * msg) {
+  msg->Clear();
+  std::ifstream in(path);
+  if (!in.good()) {
+    throw std::runtime_error(HL_DEBUG + " failed to open file '" + path + "'");
+  }
+  msg->ParseFromIstream(&in);
+}
+
+void writeToFile(const std::string & path, const google::protobuf::Message & msg) {
+  std::ofstream out(path, std::ios::binary);
+  if (!out.good()) {
+    throw std::runtime_error(HL_DEBUG + " failed to open file '" + path + "'");
+  }
+  msg.SerializeToOstream(&out);
+}
 
 uint64_t getTimeStamp() {
   return duration_cast<duration<uint64_t,std::micro>>(steady_clock::now().time_since_epoch()).count();

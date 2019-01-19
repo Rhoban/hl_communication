@@ -1,5 +1,7 @@
 #pragma once
 
+#include <google/protobuf/message.h>
+
 #include <string>
 
 namespace hl_communication
@@ -9,6 +11,10 @@ namespace hl_communication
   (std::string(__FUNCTION__) + ":"                 \
    + hl_communication::getBaseName(__FILE__) + ":" \
    + std::to_string(__LINE__)  + ": ")
+
+void readFromFile(const std::string & path, google::protobuf::Message * msg);
+
+void writeToFile(const std::string & path, const google::protobuf::Message & msg);
 
 /**
  * Return the name of the file at the given path:
