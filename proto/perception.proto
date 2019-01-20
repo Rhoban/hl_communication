@@ -6,21 +6,21 @@ import "position.proto";
 import "robot_estimation.proto";
 
 /**
- * Estimation of the pose of the robot in the field referential allowing
+ * Distribution of the pose of the robot in the field referential allowing
  * multiple candidates.
  * - First element represents the probability of the pose
  * - Second element describes the pose
  */
 message WeightedPose {
   required float probability = 1;
-  required PoseEstimation pose = 2;
+  required PoseDistribution pose = 2;
 }
 
 /**
  * Perception of the world state by the robot
  */
 message Perception {
-  required PositionEstimation ball_in_self = 1;
+  required PositionDistribution ball_in_self = 1;
 
 
   /**
@@ -33,13 +33,13 @@ message Perception {
    *
    * Note: might be inconsistent with 'self_in_field'
    */
-  optional PositionEstimation opp_goal_in_self = 3;
+  optional PositionDistribution opp_goal_in_self = 3;
 
 
   /**
    * Weighted Robot pose.
    * - First element represents the probability that the information is accurate
-   * - Second element describes the robot with its Estimation pose 
+   * - Second element describes the robot with its estimated pose 
    */
   message WeightedRobotPose {
     required float probability = 1;

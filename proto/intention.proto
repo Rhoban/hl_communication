@@ -15,19 +15,20 @@ enum Action {
 }
 
 /**
- * Describes the intention of the robot
+ * Describes the intention of the robot:
+ * - Uncertainty can be used to express tolerance on targets or uncertainty on action results
  */
 message Intention {
   /**
    * Destination of the robot in field referential
    */
-  optional PoseEstimation target_pose_in_field = 1;
+  optional PoseDistribution target_pose_in_field = 1;
 
   /**
    * List of waypoints in field referential (useful when avoiding an obstacle
    * for example), first element of the vector is the next waypoint
    */
-  repeated PoseEstimation waypoints_in_field = 2;
+  repeated PoseDistribution waypoints_in_field = 2;
 
   /**
    * Current action planned by the robot
@@ -38,7 +39,7 @@ message Intention {
    * Estimated result for the ball position after next kick, when ball has
    * stopped
    */
-  optional PositionEstimation kick_target_in_field = 4;
+  optional PositionDistribution kick_target_in_field = 4;
 
   /**
    * Up to teams
