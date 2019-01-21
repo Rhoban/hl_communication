@@ -1,11 +1,10 @@
 #include <hl_communication/utils.h>
 
 #include <chrono>
-#include <sstream>
-
-
+#include <cmath>
 #include <fstream>
 #include <iostream>
+#include <sstream>
 
 using namespace std::chrono;
 
@@ -59,6 +58,28 @@ std::string ipToString(uint64_t ip) {
       << (ip>>8  &0xFF)  << "."
       << (ip     &0xFF);
   return oss.str();
+}
+
+void invertPosition(PositionDistribution * position) {
+  position->set_x(-position->x());
+  position->set_y(-position->y());
+}
+
+void invertAngle(AngleDistribution * angle) {
+  double alpha = angle->mean() + M_PI;
+  if (alpha > M_PI) {
+    alpha -= 2 * M_PI;
+  }
+  angle->set_mean(alpha);
+}
+
+void invertPose(PoseDistribution * pose) {
+  if (pose->has_position()) {
+    invertPosition(pose->mutable_position());
+  }
+  if (pose->has_dir()) {
+    invertAngle(pose->mutable_dir());
+  }
 }
 
 }
