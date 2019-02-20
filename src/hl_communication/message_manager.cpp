@@ -80,28 +80,29 @@ uint64_t MessageManager::getStart() const {
 MessageManager::Status MessageManager::getStatus(uint64_t time_stamp) const {
   Status status;
   for (const auto & robot_entry : messages_by_robot) {
-    std::cout << "-> Checking messages from robot " << robot_entry.first.robot_id()
-                << " from team " << robot_entry.first.team_id() << std::endl;
     auto it = robot_entry.second.upper_bound(time_stamp);
-    // Do not include robots which have no data prior to time_stamp
     if (it == robot_entry.second.end())
-      continue;
+      it--;
     if (it->first > time_stamp) {
+      // Do not include robots which have no data prior to time_stamp
       if (it == robot_entry.second.begin())
         continue;
       it--;
     }
     status.robot_messages[robot_entry.first] = it->second;
   }
-  auto it = gc_messages.upper_bound(time_stamp);
-  if (it == gc_messages.end())
-    return status;
-  if (it->first > time_stamp) {
-    if (it == gc_messages.begin())
-      return status;
-    it--;
+  if (gc_messages.size() > 0) {
+    auto it = gc_messages.upper_bound(time_stamp);
+    if (it == gc_messages.end())
+      it--;
+    if (it->first > time_stamp) {
+      // There are no data prior to time_stamp
+      if (it == gc_messages.begin())
+        return status;
+      it--;
+    }
+    status.gc_message = it->second;
   }
-  status.gc_message = it->second;
   return status;
 }
 
@@ -112,6 +113,7 @@ void MessageManager::push(const RobotMsg & msg) {
   if (!msg.has_time_stamp()) {
     throw std::runtime_error("MessageManager can only handle time_stamped RobotMsg");
   }
+  std::cout << "Adding a robot message with time_stamp: " << msg.time_stamp() << std::endl;
   messages_by_robot[msg.robot_id()][msg.time_stamp()] = msg;
 }
 
@@ -119,6 +121,7 @@ void MessageManager::push(const GCMsg & msg) {
   if (!msg.has_time_stamp()) {
     throw std::runtime_error("MessageManager can only handle time_stamped GCMsg");
   }
+  std::cout << "Adding a GC message with time_stamp: " << msg.time_stamp() << std::endl;
   gc_messages[msg.time_stamp()] = msg;
 }
 
