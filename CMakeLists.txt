@@ -68,7 +68,6 @@ foreach (DIRECTORY ${SOURCES_DIRECTORIES})
     set (ALL_SOURCES ${ALL_SOURCES} ${PREFIXED_SOURCES})
 endforeach (DIRECTORY)
 
-#Build the kid_size main library
 add_library (${PROJECT_NAME} SHARED ${PROTO_SOURCES} ${ALL_SOURCES})
 target_link_libraries(${PROJECT_NAME} ${PROTOBUF_LIBRARIES})
 
