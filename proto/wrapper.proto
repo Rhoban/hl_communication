@@ -21,7 +21,9 @@ message RobotMsg {
   optional TeamPlay team_play = 5;
   optional RobotIdentifier robot_id = 6;
   /**
-   * Reception time of the messages: microseconds since epoch
+   * Reception time of the messages: microseconds since an arbitrary referential
+   * this field should only be used for time differences between messages not for
+   * synchronization of multiple sources (it requires offset to be determined)
    */
   optional uint64 time_stamp = 7;
 }
@@ -54,4 +56,9 @@ message GameMsg {
 
 message GameMsgCollection {
   repeated GameMsg messages = 1;
+  /**
+   * Offset between clock used for internal time_stamps and UTC time_stamp [us]:
+   * msg.time_stamp + time_offset = utc_time_stamp
+   */
+  optional int64 time_offset = 2;
 }

@@ -32,6 +32,14 @@ uint64_t getTimeStamp() {
   return duration_cast<duration<uint64_t,std::micro>>(steady_clock::now().time_since_epoch()).count();
 }
 
+int64_t getSteadyClockOffset() {
+  int64_t steady_ts = duration_cast<duration<int64_t,std::micro>>(
+    steady_clock::now().time_since_epoch()).count();
+  int64_t system_ts = duration_cast<duration<int64_t,std::micro>>(
+    system_clock::now().time_since_epoch()).count();
+  return system_ts - steady_ts;
+}
+
 std::string getBaseName(const std::string & path) {
   size_t idx = path.find_last_of('/');
   if (idx == std::string::npos) {

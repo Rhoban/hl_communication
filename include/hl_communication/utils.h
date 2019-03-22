@@ -30,6 +30,12 @@ std::string getBaseName(const std::string & path);
 uint64_t getTimeStamp();
 
 /**
+ * Return the offset from steady_clock to system_clock in us:
+ * steady_clock + offset = system_clock
+ */
+int64_t getSteadyClockOffset();
+
+/**
  * Convert a human readable string to a 8 bytes ip address
  */
 uint64_t stringToIP(const std::string & str);

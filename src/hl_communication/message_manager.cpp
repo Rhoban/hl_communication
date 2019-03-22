@@ -27,16 +27,17 @@ bool operator<(const MsgIdentifier & id1, const MsgIdentifier & id2) {
   return id1.packet_no() < id2.packet_no();
 }
 
-MessageManager::MessageManager(const std::string & file_path) {
+MessageManager::MessageManager(const std::string & file_path) : clock_offset(0)
+{
   loadMessages(file_path);
 }
 
-MessageManager::MessageManager(int port_read)
+MessageManager::MessageManager(int port_read) : clock_offset(0)
 {
   udp_receivers.push_back(std::unique_ptr<UDPMessageManager>(new UDPMessageManager(port_read, -1)));
 }
 
-MessageManager::MessageManager(const std::vector<int> & ports)
+MessageManager::MessageManager(const std::vector<int> & ports) : clock_offset(0)
 {
   for (int p : ports) {
     udp_receivers.push_back(std::unique_ptr<UDPMessageManager>(new UDPMessageManager(p, -1)));
@@ -77,7 +78,10 @@ uint64_t MessageManager::getStart() const {
   return min_ts;
 }
 
-MessageManager::Status MessageManager::getStatus(uint64_t time_stamp) const {
+MessageManager::Status MessageManager::getStatus(uint64_t time_stamp, bool system_clock) const {
+  if (system_clock) {
+    time_stamp -= clock_offset;
+  }
   Status status;
   for (const auto & robot_entry : messages_by_robot) {
     auto it = robot_entry.second.upper_bound(time_stamp);
@@ -113,7 +117,6 @@ void MessageManager::push(const RobotMsg & msg) {
   if (!msg.has_time_stamp()) {
     throw std::runtime_error("MessageManager can only handle time_stamped RobotMsg");
   }
-  std::cout << "Adding a robot message with time_stamp: " << msg.time_stamp() << std::endl;
   messages_by_robot[msg.robot_id()][msg.time_stamp()] = msg;
 }
 
@@ -121,7 +124,6 @@ void MessageManager::push(const GCMsg & msg) {
   if (!msg.has_time_stamp()) {
     throw std::runtime_error("MessageManager can only handle time_stamped GCMsg");
   }
-  std::cout << "Adding a GC message with time_stamp: " << msg.time_stamp() << std::endl;
   gc_messages[msg.time_stamp()] = msg;
 }
 
@@ -171,6 +173,9 @@ void MessageManager::loadMessages(const std::string & file_path) {
   if (!messages_collection.ParseFromIstream(&in)) {
     throw std::runtime_error("Failed to parse messages in file '" + file_path + "'");
   }
+  if (messages_collection.has_time_offset()) {
+    setOffset(messages_collection.time_offset());
+  }
   std::cout << "Pushing " << messages_collection.messages_size() << " messages in MM" << std::endl;
   for (const GameMsg msg : messages_collection.messages()) {
     push(msg);
@@ -183,6 +188,14 @@ GameMsgCollection MessageManager::buildGameMsgCollection() const {
     result.add_messages()->CopyFrom(entry.second);
   }
   return result;
+}
+
+void MessageManager::setOffset(int64_t new_offset) {
+  clock_offset = new_offset;
+}
+
+int64_t MessageManager::getOffset() const {
+  return clock_offset;
 }
 
 bool operator<(const MessageManager::SourceIdentifier & id1,

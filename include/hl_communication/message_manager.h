@@ -64,8 +64,21 @@ public:
   /**
    * Build a global game status with the last message of each entity prior to
    * the given time_stamp
+   *
+   * - The system_clock option allows to specify that the time_stamp is not
+   *    based on steady clock, but on a system clock
    */
-  Status getStatus(uint64_t time_stamp) const;
+  Status getStatus(uint64_t time_stamp, bool system_clock = false) const;
+
+  /**
+   * Set the offset in us between steady_clock and system_clock (time_since_epoch)
+   */
+  void setOffset(int64_t offset);
+
+  /**
+   * Get the offset in us between steady_clock and system_clock (time_since_epoch)
+   */
+  int64_t getOffset() const;
 
 private:
 
@@ -97,6 +110,12 @@ private:
    * Game Controller messages received ordered by time_stamp
    */
   std::map<uint64_t, GCMsg> gc_messages;
+
+  /**
+   * Offset between clock used for internal time_stamps and UTC time_stamp [us]:
+   * msg.time_stamp + time_offset = utc_time_stamp
+   */
+  int64_t clock_offset;
 
   /**
    * Stock all the received messages, making sure they are unique

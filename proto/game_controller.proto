@@ -18,7 +18,9 @@ message GCTeamMsg {
 
 message GCMsg {
   /**
-   * Reception time of the messages: microseconds since epoch
+   * Reception time of the messages: microseconds since an arbitrary referential
+   * this field should only be used for time differences between messages not for
+   * synchronization of multiple sources (it requires offset to be determined)
    */
   optional uint64 time_stamp = 1;
   optional int32 struct_version = 2;
