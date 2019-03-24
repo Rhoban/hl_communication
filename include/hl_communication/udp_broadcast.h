@@ -9,18 +9,17 @@
 #include <netdb.h>
 #include <stdio.h>
 
-namespace hl_communication {
-
+namespace hl_communication
+{
 /**
  * UDPBroadcast
  *
- * Simple UDP non blocking 
+ * Simple UDP non blocking
  * broadcaster
  */
 class UDPBroadcast
 {
 public:
-
   /**
    * Initializing with listening port
    */
@@ -30,7 +29,7 @@ public:
    * Close opened connections
    */
   ~UDPBroadcast();
-        
+
   /**
    * Start or restart the listening and ouput
    * connection
@@ -50,24 +49,22 @@ public:
   void broadcastMessage(const char* data, size_t len);
 
   /**
-   * Return true of the given bufffer has been 
+   * Return true of the given bufffer has been
    * filled with incomming data. Len should contain the size of the buffer.
    * At the end of the function len is updated and contain the size of
    * the received message.
    */
-  bool checkMessage(char* data, size_t* len,
-                    uint64_t * src_address=NULL, uint32_t * src_port=NULL);
+  bool checkMessage(char* data, size_t* len, uint64_t* src_address = NULL, uint32_t* src_port = NULL);
 
 private:
-
   /**
    * Listening and writting port.
-   * If port_write is -1, packet sending 
+   * If port_write is -1, packet sending
    * is disabled
    */
   int port_read;
   int port_write;
-        
+
   /**
    * Incoming and outcoming connection
    */
@@ -91,4 +88,4 @@ private:
   void retrieveBroadcastAddress();
 };
 
-}
+}  // namespace hl_communication

@@ -4,18 +4,18 @@
 
 namespace hl_communication
 {
-
 static const int nb_chars_by_robot = 4;
 static const int nb_chars_by_team = 260 + nb_chars_by_robot * 12;
 static const int protocol_version = 12;
-static const char * game_state_header = "RGme";
+static const char* game_state_header = "RGme";
 
-
-int charsToInt(char const* str, int start, int end){
+int charsToInt(char const* str, int start, int end)
+{
   int sum = 0;
   int i = 0;
   int mult = 1;
-  while (start + i < end){
+  while (start + i < end)
+  {
     if (start + i < end - 1 && str[start + i] < 0)
       sum += mult * (256 + str[start + i]);
     else
@@ -26,41 +26,48 @@ int charsToInt(char const* str, int start, int end){
   return sum;
 }
 
-Robot::Robot(){
-	penalty = 0;
-	secs_till_unpenalised = 0;
+Robot::Robot()
+{
+  penalty = 0;
+  secs_till_unpenalised = 0;
 }
 
-Robot::~Robot(){
+Robot::~Robot()
+{
 }
 
-int Robot::getPenalty() const{
+int Robot::getPenalty() const
+{
   return penalty;
 }
 
-int Robot::getSecsTillUnpenalised() const{
+int Robot::getSecsTillUnpenalised() const
+{
   return secs_till_unpenalised;
 }
 
-int Robot::getYellowCardCount() const{
+int Robot::getYellowCardCount() const
+{
   return yellow_card_count;
 }
 
-int Robot::getRedCardCount() const{
+int Robot::getRedCardCount() const
+{
   return red_card_count;
 }
 
 /* Use a broadcasted message to update the Robot */
-void Robot::updateFromMessage(char const* message, int numRobot){
+void Robot::updateFromMessage(char const* message, int numRobot)
+{
   int d = nb_chars_by_robot * numRobot;
-  penalty = charsToInt(message, d+0, d+1);
-  secs_till_unpenalised = charsToInt(message, d+1, d+2);
-  yellow_card_count = charsToInt(message, d+2, d+3);
-  red_card_count = charsToInt(message, d+3, d+4);
+  penalty = charsToInt(message, d + 0, d + 1);
+  secs_till_unpenalised = charsToInt(message, d + 1, d + 2);
+  yellow_card_count = charsToInt(message, d + 2, d + 3);
+  red_card_count = charsToInt(message, d + 3, d + 4);
 }
 
-
-void Robot::exportToGCRobotMsg(GCRobotMsg * msg) const {
+void Robot::exportToGCRobotMsg(GCRobotMsg* msg) const
+{
   msg->Clear();
   msg->set_penalty(getPenalty());
   msg->set_secs_till_unpenalised(getSecsTillUnpenalised());
@@ -68,7 +75,8 @@ void Robot::exportToGCRobotMsg(GCRobotMsg * msg) const {
   msg->set_red_card_count(getRedCardCount());
 }
 
-std::ostream& operator<<(std::ostream&flux, const Robot & r){
+std::ostream& operator<<(std::ostream& flux, const Robot& r)
+{
   flux << "\t\tpenalty : " << r.getPenalty() << std::endl;
   flux << "\t\tsecs_till_unpenalised : " << r.getSecsTillUnpenalised() << std::endl;
   flux << "\t\tyellow_card_count : " << r.getYellowCardCount() << std::endl;
@@ -76,91 +84,109 @@ std::ostream& operator<<(std::ostream&flux, const Robot & r){
   return flux;
 }
 
-Team::Team(){
+Team::Team()
+{
   team_number = 0;
   team_color = 0;
   score = 0;
 }
 
-Team::~Team(){
+Team::~Team()
+{
 }
 
-int Team::getTeamNumber() const{
+int Team::getTeamNumber() const
+{
   return team_number;
 }
 
-int Team::getTeamColor() const{
+int Team::getTeamColor() const
+{
   return team_color;
 }
 
-int Team::getScore() const{
+int Team::getScore() const
+{
   return score;
 }
 
-int Team::getNbRobots() const{
+int Team::getNbRobots() const
+{
   return 6;
 }
 
-const Robot & Team::getRobot(int robot) const{
+const Robot& Team::getRobot(int robot) const
+{
   return robots[robot];
 }
 
 /* Use a broadcasted message to update the Robot */
-void Team::updateFromMessage(char const* message,int numTeam){
-  int d = nb_chars_by_team * numTeam;//offset
-  team_number = charsToInt(message, d+0, d+1);
-  team_color = charsToInt(message, d+1, d+2);
-  score = charsToInt(message, d+2, d+3);
-  for (int robot = 0; robot < 2; robot++){
-    robots[robot].updateFromMessage(message+d+260+nb_chars_by_robot, robot);
+void Team::updateFromMessage(char const* message, int numTeam)
+{
+  int d = nb_chars_by_team * numTeam;  // offset
+  team_number = charsToInt(message, d + 0, d + 1);
+  team_color = charsToInt(message, d + 1, d + 2);
+  score = charsToInt(message, d + 2, d + 3);
+  for (int robot = 0; robot < 2; robot++)
+  {
+    robots[robot].updateFromMessage(message + d + 260 + nb_chars_by_robot, robot);
   }
 }
 
-void Team::exportToGCTeamMsg(GCTeamMsg * msg) const {
+void Team::exportToGCTeamMsg(GCTeamMsg* msg) const
+{
   msg->Clear();
   msg->set_team_number(getTeamNumber());
   msg->set_team_color(getTeamColor());
   msg->set_score(getScore());
-  for (int idx = 0; idx < 6; idx++) {
+  for (int idx = 0; idx < 6; idx++)
+  {
     getRobot(idx).exportToGCRobotMsg(msg->add_robots());
   }
 }
 
-std::ostream& operator<<(std::ostream& flux, const Team & t){
+std::ostream& operator<<(std::ostream& flux, const Team& t)
+{
   flux << '\t' << "team_number : " << t.getTeamNumber() << std::endl;
   flux << '\t' << "team_color : " << t.getTeamColor() << std::endl;
   flux << '\t' << "score : " << t.getScore() << std::endl;
-  for (int robot = 0; robot < 6; robot++){
+  for (int robot = 0; robot < 6; robot++)
+  {
     flux << '\t' << "robot " << robot << std::endl;
     flux << t.getRobot(robot);
   }
   return flux;
 }
 
-GameState::GameState(){
-	struct_version = -1;
-	num_player = -1;
-	actual_game_state = -1;
-	first_half = -1;
-	kick_off_team = -1;
-	sec_game_state = -1;
-	drop_in_team = -1;
-	drop_in_time = -1;
-	estimated_secs = -1;
+GameState::GameState()
+{
+  struct_version = -1;
+  num_player = -1;
+  actual_game_state = -1;
+  first_half = -1;
+  kick_off_team = -1;
+  sec_game_state = -1;
+  drop_in_team = -1;
+  drop_in_time = -1;
+  estimated_secs = -1;
   secondary_team = -1;
   secondary_mode = -1;
 }
 
-GameState::~GameState(){
+GameState::~GameState()
+{
 }
 
-bool GameState::updateFromMessage(char const* message){
-  if (strncmp(message, game_state_header, 4) != 0) {
+bool GameState::updateFromMessage(char const* message)
+{
+  if (strncmp(message, game_state_header, 4) != 0)
+  {
     return false;
   }
   struct_version = charsToInt(message, 4, 6);
 
-  if (struct_version != protocol_version) {
+  if (struct_version != protocol_version)
+  {
     std::cerr << "Game controller bad version " << struct_version << std::endl;
     return false;
   }
@@ -179,93 +205,110 @@ bool GameState::updateFromMessage(char const* message){
   estimated_secs = charsToInt(message, 20, 22);
   secondary_secs = charsToInt(message, 22, 24);
 
-
   for (int i = 0; i < 2; i++)
-    team[i].updateFromMessage(message+24, i);
+    team[i].updateFromMessage(message + 24, i);
   return true;
 }
 
-int GameState::getStructVersion() const{
+int GameState::getStructVersion() const
+{
   return struct_version;
 }
 
-int GameState::getGameType() const{
+int GameState::getGameType() const
+{
   return game_type;
 }
 
-int GameState::getNumPlayer() const{
+int GameState::getNumPlayer() const
+{
   return num_player;
 }
 
-int GameState::getActualGameState() const{
+int GameState::getActualGameState() const
+{
   return actual_game_state;
 }
 
-int GameState::getFirstHalf() const{
+int GameState::getFirstHalf() const
+{
   return first_half;
 }
 
-int GameState::getKickOffTeam() const{
+int GameState::getKickOffTeam() const
+{
   return kick_off_team;
 }
 
-int GameState::getSecGameState() const{
+int GameState::getSecGameState() const
+{
   return sec_game_state;
 }
 
-int GameState::getSecondaryTeam() const{
+int GameState::getSecondaryTeam() const
+{
   return secondary_team;
 }
 
-int GameState::getSecondaryMode() const{
+int GameState::getSecondaryMode() const
+{
   return secondary_mode;
 }
 
-int GameState::getDropInTeam() const{
+int GameState::getDropInTeam() const
+{
   return drop_in_team;
 }
 
-int GameState::getDropInTime() const{
+int GameState::getDropInTime() const
+{
   return drop_in_time;
 }
 
-int GameState::getEstimatedSecs() const{
+int GameState::getEstimatedSecs() const
+{
   return estimated_secs;
 }
-  
-int GameState::getSecondarySecs() const{
+
+int GameState::getSecondarySecs() const
+{
   return secondary_secs;
 }
 
-int GameState::getNbTeam() const{
+int GameState::getNbTeam() const
+{
   return 2;
 }
 
-const Team & GameState::getTeam(int teamNumber) const{
+const Team& GameState::getTeam(int teamNumber) const
+{
   return team[teamNumber];
 }
 
-std::ostream& operator<<(std::ostream& flux, const GameState & gs){
-	flux << "struct_version : " << gs.getStructVersion() << std::endl;
-	flux << "num_player : " << gs.getNumPlayer() << std::endl;
-	flux << "gameState : " << gs.getActualGameState() << std::endl;
-	flux << "first_half : " << gs.getFirstHalf() << std::endl;
-	flux << "kick_off_team : " << gs.getKickOffTeam() << std::endl;
-	flux << "sec_game_state : " << gs.getSecGameState() << std::endl;
-	flux << "sec_game_mode : " << gs.getSecondaryMode() << std::endl;
-	flux << "sec_game_team : " << gs.getSecondaryTeam() << std::endl;
-	flux << "secondary_secs : " << gs.getSecondarySecs() << std::endl;
-	flux << "drop_in_team : " << gs.getDropInTeam() << std::endl;
-	flux << "drop_in_time : " << gs.getDropInTime() << std::endl;
-	flux << "estimated_secs : " << gs.getEstimatedSecs() << std::endl;
-  for (int i = 0; i < 2; i++){
+std::ostream& operator<<(std::ostream& flux, const GameState& gs)
+{
+  flux << "struct_version : " << gs.getStructVersion() << std::endl;
+  flux << "num_player : " << gs.getNumPlayer() << std::endl;
+  flux << "gameState : " << gs.getActualGameState() << std::endl;
+  flux << "first_half : " << gs.getFirstHalf() << std::endl;
+  flux << "kick_off_team : " << gs.getKickOffTeam() << std::endl;
+  flux << "sec_game_state : " << gs.getSecGameState() << std::endl;
+  flux << "sec_game_mode : " << gs.getSecondaryMode() << std::endl;
+  flux << "sec_game_team : " << gs.getSecondaryTeam() << std::endl;
+  flux << "secondary_secs : " << gs.getSecondarySecs() << std::endl;
+  flux << "drop_in_team : " << gs.getDropInTeam() << std::endl;
+  flux << "drop_in_time : " << gs.getDropInTime() << std::endl;
+  flux << "estimated_secs : " << gs.getEstimatedSecs() << std::endl;
+  for (int i = 0; i < 2; i++)
+  {
     flux << "Team " << i << std::endl;
     flux << gs.getTeam(i);
   }
-	return flux;
+  return flux;
 }
 
-void GameState::exportToGCMsg(GCMsg * msg) const {
+void GameState::exportToGCMsg(GCMsg* msg) const
+{
   msg->Clear();
   msg->set_struct_version(getStructVersion());
   msg->set_game_type(getGameType());
@@ -278,9 +321,10 @@ void GameState::exportToGCMsg(GCMsg * msg) const {
   msg->set_estimated_secs(getEstimatedSecs());
   msg->set_secondary_secs(getSecondarySecs());
   msg->set_secondary_mode(getSecondaryMode());
-  for (int team = 0; team < 2; team++) {
+  for (int team = 0; team < 2; team++)
+  {
     getTeam(team).exportToGCTeamMsg(msg->add_teams());
   }
 }
 
-}
+}  // namespace hl_communication

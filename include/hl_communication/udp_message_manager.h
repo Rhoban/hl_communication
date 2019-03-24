@@ -7,19 +7,20 @@
 #include <mutex>
 #include <thread>
 
-namespace hl_communication {
-
+namespace hl_communication
+{
 /**
  * Return the default team_port
  */
 int getDefaultTeamPort(int team_id);
 
-class UDPMessageManager {
+class UDPMessageManager
+{
 private:
   /**
-   * Counts the number of messages sent and 
+   * Counts the number of messages sent and
    */
-  uint64_t packet_sent_no; 
+  uint64_t packet_sent_no;
 
   /**
    * Counts the number of messages received by the game controller which is not
@@ -47,15 +48,15 @@ public:
    * Send a message, Packet number is not filled automatically.
    * You have to fill it before sending the message.
    */
-  void sendMessage(const hl_communication::GameMsg & message);
+  void sendMessage(const hl_communication::GameMsg& message);
 
   /**
    * Fill automatically the Packet Number and send the message.
    */
-  void sendMessage(hl_communication::GameMsg * message);
+  void sendMessage(hl_communication::GameMsg* message);
 
   UDPMessageManager(int port_read, int port_write);
   ~UDPMessageManager();
 };
 
-}
+}  // namespace hl_communication

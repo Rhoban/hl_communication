@@ -8,10 +8,10 @@
 
 namespace hl_communication
 {
-
 int charsToInt(char const* str, int start, int end);
 
-class Robot{
+class Robot
+{
 public:
   Robot();
   ~Robot();
@@ -20,11 +20,11 @@ public:
   int getSecsTillUnpenalised() const;
   int getYellowCardCount() const;
   int getRedCardCount() const;
-  
+
   /*! \brief Update the robot from a referee box message */
   void updateFromMessage(char const* message, int numRobot);
 
-  void exportToGCRobotMsg(GCRobotMsg * msg) const;
+  void exportToGCRobotMsg(GCRobotMsg* msg) const;
 
 private:
   int penalty;
@@ -33,7 +33,7 @@ private:
   int red_card_count;
 };
 
-std::ostream& operator<<(std::ostream& flux, const Robot & r);
+std::ostream& operator<<(std::ostream& flux, const Robot& r);
 
 class Team
 {
@@ -45,24 +45,24 @@ public:
   int getTeamColor() const;
   int getScore() const;
   int getNbRobots() const;
-  const Robot & getRobot(int robot) const;
+  const Robot& getRobot(int robot) const;
 
   /*! \brief Update the robot from a referee box message */
   void updateFromMessage(char const* message, int numTeam);
 
-  void exportToGCTeamMsg(GCTeamMsg * msg) const;
+  void exportToGCTeamMsg(GCTeamMsg* msg) const;
 
 private:
   int team_number;
   int team_color;
   int score;
   Robot robots[6];
-
 };
 
-std::ostream& operator<<(std::ostream& flux, const Team & t);
+std::ostream& operator<<(std::ostream& flux, const Team& t);
 
-class GameState{
+class GameState
+{
 public:
   GameState();
   ~GameState();
@@ -80,17 +80,17 @@ public:
   int getSecondaryTeam() const;
   int getSecondaryMode() const;
   int getNbTeam() const;
-  const Team & getTeam(int teamNumber) const;
-  
+  const Team& getTeam(int teamNumber) const;
+
   /*! \brief Update the robot from a referee box message
    * return true if there has been an update and false if
    * the message was discarded (invalid struct version) */
-	bool updateFromMessage(char const* message);
+  bool updateFromMessage(char const* message);
 
-	void show(std::ostream& flux) const;
+  void show(std::ostream& flux) const;
 
-  void exportToGCMsg(GCMsg * msg) const;
-  
+  void exportToGCMsg(GCMsg* msg) const;
+
 private:
   int struct_version;
   int game_type;
@@ -108,6 +108,6 @@ private:
   Team team[2];
 };
 
-std::ostream& operator<<(std::ostream& flux, const GameState & gs);
+std::ostream& operator<<(std::ostream& flux, const GameState& gs);
 
-}
+}  // namespace hl_communication
