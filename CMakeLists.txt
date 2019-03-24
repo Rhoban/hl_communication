@@ -12,11 +12,6 @@ set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra -std=c++11")
 # Protobuf generate files with unused parameters
 set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-unused-parameter")
 
-# Handling generated headers is based on Dirk Thomas answer on topic:
-# - https://answers.ros.org/answers/123416/revisions/
-catkin_destinations()
-file(MAKE_DIRECTORY ${CATKIN_DEVEL_PREFIX}/${CATKIN_PACKAGE_INCLUDE_DESTINATION})
-
 set (PROTOBUF_MESSAGES
   proto/capabilities.proto
   proto/game_controller.proto
@@ -29,16 +24,23 @@ set (PROTOBUF_MESSAGES
   proto/wrapper.proto
   )
 
+# Handling generated headers is based on Dirk Thomas answer on topic:
+# - https://answers.ros.org/answers/123416/revisions/
+catkin_destinations()
+file(MAKE_DIRECTORY ${CATKIN_DEVEL_PREFIX}/${CATKIN_PACKAGE_INCLUDE_DESTINATION})
+
 protobuf_generate_cpp(PROTO_SOURCES PROTO_HEADERS ${PROTOBUF_MESSAGES})
 
 set_source_files_properties(${PROTO_SOURCES} ${PROTO_HEADERS} PROPERTIES GENERATED TRUE)
 
-add_custom_target(${PROJECT_NAME}_generate_headers ALL
+set(PROTO_DUMMY_FILE proto_generation)
+
+add_custom_command(
+  OUTPUT ${PROTO_DUMMY_FILE}
   COMMAND cp ${PROTO_HEADERS} ${CATKIN_DEVEL_PREFIX}/${CATKIN_PACKAGE_INCLUDE_DESTINATION}
+  COMMAND touch ${PROTO_DUMMY_FILE}
   DEPENDS ${PROTO_HEADERS}
   )
-
-set(${PROJECT_NAME}_EXPORTED_TARGETS ${PROJECT_NAME}_generate_headers)
 
 set(DELEGATE_INCLUDE_DIRS
   include
@@ -68,7 +70,7 @@ foreach (DIRECTORY ${SOURCES_DIRECTORIES})
     set (ALL_SOURCES ${ALL_SOURCES} ${PREFIXED_SOURCES})
 endforeach (DIRECTORY)
 
-add_library (${PROJECT_NAME} SHARED ${PROTO_SOURCES} ${ALL_SOURCES})
+add_library (${PROJECT_NAME} SHARED ${PROTO_SOURCES} ${ALL_SOURCES} ${PROTO_DUMMY_FILE})
 target_link_libraries(${PROJECT_NAME} ${PROTOBUF_LIBRARIES})
 
 option(BUILD_HL_COMMUNICATION_EXAMPLES "Building hl_communication examples" OFF)
