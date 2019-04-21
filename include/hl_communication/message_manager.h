@@ -40,6 +40,11 @@ public:
   public:
     std::map<RobotIdentifier, RobotMsg> robot_messages;
     GCMsg gc_message;
+
+    /**
+     * Get the robot messages ordered by team
+     */
+    std::map<uint32_t, std::vector<RobotMsg>> getRobotsByTeam() const;
   };
 
   /**

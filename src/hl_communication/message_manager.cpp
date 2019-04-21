@@ -30,6 +30,16 @@ bool operator<(const MsgIdentifier& id1, const MsgIdentifier& id2)
   return id1.packet_no() < id2.packet_no();
 }
 
+std::map<uint32_t, std::vector<RobotMsg>> MessageManager::Status::getRobotsByTeam() const
+{
+  std::map<uint32_t, std::vector<RobotMsg>> messages_by_team;
+  for (const auto& entry : robot_messages)
+  {
+    messages_by_team[entry.first.team_id()].push_back(entry.second);
+  }
+  return messages_by_team;
+}
+
 MessageManager::MessageManager(const std::string& file_path) : clock_offset(0)
 {
   loadMessages(file_path);
