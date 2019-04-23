@@ -78,6 +78,11 @@ public:
   Status getStatus(uint64_t time_stamp, bool system_clock = false) const;
 
   /**
+   * Ignore messages older than "time_stamp - history_length"
+   */
+  Status getStatus(uint64_t time_stamp, uint64_t history_length, bool system_clock = false) const;
+
+  /**
    * Set the offset in us between steady_clock and system_clock (time_since_epoch)
    */
   void setOffset(int64_t offset);

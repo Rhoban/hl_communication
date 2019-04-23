@@ -140,6 +140,50 @@ MessageManager::Status MessageManager::getStatus(uint64_t time_stamp, bool syste
   return status;
 }
 
+MessageManager::Status MessageManager::getStatus(uint64_t time_stamp, uint64_t history_length, bool system_clock) const
+{
+  if (system_clock)
+  {
+    time_stamp -= clock_offset;
+  }
+  Status status;
+  for (const auto& robot_entry : messages_by_robot)
+  {
+    auto it = robot_entry.second.upper_bound(time_stamp);
+    if (it == robot_entry.second.end())
+      it--;
+    if (it->first > time_stamp)
+    {
+      // Do not include robots which have no data prior to time_stamp
+      if (it == robot_entry.second.begin())
+        continue;
+      it--;
+    }
+    if (it->first >= (time_stamp - history_length))
+    {
+      status.robot_messages[robot_entry.first] = it->second;
+    }
+  }
+  if (gc_messages.size() > 0)
+  {
+    auto it = gc_messages.upper_bound(time_stamp);
+    if (it == gc_messages.end())
+      it--;
+    if (it->first > time_stamp)
+    {
+      // There are no data prior to time_stamp
+      if (it == gc_messages.begin())
+        return status;
+      it--;
+    }
+    if (it->first >= (time_stamp - history_length))
+    {
+      status.gc_message = it->second;
+    }
+  }
+  return status;
+}
+
 void MessageManager::push(const RobotMsg& msg)
 {
   if (!msg.has_robot_id())
