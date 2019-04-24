@@ -11,7 +11,8 @@ enum Action {
   KICKING          = 3;// Robot is currently performing the kick motion
   GOING_TO_DRIBBLE = 4;// Robot is moving toward the ball and plans to dribble
   DRIBBLING        = 5;// Robot is actively dribbling
-  WAITING          = 6;// Robot is waiting for something to happen  
+  WAITING          = 6;// Robot is waiting for something to happen
+  SEARCHING_BALL   = 7;// Robot is trying to find the position of the ball on the field
 }
 
 /**

@@ -3,6 +3,7 @@ syntax = "proto2";
 package hl_communication;
 
 import "capabilities.proto";
+import "captain.proto";
 import "game_controller.proto";
 import "intention.proto";
 import "perception.proto";
@@ -26,6 +27,11 @@ message RobotMsg {
    * synchronization of multiple sources (it requires offset to be determined)
    */
   optional uint64 time_stamp = 7;
+  /**
+   * Global free informations sent by the robot 
+   */
+  optional string free_field = 8;
+  optional Captain captain = 9;
 }
 
 /**

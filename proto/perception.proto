@@ -56,4 +56,9 @@ message Perception {
    * Up to teams
    */
   optional string free_field = 5;
+
+  /**
+   * Velocity of the ball in self referential [m/s]
+   */
+  optional PositionDistribution ball_velocity_in_self = 6;
 }

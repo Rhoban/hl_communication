@@ -1,0 +1,67 @@
+syntax = "proto2";
+
+package hl_communication;
+
+import "position.proto";
+import "intention.proto";
+
+/**
+ * Describe the position of the ball as a general agreement of the team
+ * position is given in field referential
+ */
+message CommonBall
+{
+  /**
+   * Number of robots agreeing on this position
+   */
+  required uint32 nb_votes = 1;
+  required PositionDistribution position = 2;
+}
+
+/**
+ * Describe the position of the ball as a general agreement of the team
+ * position is given in field referential
+ */
+message CommonOpponent
+{
+  /**
+   * Number of robots agreeing on this position
+   */
+  required uint32 nb_votes = 1;
+  required PoseDistribution pose = 2;
+}
+
+message StrategyOrder
+{
+  /**
+   * Id of the robots who will receive the order
+   */
+  required uint32 robot_id = 1;
+  /**
+   * Target pose, distribution variance can be used to specify tolerances
+   */
+  optional PoseDistribution target_pose = 2;
+  /**
+   * What is expected from the robot
+   */
+  optional Action action = 3;
+}
+
+/**
+ * A captain message contains strategy orders to all the robots
+ */
+message Captain
+{
+  /**
+   * Positioning orders for robots
+   */
+  repeated StrategyOrder orders = 1;
+  /**
+   * Ball consensus
+   */
+  optional CommonBall ball = 2;
+  /**
+   * Opponent consensus
+   */
+  repeated CommonOpponent opponents = 3;
+}

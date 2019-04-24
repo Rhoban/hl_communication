@@ -7,9 +7,9 @@ package hl_communication;
  */
 enum Role {
   UNSPECIFIED_ROLE = 0; // Unknown role
-  GOALIE      = 1; // The robot is a goalie
-  DEFENDER    = 2; // Robot is only defending its own goal
-  OFFENDER    = 3; // Robot is actively trying to score goals
+  GOALIE           = 1; // The robot is a goalie
+  DEFENDER         = 2; // Robot is only defending its own goal
+  OFFENDER         = 3; // Robot is actively trying to score goals
 }
 
 /**
@@ -17,13 +17,13 @@ enum Role {
  */
 enum Status {
   UNSPECIFIED_STATUS = 0; // Unknown status
-  OKAY             = 1; // Robot is playing without any disfunction
-  FALLING          = 2; // Robot is currently falling
-  FALLEN           = 3; // Robot is fallen on the ground and is not attempting to stand up
-  STANDING_UP      = 4; // Robot is actively trying to stand up
-  FREEZE           = 5; // Robot is freezing all motion in order to fulfill the rules
-  HANDLED          = 6; // Robot is handled (carried by the handler)
-  HARDWARE_FAILURE = 7; // Robot has a major hardware failure
+  OKAY               = 1; // Robot is playing without any disfunction
+  FALLING            = 2; // Robot is currently falling
+  FALLEN             = 3; // Robot is fallen on the ground and is not attempting to stand up
+  STANDING_UP        = 4; // Robot is actively trying to stand up
+  FREEZE             = 5; // Robot is freezing all motion in order to fulfill the rules
+  HANDLED            = 6; // Robot is handled (carried by the handler)
+  HARDWARE_FAILURE   = 7; // Robot has a major hardware failure
 }
 
 /**
