@@ -101,4 +101,18 @@ void invertPose(PoseDistribution* pose)
   }
 }
 
+bool isPenalized(const GCMsg& msg, int team_id, int robot_id)
+{
+  for (const GCTeamMsg& team : msg.teams())
+  {
+    if (!team.has_team_number() || team.team_number() != team_id)
+    {
+      continue;
+    }
+    int idx = robot_id - 1;//Robots are numbered from 1
+    return team.robots(idx).has_penalty() && team.robots(idx).penalty() != 0;
+  }
+  return false;
+}
+
 }  // namespace hl_communication
