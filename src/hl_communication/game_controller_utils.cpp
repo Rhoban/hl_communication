@@ -127,7 +127,7 @@ void Team::updateFromMessage(char const* message, int numTeam)
   team_number = charsToInt(message, d + 0, d + 1);
   team_color = charsToInt(message, d + 1, d + 2);
   score = charsToInt(message, d + 2, d + 3);
-  for (int robot = 0; robot < 2; robot++)
+  for (int robot = 0; robot < 6; robot++)
   {
     robots[robot].updateFromMessage(message + d + 260 + nb_chars_by_robot, robot);
   }
