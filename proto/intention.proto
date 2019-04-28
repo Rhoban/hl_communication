@@ -15,6 +15,17 @@ enum Action {
   SEARCHING_BALL   = 7;// Robot is trying to find the position of the ball on the field
 }
 
+message KickIntention {
+  /**
+   * Expected position of the ball in field referential when the player will kick it
+   */
+  optional PositionDistribution start = 1;
+  /**
+   * Planned target for the ball in field referential
+   */
+  optional PositionDistribution target = 2;
+}
+
 /**
  * Describes the intention of the robot:
  * - Uncertainty can be used to express tolerance on targets or uncertainty on action results
@@ -41,6 +52,11 @@ message Intention {
    * stopped
    */
   optional PositionDistribution kick_target_in_field = 4;
+
+  /**
+   * Intention of kicking, allows to specify position of ball at impact
+   */
+  optional KickIntention kick = 6;
 
   /**
    * Up to teams
