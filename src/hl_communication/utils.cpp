@@ -36,10 +36,15 @@ uint64_t getTimeStamp()
   return duration_cast<duration<uint64_t, std::micro>>(steady_clock::now().time_since_epoch()).count();
 }
 
+uint64_t getUTCTimeStamp()
+{
+  return duration_cast<duration<uint64_t, std::micro>>(system_clock::now().time_since_epoch()).count();
+}
+
 int64_t getSteadyClockOffset()
 {
-  int64_t steady_ts = duration_cast<duration<int64_t, std::micro>>(steady_clock::now().time_since_epoch()).count();
-  int64_t system_ts = duration_cast<duration<int64_t, std::micro>>(system_clock::now().time_since_epoch()).count();
+  int64_t steady_ts = getTimeStamp();
+  int64_t system_ts = getUTCTimeStamp();
   return system_ts - steady_ts;
 }
 

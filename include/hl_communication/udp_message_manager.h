@@ -51,7 +51,7 @@ public:
   void sendMessage(const hl_communication::GameMsg& message);
 
   /**
-   * Fill automatically the Packet Number and send the message.
+   * Fill automatically the Packet Number, and the utc_time_stamp if applicable and send the message.
    */
   void sendMessage(hl_communication::GameMsg* message);
 

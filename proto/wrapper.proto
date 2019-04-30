@@ -32,6 +32,10 @@ message RobotMsg {
    */
   optional string free_field = 8;
   optional Captain captain = 9;
+  /**
+   * Local time_stamp of the robot emitting the message: nb microseconds since Jan 1st 1970 UTC
+   */
+  optional uint64 utc_time_stamp = 10;
 }
 
 /**

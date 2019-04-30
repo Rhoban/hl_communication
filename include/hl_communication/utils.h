@@ -23,9 +23,14 @@ void writeToFile(const std::string& path, const google::protobuf::Message& msg);
 std::string getBaseName(const std::string& path);
 
 /**
- * Return time_since_epoch in a integer value (unit: microseconds)
+ * Return the steady clock time_stamp in a integer value (unit: microseconds)
  */
 uint64_t getTimeStamp();
+
+/**
+ * Return the system clock time_stamp in a integer value (unit: microseconds)
+ */
+uint64_t getUTCTimeStamp();
 
 /**
  * Return the offset from steady_clock to system_clock in us:

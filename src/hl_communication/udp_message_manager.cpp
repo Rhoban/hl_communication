@@ -138,6 +138,10 @@ void UDPMessageManager::sendMessage(const hl_communication::GameMsg& message)
 void UDPMessageManager::sendMessage(hl_communication::GameMsg* message)
 {
   message->mutable_identifier()->set_packet_no(packet_sent_no);
+  if (message->has_robot_msg())
+  {
+    message->mutable_robot_msg()->set_utc_time_stamp(getUTCTimeStamp());
+  }
   packet_sent_no++;
   sendMessage(*message);
 }
