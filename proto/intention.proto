@@ -61,5 +61,5 @@ message Intention {
   /**
    * Up to teams
    */
-  optional string free_field = 5;
+  optional bytes free_field = 5;
 }

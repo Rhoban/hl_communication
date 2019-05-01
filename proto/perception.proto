@@ -55,7 +55,7 @@ message Perception {
   /**
    * Up to teams
    */
-  optional string free_field = 5;
+  optional bytes free_field = 5;
 
   /**
    * Velocity of the ball in self referential [m/s]

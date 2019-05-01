@@ -11,5 +11,5 @@ message Capabilities {
   /**
    * Up to teams
    */
-  optional string free_field = 3;
+  optional bytes free_field = 3;
 }
