@@ -66,7 +66,14 @@ public:
 
   void saveMessages(const std::string& path);
 
+  /**
+   * Return the timestamp of the first message received
+   */
   uint64_t getStart() const;
+  /**
+   * Return the timestamp of the last message received
+   */
+  uint64_t getEnd() const;
 
   /**
    * Build a global game status with the last message of each entity prior to

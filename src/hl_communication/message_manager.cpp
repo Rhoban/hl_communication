@@ -102,6 +102,23 @@ uint64_t MessageManager::getStart() const
   return min_ts;
 }
 
+uint64_t MessageManager::getEnd() const
+{
+  uint64_t max_ts = 0;
+  if (gc_messages.size() > 0)
+  {
+    max_ts = std::max(max_ts, gc_messages.rbegin()->first);
+  }
+  for (const auto& robot_collection : messages_by_robot)
+  {
+    if (robot_collection.second.size() > 0)
+    {
+      max_ts = std::max(max_ts, robot_collection.second.rbegin()->first);
+    }
+  }
+  return max_ts;
+}
+
 MessageManager::Status MessageManager::getStatus(uint64_t time_stamp, bool system_clock) const
 {
   if (system_clock)
