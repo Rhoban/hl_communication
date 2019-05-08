@@ -36,6 +36,20 @@ UDPMessageManager::UDPMessageManager(int port_read, int port_write)
   }
 }
 
+UDPMessageManager::~UDPMessageManager()
+{
+  continue_to_run = false;
+  if (thread)
+  {
+    thread->join();
+  }
+  if (port_write != -1)
+  {
+    broadcaster->closeWrite();
+  }
+}
+
+
 void UDPMessageManager::run()
 {
   // Receiving informations
@@ -90,19 +104,6 @@ void UDPMessageManager::run()
     mutex.lock();
     messages.push(game_msg);
     mutex.unlock();
-  }
-}
-
-UDPMessageManager::~UDPMessageManager()
-{
-  continue_to_run = false;
-  if (port_read != -1)
-  {
-    thread->join();
-  }
-  if (port_write != -1)
-  {
-    broadcaster->closeWrite();
   }
 }
 
