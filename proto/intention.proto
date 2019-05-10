@@ -13,6 +13,7 @@ enum Action {
   DRIBBLING        = 5;// Robot is actively dribbling
   WAITING          = 6;// Robot is waiting for something to happen
   SEARCHING_BALL   = 7;// Robot is trying to find the position of the ball on the field
+  INACTIVE         = 8;// Robot is not active and is not playing
 }
 
 message KickIntention {
