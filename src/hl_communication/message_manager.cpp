@@ -40,30 +40,35 @@ std::map<uint32_t, std::vector<RobotMsg>> MessageManager::Status::getRobotsByTea
   return messages_by_team;
 }
 
-MessageManager::MessageManager(const std::string& file_path) : clock_offset(0)
+MessageManager::MessageManager() : clock_offset(0), auto_discover_ports(false)
+{
+}
+
+MessageManager::MessageManager(const std::string& file_path) : MessageManager()
 {
   loadMessages(file_path);
 }
 
-MessageManager::MessageManager(int port_read) : clock_offset(0)
+MessageManager::MessageManager(int port_read, bool auto_discover) : MessageManager()
 {
-  udp_receivers.push_back(std::unique_ptr<UDPMessageManager>(new UDPMessageManager(port_read, -1)));
+  auto_discover_ports = auto_discover;
+  openReceiver(port_read);
 }
 
-MessageManager::MessageManager(const std::vector<int>& ports) : clock_offset(0)
+MessageManager::MessageManager(const std::vector<int>& ports) : MessageManager()
 {
   for (int p : ports)
   {
-    udp_receivers.push_back(std::unique_ptr<UDPMessageManager>(new UDPMessageManager(p, -1)));
+    openReceiver(p);
   }
 }
 
 void MessageManager::update()
 {
-  for (size_t idx = 0; idx < udp_receivers.size(); idx++)
+  for (auto& entry : udp_receivers)
   {
     GameMsg msg;
-    while (udp_receivers[idx]->receiveMessage(&msg))
+    while (entry.second->receiveMessage(&msg))
     {
       push(msg);
     }
@@ -221,6 +226,25 @@ void MessageManager::push(const GCMsg& msg)
     throw std::runtime_error("MessageManager can only handle time_stamped GCMsg");
   }
   gc_messages[msg.time_stamp()] = msg;
+  if (auto_discover_ports)
+  {
+    for (const GCTeamMsg& team_msg : msg.teams())
+    {
+      int team_id = team_msg.team_number();
+      int port = getDefaultTeamPort(team_id);
+      if (udp_receivers.count(port) == 0)
+      {
+        openReceiver(port);
+      }
+    }
+  }
+}
+
+void MessageManager::openReceiver(int port)
+{
+  if (udp_receivers.count(port) != 0)
+    throw std::logic_error(HL_DEBUG + "Trying to open two receivers on port: " + std::to_string(port));
+  udp_receivers[port] = std::unique_ptr<UDPMessageManager>(new UDPMessageManager(port, -1));
 }
 
 void MessageManager::push(const GameMsg& msg)

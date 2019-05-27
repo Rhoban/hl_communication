@@ -9,6 +9,11 @@ static const int nb_chars_by_team = 260 + nb_chars_by_robot * 12;
 static const int protocol_version = 12;
 static const char* game_state_header = "RGme";
 
+int getGCDefaultPort()
+{
+  return 3838;
+}
+
 int charsToInt(char const* str, int start, int end)
 {
   int sum = 0;

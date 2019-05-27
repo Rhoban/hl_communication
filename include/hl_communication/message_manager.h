@@ -48,6 +48,11 @@ public:
   };
 
   /**
+   * Default implementation: no receivers opened
+   */
+  MessageManager();
+
+  /**
    * Load multiple messages from an existing Protobuf file
    */
   MessageManager(const std::string& file_path);
@@ -55,7 +60,7 @@ public:
   /**
    * Open a message manager which will listen to messages on the given port
    */
-  MessageManager(int port_read);
+  MessageManager(int port_read, bool auto_discover_ports);
 
   /**
    * Specifies multiple ports for reading entries
@@ -101,6 +106,11 @@ public:
 
 private:
   /**
+   * Open an udp receiver on given port, throws logic_error if port is already opened with this message manager
+   */
+  void openReceiver(int port);
+
+  /**
    * Message should be stored in receivedmessages
    */
   void push(const RobotMsg& msg);
@@ -140,12 +150,18 @@ private:
    */
   std::map<MsgIdentifier, GameMsg> received_messages;
 
-  std::vector<std::unique_ptr<UDPMessageManager>> udp_receivers;
+  std::map<int, std::unique_ptr<UDPMessageManager>> udp_receivers;
 
   /**
    * Stores the list of providers of game controller messages.
    */
   std::set<SourceIdentifier> gc_sources;
+
+  /**
+   * When activated, uses automatically game controller messages to open udp receivers for the default ports, and closes
+   * other ports
+   */
+  bool auto_discover_ports;
 };
 
 bool operator<(const MessageManager::SourceIdentifier& id1, const MessageManager::SourceIdentifier& id2);

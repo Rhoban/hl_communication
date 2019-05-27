@@ -8,6 +8,8 @@
 
 namespace hl_communication
 {
+int getGCDefaultPort();
+
 int charsToInt(char const* str, int start, int end);
 
 class Robot
