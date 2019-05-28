@@ -2,7 +2,7 @@ syntax="proto2";
 
 import "robot_estimation.proto";
 
-package hl_monitoring;
+package hl_communication;
 
 /**
  * Represents the position of a point inside an image
@@ -10,6 +10,19 @@ package hl_monitoring;
 message Point2DMsg {
   required uint32 x = 1;
   required uint32 y = 2;
+}
+
+message Point3DMsg
+{
+  required double x = 1;
+  required double y = 2;
+  required double z = 3;
+}
+
+message Match2D3DMsg
+{
+  required Point2DMsg img_pos = 1;
+  required Point3DMsg obj_pos = 2;
 }
 
 /**
@@ -29,7 +42,6 @@ message RotatedRectMsg {
    * - angle: pi/2 -> length is aligned with 'y' axis
    */
   optional double angle = 4;
-
 }
 
 message BallMsg {
@@ -78,6 +90,11 @@ message LabelMsg {
   optional bool is_manual = 2;
   optional BallMsg ball = 3;
   repeated RobotMessage robot = 4;
+  /**
+   * By tagging multiple matches between img and object positions, user can
+   * provide information used to estimate camera pose
+   */
+  repeated Match2D3DMsg field_matches = 5;
 }
 
 /**
@@ -93,8 +110,13 @@ message LabelCollection {
 }
 
 message MovieLabelCollection {
+  optional string camera_name = 1;
+  repeated LabelCollection label_collections = 2;
+}
+
+message GameLabelCollection {
   optional string date = 1;
   optional uint32 team1 = 2;
   optional uint32 team2 = 3;
-  repeated LabelCollection label_collections = 4;
+  repeated MovieLabelCollection movies = 4;
 }
