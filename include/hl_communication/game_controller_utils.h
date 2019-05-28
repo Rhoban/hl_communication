@@ -9,6 +9,8 @@
 namespace hl_communication
 {
 int getGCDefaultPort();
+int getBlueTeamColor();
+int getRedTeamColor();
 
 int charsToInt(char const* str, int start, int end);
 

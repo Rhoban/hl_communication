@@ -14,6 +14,16 @@ int getGCDefaultPort()
   return 3838;
 }
 
+int getBlueTeamColor()
+{
+  return 0;
+}
+
+int getRedTeamColor()
+{
+  return 1;
+}
+
 int charsToInt(char const* str, int start, int end)
 {
   int sum = 0;

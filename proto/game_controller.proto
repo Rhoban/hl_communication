@@ -11,6 +11,10 @@ message GCRobotMsg {
 
 message GCTeamMsg {
   optional int32 team_number = 1;
+  /**
+   * BLUE: 0
+   * RED: 1
+   */
   optional int32 team_color = 2;
   optional int32 score = 3;
   repeated GCRobotMsg robots = 4;
