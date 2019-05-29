@@ -217,7 +217,7 @@ bool UDPBroadcast::checkMessage(char* data, size_t* len, uint64_t* src_address, 
         std::cout << "ERROR: UDPBroadcast: receive failed" << std::endl;
         std::cout << strerror(errno) << std::endl;
       }
-      *src_address = stringToIP(std::string(addr_str, addr_len));
+      *src_address = stringToIP(std::string(addr_str));
     }
     if (src_port)
     {
