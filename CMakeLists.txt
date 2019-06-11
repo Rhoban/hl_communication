@@ -3,8 +3,12 @@ project(hl_communication)
 
 include(FindProtobuf)
 find_package(Protobuf REQUIRED)
+find_package(PkgConfig REQUIRED)
+pkg_check_modules(JSONCPP jsoncpp)
+find_package(OpenCV REQUIRED)
 
-find_package(catkin REQUIRED)
+find_package(catkin REQUIRED
+  eigen)
 
 #Enable C++17
 set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra -std=c++17")
@@ -13,6 +17,7 @@ set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra -std=c++17")
 set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-unused-parameter")
 
 set (PROTOBUF_MESSAGES
+  proto/camera.proto
   proto/capabilities.proto
   proto/captain.proto
   proto/game_controller.proto
@@ -45,17 +50,26 @@ add_custom_command(
 
 set(DELEGATE_INCLUDE_DIRS
   include
+  ${OpenCV_DIR}
+  ${JSONCPP_INCLUDE_DIRS}
   ${PROTOBUF_INCLUDE_DIR}
   ${CATKIN_DEVEL_PREFIX}/${CATKIN_GLOBAL_INCLUDE_DESTINATION})
 
+
+set(DELEGATE_LIBRARIES
+  ${PROTOBUF_LIBRARY}
+  ${OpenCV_LIBS}
+  ${JSONCPP_LIBRARIES})
+
 catkin_package(
   INCLUDE_DIRS ${DELEGATE_INCLUDE_DIRS}
-  LIBRARIES ${PROJECT_NAME} ${PROTOBUF_LIBRARY}
+  LIBRARIES ${PROJECT_NAME} ${DELEGATE_LIBRARIES}
+  CATKIN_DEPENDS eigen
   )
 
 include_directories(include
   ${catkin_INCLUDE_DIRS}
-  ${CATKIN_DEVEL_PREFIX}/${CATKIN_GLOBAL_INCLUDE_DESTINATION})
+  ${DELEGATE_INCLUDE_DIRS})
 
 set(SOURCES_DIRECTORIES
   src/hl_communication
