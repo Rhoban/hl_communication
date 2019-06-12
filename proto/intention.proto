@@ -16,6 +16,19 @@ enum Action {
   INACTIVE         = 8;// Robot is not active and is not playing
 }
 
+enum KickMode {
+  KICK_AUTONOMOUS  = 0;// Robot tries to kick as soon as possible
+  KICK_PREPARE     = 1;// Once robot is placed, it waits for new order
+  KICK_VOLLEY      = 2;// Robot prepares to kick a moving ball
+}
+
+enum KickType {
+  KICK_SMALL       = 0;
+  KICK_LATERAL     = 1;
+  KICK_CLASSIC     = 2;
+  KICK_HIGH        = 3;
+}
+
 message KickIntention {
   /**
    * Expected position of the ball in field referential when the player will kick it
@@ -25,6 +38,15 @@ message KickIntention {
    * Planned target for the ball in field referential
    */
   optional PositionDistribution target = 2;
+  /**
+   * Kick mode (see above)
+   */
+  optional KickMode mode = 3;
+  /**
+   * Kicks that are allowed
+   */
+  optional KickType type = 4;
+  optional repeated KickType allowed_kicks = 5;
 }
 
 /**
