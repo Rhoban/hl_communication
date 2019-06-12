@@ -46,7 +46,7 @@ message KickIntention {
    * Kicks that are allowed
    */
   optional KickType type = 4;
-  optional repeated KickType allowed_kicks = 5;
+  repeated KickType allowed_kicks = 5;
 }
 
 /**
