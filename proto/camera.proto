@@ -74,9 +74,13 @@ enum FrameStatus {
 
 message FrameEntry {
   /**
-   * Time at which the pose was measured or estimated
+   * Number of micro-seconds since epoch: 0h00 Jan.1 1970 UTC
    */
-  required uint64 time_stamp = 1;
+  optional uint64 utc_ts = 1;
+  /**
+   * Number of micro-seconds elapsed since an arbitrary referential (using monotonic clock)
+   */
+  optional uint64 monotonic_ts = 4;
   /**
    * The transformation from field referential to camera referential
    */

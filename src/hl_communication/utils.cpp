@@ -353,13 +353,28 @@ cv::Point2f fieldToImg(const cv::Point3f& pos_in_field, const CameraMetaInformat
   return img_points[0];
 }
 
-int getIndex(const VideoMetaInformation& meta_information, uint64_t time_stamp)
+uint64_t getTS(const FrameEntry& entry, bool utc)
+{
+  if (utc)
+  {
+    if (!entry.has_utc_ts())
+    {
+      throw std::logic_error(HL_DEBUG + " no utc ts available");
+    }
+    return entry.utc_ts();
+  }
+  if (!entry.has_monotonic_ts())
+  {
+    throw std::logic_error(HL_DEBUG + " no monotonic ts available");
+  }
+  return entry.monotonic_ts();
+}
+
+int getIndex(const VideoMetaInformation& meta_information, uint64_t time_stamp, bool utc)
 {
   for (int idx = 0; idx < meta_information.frames_size(); idx++)
   {
-    if (!meta_information.frames(idx).has_time_stamp())
-      throw std::logic_error(HL_DEBUG + " missing time stamp information");
-    uint64_t frame_ts = meta_information.frames(idx).time_stamp();
+    uint64_t frame_ts = getTS(meta_information.frames(idx), utc);
     if (frame_ts == time_stamp)
       return idx;
     if (frame_ts > time_stamp)
@@ -368,14 +383,12 @@ int getIndex(const VideoMetaInformation& meta_information, uint64_t time_stamp)
   return meta_information.frames_size() - 1;
 }
 
-uint64_t getTimeStamp(const VideoMetaInformation& meta_information, int index)
+uint64_t getTimeStamp(const VideoMetaInformation& meta_information, int index, bool utc)
 {
   if (meta_information.frames_size() <= index || index < 0)
     throw std::out_of_range(HL_DEBUG + " invalid index: " + std::to_string(index));
   const FrameEntry& frame = meta_information.frames(index);
-  if (!frame.has_time_stamp())
-    throw std::logic_error(HL_DEBUG + " frame has no TS available");
-  return frame.time_stamp();
+  return getTS(frame, utc);
 }
 
 cv::Point2f protobufToCV(const Point2DMsg& msg)

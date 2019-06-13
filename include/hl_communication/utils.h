@@ -143,17 +143,22 @@ void protobufToCV(const std::vector<Match2D3DMsg>& matches, std::vector<cv::Poin
 bool fieldToImg(const cv::Point3f& pos_in_field, const CameraMetaInformation& camera_information, cv::Point2f* img_pos);
 
 /**
+ * Return the time stamp of the given frame, utc or monotonic type is chosen depending on  utc flag
+ */
+uint64_t getTS(const FrameEntry& entry, bool utc = true);
+
+/**
  * Returns the index of the frame corresponding to the given time_stamp
  * If no frame has the given time_stamp, return the frame previous to given time_stamp
  * If there is no frame before given time_stamp, returns -1
  */
-int getIndex(const VideoMetaInformation& meta_information, uint64_t time_stamp);
+int getIndex(const VideoMetaInformation& meta_information, uint64_t time_stamp, bool utc = true);
 
 /**
  * Returns the time stamp of the frame at given index.
  * If information is not available throw out_of_range
  */
-uint64_t getTimeStamp(const VideoMetaInformation& meta_information, int index);
+uint64_t getTimeStamp(const VideoMetaInformation& meta_information, int index, bool utc = true);
 
 Json::Value file2Json(const std::string& path);
 
