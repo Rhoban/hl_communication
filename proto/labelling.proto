@@ -90,11 +90,7 @@ message RobotMessage {
 
 message LabelMsg {
   optional uint32 frame_index = 1;
-  /**
-   * Has the data been generated manually?
-   */
-  optional bool is_manual = 2;
-  optional BallMsg ball = 3;
+  repeated BallMsg balls = 3;
   repeated RobotMessage robot = 4;
   /**
    * By tagging multiple matches between img and object positions, user can
