@@ -98,7 +98,12 @@ void UDPMessageManager::run()
     // Assign reception timestamp
     if (game_msg.has_gc_msg())
     {
-      game_msg.mutable_gc_msg()->set_time_stamp(time_stamp);
+      GCMsg* gc_msg = game_msg.mutable_gc_msg();
+      gc_msg->set_time_stamp(time_stamp);
+      if (!gc_msg->has_utc_time_stamp())
+      {
+        gc_msg->set_utc_time_stamp(getUTCTimeStamp());
+      }
     }
     if (game_msg.has_robot_msg())
     {

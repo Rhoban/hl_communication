@@ -40,4 +40,8 @@ message GCMsg {
   optional int32 secondary_team = 12;
   optional int32 secondary_mode = 13;
   repeated GCTeamMsg teams = 14;
+  /**
+   * UTC timestamp of message sending (micro-seconds)
+   */
+  optional uint64 utc_time_stamp = 15;
 }

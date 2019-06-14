@@ -130,12 +130,12 @@ private:
   GameMsgCollection buildGameMsgCollection() const;
 
   /**
-   * Messages received ordered by robot identifier
+   * Messages received ordered by robot identifier and then by emission utc_time_stamp
    */
   std::map<RobotIdentifier, TimedRobotMsgCollection> messages_by_robot;
 
   /**
-   * Game Controller messages received ordered by time_stamp
+   * Game Controller messages received ordered by emission time_stamp utc
    */
   std::map<uint64_t, GCMsg> gc_messages;
 

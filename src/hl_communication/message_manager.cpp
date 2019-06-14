@@ -212,20 +212,20 @@ void MessageManager::push(const RobotMsg& msg)
   {
     throw std::runtime_error("MessageManager can only handle identified RobotMsg");
   }
-  if (!msg.has_time_stamp())
+  if (!msg.has_utc_time_stamp())
   {
-    throw std::runtime_error("MessageManager can only handle time_stamped RobotMsg");
+    throw std::runtime_error("MessageManager can only handle utc time_stamped RobotMsg");
   }
-  messages_by_robot[msg.robot_id()][msg.time_stamp()] = msg;
+  messages_by_robot[msg.robot_id()][msg.utc_time_stamp()] = msg;
 }
 
 void MessageManager::push(const GCMsg& msg)
 {
-  if (!msg.has_time_stamp())
+  if (!msg.has_utc_time_stamp())
   {
-    throw std::runtime_error("MessageManager can only handle time_stamped GCMsg");
+    throw std::runtime_error("MessageManager can only handle utc time_stamped GCMsg");
   }
-  gc_messages[msg.time_stamp()] = msg;
+  gc_messages[msg.utc_time_stamp()] = msg;
   if (auto_discover_ports)
   {
     for (const GCTeamMsg& team_msg : msg.teams())
