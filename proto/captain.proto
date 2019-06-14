@@ -45,6 +45,10 @@ message StrategyOrder
    * What is expected from the robot
    */
   optional Action action = 3;
+  /**
+   * Kick asked by captain
+   */
+  optional KickIntention kick = 4;
 }
 
 /**
