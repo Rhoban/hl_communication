@@ -45,6 +45,12 @@ void exportLabel(const LabelMsg& src, LabelMsg* dst)
     }
   }
   // TODO: Treat robots
+  // Export field matches
+  for (const Match2D3DMsg& new_match : src.field_matches())
+  {
+    // OPTIONAL: if two points have exactly the same coordinate, we could do something here
+    dst->add_field_matches()->CopyFrom(new_match);
+  }
 }
 
 }  // namespace hl_communication
