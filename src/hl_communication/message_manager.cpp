@@ -1,35 +1,11 @@
 #include <hl_communication/message_manager.h>
 
-#include <hl_communication/utils.h>
-
 #include <fstream>
 #include <iostream>
 #include <sstream>
 
 namespace hl_communication
 {
-bool operator<(const RobotIdentifier& id1, const RobotIdentifier& id2)
-{
-  return (id1.team_id() == id2.team_id() && id1.robot_id() < id2.robot_id()) || id1.team_id() < id2.team_id();
-}
-
-bool operator<(const MsgIdentifier& id1, const MsgIdentifier& id2)
-{
-  if (!id1.has_src_ip() || !id2.has_src_ip() || !id1.has_src_port() || !id2.has_src_port())
-  {
-    throw std::runtime_error("Incomplete message identifier");
-  }
-  if (id1.src_ip() != id2.src_ip())
-  {
-    return id1.src_ip() < id2.src_ip();
-  }
-  if (id1.src_port() != id2.src_port())
-  {
-    return id1.src_port() < id2.src_port();
-  }
-  return id1.packet_no() < id2.packet_no();
-}
-
 std::map<uint32_t, std::vector<RobotMsg>> MessageManager::Status::getRobotsByTeam() const
 {
   std::map<uint32_t, std::vector<RobotMsg>> messages_by_team;

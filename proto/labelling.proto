@@ -91,7 +91,7 @@ message RobotMessage {
 message LabelMsg {
   optional uint32 frame_index = 1;
   repeated BallMsg balls = 3;
-  repeated RobotMessage robot = 4;
+  repeated RobotMessage robots = 4;
   /**
    * By tagging multiple matches between img and object positions, user can
    * provide information used to estimate camera pose
@@ -118,6 +118,11 @@ message MovieLabelCollection {
    */
   optional string sequence_identifier = 2;
   repeated LabelCollection label_collections = 3;
+  /**
+   * Stores properties of the camera in the same message to make sure that a
+   * MovieLabelCollection is self-contained
+   */
+  optional VideoMetaInformation video_meta_information = 4;
 }
 
 message GameLabelCollection {

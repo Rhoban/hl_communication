@@ -6,18 +6,6 @@
 namespace hl_communication
 {
 /**
- * RobotIdentifier are ordered by team and then by robot_id
- */
-bool operator<(const RobotIdentifier& id1, const RobotIdentifier& id2);
-
-/**
- * Order first by ip, then by port and finally by packet_no
- *
- * Throws an error if src_ip or src_port of one of the message is not set
- */
-bool operator<(const MsgIdentifier& id1, const MsgIdentifier& id2);
-
-/**
  * Manages an history of message based either on logs or on a server
  */
 class MessageManager

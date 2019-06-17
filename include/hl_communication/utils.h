@@ -1,8 +1,7 @@
 #pragma once
 
 #include <hl_communication/camera.pb.h>
-#include <hl_communication/game_controller.pb.h>
-#include <hl_communication/position.pb.h>
+#include <hl_communication/wrapper.pb.h>
 #include <hl_communication/labelling.pb.h>
 
 #include <google/protobuf/message.h>
@@ -23,6 +22,31 @@ namespace hl_communication
 {
 #define HL_DEBUG                                                                                                       \
   (std::string(__FUNCTION__) + ":" + hl_communication::getBaseName(__FILE__) + ":" + std::to_string(__LINE__) + ": ")
+
+/**
+ * RobotIdentifier are ordered by team and then by robot_id
+ */
+bool operator<(const RobotIdentifier& id1, const RobotIdentifier& id2);
+
+/**
+ * Order first by ip, then by port and finally by packet_no
+ *
+ * Throws an error if src_ip or src_port of one of the message is not set
+ */
+bool operator<(const MsgIdentifier& id1, const MsgIdentifier& id2);
+
+/**
+ * Order first by robot id, then by camera name
+ */
+bool operator<(const RobotCameraIdentifier& id1, const RobotCameraIdentifier& id2);
+
+/**
+ * Following rules for comparison:
+ * robot_identifier < external_identifier
+ * if both robot, compare RobotCameraIdentifier
+ * if both external, compare names
+ */
+bool operator<(const VideoSourceID& id1, const VideoSourceID& id2);
 
 void readFromFile(const std::string& path, google::protobuf::Message* msg);
 

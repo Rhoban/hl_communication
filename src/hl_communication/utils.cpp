@@ -2,16 +2,76 @@
 
 #include <opencv2/calib3d.hpp>
 
+#include <google/protobuf/util/message_differencer.h>
+
 #include <chrono>
 #include <cmath>
 #include <fstream>
 #include <iostream>
 #include <sstream>
 
+using google::protobuf::util::MessageDifferencer;
+
 using namespace std::chrono;
 
 namespace hl_communication
 {
+bool operator<(const RobotIdentifier& id1, const RobotIdentifier& id2)
+{
+  return (id1.team_id() == id2.team_id() && id1.robot_id() < id2.robot_id()) || id1.team_id() < id2.team_id();
+}
+
+bool operator<(const MsgIdentifier& id1, const MsgIdentifier& id2)
+{
+  if (!id1.has_src_ip() || !id2.has_src_ip() || !id1.has_src_port() || !id2.has_src_port())
+  {
+    throw std::runtime_error("Incomplete message identifier");
+  }
+  if (id1.src_ip() != id2.src_ip())
+  {
+    return id1.src_ip() < id2.src_ip();
+  }
+  if (id1.src_port() != id2.src_port())
+  {
+    return id1.src_port() < id2.src_port();
+  }
+  return id1.packet_no() < id2.packet_no();
+}
+
+bool operator<(const RobotCameraIdentifier& id1, const RobotCameraIdentifier& id2)
+{
+  if (MessageDifferencer::Equals(id1.robot_id(), id2.robot_id()))
+    return id1.camera_name() < id2.camera_name();
+  return id1.robot_id() < id2.robot_id();
+}
+
+bool operator<(const VideoSourceID& id1, const VideoSourceID& id2)
+{
+  if (id1.has_robot_source())
+  {
+    if (id2.has_robot_source())
+    {
+      return id1.robot_source() < id2.robot_source();
+    }
+    else
+    {
+      return true;
+    }
+  }
+  else if (id1.has_external_source())
+  {
+    if (id2.has_external_source())
+    {
+      return id1.external_source() < id2.external_source();
+    }
+    else
+    {
+      return false;
+    }
+  }
+  throw std::logic_error(HL_DEBUG + "Incomplete videoSourceId");
+}
+
 void readFromFile(const std::string& path, google::protobuf::Message* msg)
 {
   msg->Clear();
@@ -386,7 +446,8 @@ int getIndex(const VideoMetaInformation& meta_information, uint64_t time_stamp, 
 uint64_t getTimeStamp(const VideoMetaInformation& meta_information, int index, bool utc)
 {
   if (meta_information.frames_size() <= index || index < 0)
-    throw std::out_of_range(HL_DEBUG + " invalid index: " + std::to_string(index));
+    throw std::out_of_range(HL_DEBUG + " invalid index: " + std::to_string(index) +
+                            " (nb frames: " + std::to_string(meta_information.frames_size()) + ")");
   const FrameEntry& frame = meta_information.frames(index);
   return getTS(frame, utc);
 }
