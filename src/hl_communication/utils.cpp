@@ -47,11 +47,17 @@ bool operator<(const RobotCameraIdentifier& id1, const RobotCameraIdentifier& id
 
 bool operator<(const VideoSourceID& id1, const VideoSourceID& id2)
 {
+  bool start_before = id1.has_utc_start() && id2.has_utc_start() && id1.utc_start() < id2.utc_start();
   if (id1.has_robot_source())
   {
     if (id2.has_robot_source())
     {
-      return id1.robot_source() < id2.robot_source();
+      if (id1.robot_source() < id2.robot_source())
+        return true;
+      else if (id2.robot_source() < id1.robot_source())
+        return false;
+      else
+        return start_before;
     }
     else
     {
@@ -62,7 +68,12 @@ bool operator<(const VideoSourceID& id1, const VideoSourceID& id2)
   {
     if (id2.has_external_source())
     {
-      return id1.external_source() < id2.external_source();
+      if (id1.external_source() < id2.external_source())
+        return true;
+      else if (id2.external_source() < id1.external_source())
+        return false;
+      else
+        return start_before;
     }
     else
     {
@@ -681,14 +692,16 @@ std::ostream& operator<<(std::ostream& out, const RobotCameraIdentifier& id)
 std::ostream& operator<<(std::ostream& out, const VideoSourceID& id)
 {
   if (id.has_robot_source())
-  {
-    return out << id.robot_source();
-  }
+    out << "{robot: " << id.robot_source();
   else if (id.has_external_source())
+    out << "{camera:" << id.external_source();
+  else
+    throw std::logic_error(HL_DEBUG + "incomplete message");
+  if (id.has_utc_start())
   {
-    return out << "{camera:" << id.external_source() << "}";
+    out << ", utc_start: " << id.utc_start();
   }
-  throw std::logic_error(HL_DEBUG + "incomplete message");
+  return out << "}";
 }
 
 }  // namespace hl_communication

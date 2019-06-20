@@ -45,6 +45,7 @@ bool operator<(const RobotCameraIdentifier& id1, const RobotCameraIdentifier& id
  * robot_identifier < external_identifier
  * if both robot, compare RobotCameraIdentifier
  * if both external, compare names
+ * if source is the same, compare video start
  */
 bool operator<(const VideoSourceID& id1, const VideoSourceID& id2);
 

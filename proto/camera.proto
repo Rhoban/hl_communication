@@ -107,6 +107,10 @@ message VideoSourceID {
      */
     string external_source = 2;
   }
+  /**
+   * Time since epoch for the start of the video
+   */
+  optional uint64 utc_start = 3;
 }
 
 message VideoMetaInformation {
