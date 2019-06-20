@@ -310,4 +310,8 @@ Json::Value map2Json(const std::map<uint32_t, T>& values)
   return v;
 }
 
+std::ostream& operator<<(std::ostream& out, const RobotIdentifier& id);
+std::ostream& operator<<(std::ostream& out, const RobotCameraIdentifier& id);
+std::ostream& operator<<(std::ostream& out, const VideoSourceID& id);
+
 }  // namespace hl_communication

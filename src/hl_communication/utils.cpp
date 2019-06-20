@@ -668,4 +668,27 @@ void readVal<cv::Scalar>(const Json::Value& v, const std::string& key, cv::Scala
   }
 }
 
+std::ostream& operator<<(std::ostream& out, const RobotIdentifier& id)
+{
+  return out << "{team: " << id.team_id() << ", robot: " << id.robot_id() << "}";
+}
+
+std::ostream& operator<<(std::ostream& out, const RobotCameraIdentifier& id)
+{
+  return out << "{robot: " << id.robot_id() << ", camera: " << id.camera_name() << "}";
+}
+
+std::ostream& operator<<(std::ostream& out, const VideoSourceID& id)
+{
+  if (id.has_robot_source())
+  {
+    return out << id.robot_source();
+  }
+  else if (id.has_external_source())
+  {
+    return out << "{camera:" << id.external_source() << "}";
+  }
+  throw std::logic_error(HL_DEBUG + "incomplete message");
+}
+
 }  // namespace hl_communication
