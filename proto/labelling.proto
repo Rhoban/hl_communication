@@ -68,7 +68,7 @@ message BallMsg {
 
 message RobotMessage {
   /**
-   * Position of the robot on the ground
+   * Position of the robot on the ground in the image
    */
   optional Point2DMsg ground_position = 1;
   /**
