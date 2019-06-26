@@ -21,6 +21,11 @@ bool operator<(const RobotIdentifier& id1, const RobotIdentifier& id2)
   return (id1.team_id() == id2.team_id() && id1.robot_id() < id2.robot_id()) || id1.team_id() < id2.team_id();
 }
 
+bool operator==(const RobotIdentifier& id1, const RobotIdentifier& id2)
+{
+  return id1.team_id() == id2.team_id() && id1.robot_id() == id2.robot_id();
+}
+
 bool operator<(const MsgIdentifier& id1, const MsgIdentifier& id2)
 {
   if (!id1.has_src_ip() || !id2.has_src_ip() || !id1.has_src_port() || !id2.has_src_port())

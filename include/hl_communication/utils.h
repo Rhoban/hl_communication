@@ -27,6 +27,7 @@ namespace hl_communication
  * RobotIdentifier are ordered by team and then by robot_id
  */
 bool operator<(const RobotIdentifier& id1, const RobotIdentifier& id2);
+bool operator==(const RobotIdentifier& id1, const RobotIdentifier& id2);
 
 /**
  * Order first by ip, then by port and finally by packet_no
