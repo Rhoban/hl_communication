@@ -17,6 +17,16 @@ message WeightedPose {
 }
 
 /**
+ * Weighted Robot pose.
+ * - First element represents the probability that the information is accurate
+ * - Second element describes the robot with its estimated pose 
+ */
+message WeightedRobotPose {
+  required float probability = 1;
+  required RobotEstimation robot = 2;
+}
+
+/**
  * Perception of the world state by the robot
  */
 message Perception {
@@ -35,20 +45,10 @@ message Perception {
    */
   optional PositionDistribution opp_goal_in_self = 3;
 
-
-  /**
-   * Weighted Robot pose.
-   * - First element represents the probability that the information is accurate
-   * - Second element describes the robot with its estimated pose 
-   */
-  message WeightedRobotPose {
-    required float probability = 1;
-    required RobotEstimation robot = 2;
-  }
   /**
    * Belief regarding positions of other robots in self referential
    * - First element represents the probability that the information is accurate
-   * - Second element describes the robot
+   * - Second element describes the robot pose
    */
   repeated WeightedRobotPose robots = 4;
 
