@@ -102,6 +102,12 @@ void invertAngle(AngleDistribution* position);
 void invertPose(PoseDistribution* pose);
 
 /**
+ * Export uncertainty from Pos Distribution to a covariance matrix, return true on success and false on failure (no
+ * uncertainty or size invalid)
+ */
+bool exportUncertainty(const PositionDistribution& position, cv::Mat* out);
+
+/**
  * Return false if player is not specifically penalized in GCMsg. This means
  * that even if GCMsg does not concern 'team_id', the answer will be false.
  * robot_id starts from 1

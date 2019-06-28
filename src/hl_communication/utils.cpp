@@ -184,6 +184,30 @@ void invertPose(PoseDistribution* pose)
   }
 }
 
+bool exportUncertainty(const PositionDistribution& p, cv::Mat* out)
+{
+  int nb_coeffs = p.uncertainty_size();
+  if (nb_coeffs != 2 && nb_coeffs != 3)
+    return false;
+  double var_x(0), var_y(0), var_xy(0);
+  var_x = p.uncertainty(0);
+  if (nb_coeffs == 3)
+  {
+    var_xy = p.uncertainty(1);
+    var_y = p.uncertainty(2);
+  }
+  else
+  {
+    var_y = p.uncertainty(1);
+  }
+  *out = cv::Mat(2, 2, CV_32F);
+  out->at<float>(0, 0) = var_x;
+  out->at<float>(0, 1) = var_xy;
+  out->at<float>(1, 0) = var_xy;
+  out->at<float>(1, 1) = var_y;
+  return true;
+}
+
 bool isPenalized(const GCMsg& msg, int team_id, int robot_id)
 {
   for (const GCTeamMsg& team : msg.teams())
