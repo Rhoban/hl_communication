@@ -449,8 +449,127 @@ cv::Point2f fieldToImg(const cv::Point3f& pos_in_field, const CameraMetaInformat
   pose3DToCV(camera_information.pose(), &rvec, &tvec);
   std::vector<cv::Point3f> object_points = { pos_in_field };
   std::vector<cv::Point2f> img_points;
-  cv::projectPoints(object_points, rvec, tvec, camera_matrix, distortion_coeffs, img_points);
+
+  if (isPointValidForCorrection(pos_in_field, rvec, tvec, camera_matrix, distortion_coeffs))
+  {
+    cv::projectPoints(object_points, rvec, tvec, camera_matrix, distortion_coeffs, img_points);
+  }
+  else
+  {
+    throw std::runtime_error("The point is too far from the center to be corrected.");
+  }
   return img_points[0];
+}
+
+bool isPointValidForCorrection(const cv::Point3f& pos, cv::Mat rvec, cv::Mat tvec, cv::Mat camera_matrix,
+                               cv::Mat distortion_coeffs)
+{
+  cv::Mat no_distortion;
+  std::vector<cv::Point3f> object_points = { pos };
+  std::vector<cv::Point2f> img_points_theoretical;
+  cv::projectPoints(object_points, rvec, tvec, camera_matrix, no_distortion, img_points_theoretical);
+
+  double focal_x = camera_matrix.at<double>(0, 0);
+  double focal_y = camera_matrix.at<double>(1, 1);
+  double center_x = camera_matrix.at<double>(0, 2);
+  double center_y = camera_matrix.at<double>(1, 2);
+  cv::Point3f normalized((img_points_theoretical[0].x - center_x) / focal_x,
+                         (img_points_theoretical[0].y - center_y) / focal_y, 1.0);
+
+  if (normalized.z != 1.0)
+  {
+    throw std::runtime_error(" pos.z should be equal to 1.0 instead of " + std::to_string(pos.z));
+  }
+
+  if (distortion_coeffs.at<double>(0, 2) != 0 or distortion_coeffs.at<double>(0, 3) != 0 or
+      distortion_coeffs.at<double>(0, 4) != 0)
+  {
+    return true;
+  }
+  // k3, p1 and p2 are equal to 0
+
+  double x = static_cast<double>(normalized.x);
+  double y = static_cast<double>(normalized.y);
+
+  // we can suppose that x and y are positive
+  if (x < 0)
+  {
+    x = -x;
+  }
+  if (y < 0)
+  {
+    y = -y;
+  }
+
+  // if the point is close to the center it is valid
+  if (x < 0.01 and y < 0.01)
+  {
+    return true;
+  }
+  else
+  {
+    double k1 = distortion_coeffs.at<double>(0, 0);
+    double k2 = distortion_coeffs.at<double>(0, 1);
+
+    if (k1 == 0 and k2 == 0)  // there is no distortion
+    {
+      return true;
+    }
+
+    if (k2 == 0 and k1 > 0)  // f' is always positive
+    {
+      return true;
+    }
+
+    double u = x + y;
+    double p = x / u;
+    double q = y / u;
+
+    double a = 5 * k2 * std::pow(p * p + q * q, 2);
+    double b = 3 * k1 * (p * p + q * q);
+    double c = 1;
+
+    if (k2 == 0 and k1 < 0)  // the roots of f' are +- 1/sqrt(3*(-k1)*(p^2+q^2))
+    {
+      return u * u < 1 / (-b);
+    }
+
+    // in the following k2 is non zero
+
+    double disc = b * b - 4 * a * c;
+
+    if (disc <= 0)  // the sign of g is constant, hence f is monotonic
+    {
+      return true;
+    }
+    else
+    {
+      double u1 = (-b - std::sqrt(disc)) / (2 * a);
+      double u2 = (-b + std::sqrt(disc)) / (2 * a);
+
+      if (u2 < u1)
+      {
+        double tmp = u1;
+        u1 = u2;
+        u2 = tmp;
+      }
+
+      // in the following u1 < u2
+
+      if (u2 < 0)  // both are negative, hence the roots of f' are complexe
+      {
+        return true;
+      }
+      else if (u1 > 0)  // u1 is the smallest positivie root
+      {
+        return u * u < u1;
+      }
+      else  // u2 is the smallest positivie root
+      {
+        return u * u < u2;
+      }
+    }
+  }
 }
 
 uint64_t getTS(const FrameEntry& entry, bool utc)
@@ -531,7 +650,14 @@ bool fieldToImg(const cv::Point3f& pos_in_field, const CameraMetaInformation& ca
 {
   cv::Mat rvec, tvec;
   pose3DToCV(camera_information.pose(), &rvec, &tvec);
-  *img_pos = fieldToImg(pos_in_field, camera_information);
+  try
+  {
+    *img_pos = fieldToImg(pos_in_field, camera_information);
+  }
+  catch (std::runtime_error)
+  {
+    return false;
+  }
   cv::Point3f camera_point = fieldToCamera(pos_in_field, rvec, tvec);
   cv::Size img_size = getImgSize(camera_information);
   return camera_point.z > 0 && img_pos->x >= 0 && img_pos->y >= 0 && img_pos->x < img_size.width &&

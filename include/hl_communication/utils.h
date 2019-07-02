@@ -159,6 +159,9 @@ cv::Point3f fieldToCamera(const cv::Point3f& pos_in_field, const cv::Mat& rvec, 
 
 cv::Point2f fieldToImg(const cv::Point3f& pos_in_field, const CameraMetaInformation& camera_information);
 
+bool isPointValidForCorrection(const cv::Point3f& pos, cv::Mat rvec, cv::Mat tvec, cv::Mat camera_matrix,
+                               cv::Mat distortion_coeffs);
+
 cv::Point2f protobufToCV(const Point2DMsg& msg);
 cv::Point3f protobufToCV(const Point3DMsg& msg);
 void cvToProtobuf(const cv::Point2f& pos, Point2DMsg* msg);
