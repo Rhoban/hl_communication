@@ -69,9 +69,9 @@ void MessageManager::saveMessages(const std::string& path)
 uint64_t MessageManager::getStart() const
 {
   uint64_t min_ts = std::numeric_limits<uint64_t>::max();
-  if (gc_messages.size() > 0)
+  if (main_gc_messages.size() > 0)
   {
-    min_ts = std::min(min_ts, gc_messages.begin()->first);
+    min_ts = std::min(min_ts, main_gc_messages.begin()->first);
   }
   for (const auto& robot_collection : messages_by_robot)
   {
@@ -86,9 +86,9 @@ uint64_t MessageManager::getStart() const
 uint64_t MessageManager::getEnd() const
 {
   uint64_t max_ts = 0;
-  if (gc_messages.size() > 0)
+  if (main_gc_messages.size() > 0)
   {
-    max_ts = std::max(max_ts, gc_messages.rbegin()->first);
+    max_ts = std::max(max_ts, main_gc_messages.rbegin()->first);
   }
   for (const auto& robot_collection : messages_by_robot)
   {
@@ -121,15 +121,15 @@ MessageManager::Status MessageManager::getStatus(uint64_t time_stamp, bool syste
     }
     status.robot_messages[robot_entry.first] = it->second;
   }
-  if (gc_messages.size() > 0)
+  if (main_gc_messages.size() > 0)
   {
-    auto it = gc_messages.upper_bound(time_stamp);
-    if (it == gc_messages.end())
+    auto it = main_gc_messages.upper_bound(time_stamp);
+    if (it == main_gc_messages.end())
       it--;
     if (it->first > time_stamp)
     {
       // There are no data prior to time_stamp
-      if (it == gc_messages.begin())
+      if (it == main_gc_messages.begin())
         return status;
       it--;
     }
@@ -162,15 +162,15 @@ MessageManager::Status MessageManager::getStatus(uint64_t time_stamp, uint64_t h
       status.robot_messages[robot_entry.first] = it->second;
     }
   }
-  if (gc_messages.size() > 0)
+  if (main_gc_messages.size() > 0)
   {
-    auto it = gc_messages.upper_bound(time_stamp);
-    if (it == gc_messages.end())
+    auto it = main_gc_messages.upper_bound(time_stamp);
+    if (it == main_gc_messages.end())
       it--;
     if (it->first > time_stamp)
     {
       // There are no data prior to time_stamp
-      if (it == gc_messages.begin())
+      if (it == main_gc_messages.begin())
         return status;
       it--;
     }
@@ -195,13 +195,16 @@ void MessageManager::push(const RobotMsg& msg)
   messages_by_robot[msg.robot_id()][msg.utc_time_stamp()] = msg;
 }
 
-void MessageManager::push(const GCMsg& msg)
+void MessageManager::push(const GCMsg& msg, bool isWantedMessage)
 {
   if (!msg.has_utc_time_stamp())
   {
     throw std::runtime_error("MessageManager can only handle utc time_stamped GCMsg");
   }
-  gc_messages[msg.utc_time_stamp()] = msg;
+  if (isWantedMessage)
+    main_gc_messages[msg.utc_time_stamp()] = msg;
+  else
+    interfering_gc_messages[msg.utc_time_stamp()] = msg;
   if (auto_discover_ports)
   {
     for (const GCTeamMsg& team_msg : msg.teams())
@@ -223,6 +226,11 @@ void MessageManager::openReceiver(int port)
   udp_receivers[port] = std::unique_ptr<UDPMessageManager>(new UDPMessageManager(port, -1));
 }
 
+bool MessageManager::hasMainGCSource()
+{
+  return !main_gc_messages.empty();
+}
+
 void MessageManager::push(const GameMsg& msg)
 {
   // Avoid to store twice duplicated message and print warning
@@ -242,21 +250,40 @@ void MessageManager::push(const GameMsg& msg)
     SourceIdentifier source_id;
     source_id.src_ip = msg.identifier().src_ip();
     source_id.src_port = msg.identifier().src_port();
-    gc_sources.insert(source_id);
-    if (gc_sources.size() > 1)
+
+    if (!hasMainGCSource())
     {
-      std::ostringstream oss;
-      oss << HL_DEBUG << " more than one different source of GameController messages has been found"
-          << " sources: " << std::endl;
-      for (const SourceIdentifier& id : gc_sources)
-      {
-        oss << "\t"
-            << "ip: " << ipToString(id.src_ip) << " port: " << id.src_port << std::endl;
-      }
-      std::cerr << oss.str();
+      main_gc_source = source_id;
+      push(msg.gc_msg(), true);
     }
-    push(msg.gc_msg());
+    else
+    {
+      if (source_id != main_gc_source)
+      {
+        std::ostringstream oss;
+        oss << HL_DEBUG << " more than one different source of GameController messages has been found"
+            << " sources: " << std::endl;
+        oss << "main source : " << ipToString(main_gc_source.src_ip) << " port : " << main_gc_source.src_port
+            << std::endl;
+
+        for (const SourceIdentifier& id : interfering_gc_sources)
+        {
+          oss << "\t"
+              << "ip: " << ipToString(id.src_ip) << " port: " << id.src_port << std::endl;
+        }
+
+        std::cerr << oss.str();
+        interfering_gc_sources.insert(source_id);
+        push(msg.gc_msg(), false);
+      }
+
+      else
+      {
+        push(msg.gc_msg(), true);
+      }
+    }
   }
+
   else
   {
     throw std::runtime_error("Failed to read GameMsg, not a RobotMsg neither a GCMsg");
@@ -321,6 +348,11 @@ bool operator<(const MessageManager::SourceIdentifier& id1, const MessageManager
     return id1.src_ip < id2.src_ip;
   }
   return id1.src_port < id2.src_port;
+}
+
+bool operator!=(const MessageManager::SourceIdentifier& id1, const MessageManager::SourceIdentifier& id2)
+{
+  return id1.src_ip != id2.src_ip || id1.src_port != id2.src_port;
 }
 
 }  // namespace hl_communication

@@ -104,9 +104,15 @@ private:
   void push(const RobotMsg& msg);
 
   /**
+   * Check if we already
+   */
+
+  bool hasMainGCSource();
+
+  /**
    * Message should be stored in receivedmessages
    */
-  void push(const GCMsg& msg);
+  void push(const GCMsg& msg, bool isWantedMessage);
   void push(const GameMsg& msg);
   void push(const GameMsgCollection& collection);
 
@@ -125,7 +131,12 @@ private:
   /**
    * Game Controller messages received ordered by emission time_stamp utc
    */
-  std::map<uint64_t, GCMsg> gc_messages;
+  std::map<uint64_t, GCMsg> main_gc_messages;
+
+  /**
+   * Unwanted Game Controller messages received ordered by emission time_stamp utc
+   */
+  std::map<uint64_t, GCMsg> interfering_gc_messages;
 
   /**
    * Offset between clock used for internal time_stamps and UTC time_stamp [us]:
@@ -141,9 +152,14 @@ private:
   std::map<int, std::unique_ptr<UDPMessageManager>> udp_receivers;
 
   /**
-   * Stores the list of providers of game controller messages.
+   * Stores the main provider of game controller messages.
    */
-  std::set<SourceIdentifier> gc_sources;
+  SourceIdentifier main_gc_source;
+
+  /**
+   * Stores the list of unwanted provider of game controller messages.
+   */
+  std::set<SourceIdentifier> interfering_gc_sources;
 
   /**
    * When activated, uses automatically game controller messages to open udp receivers for the default ports, and closes
@@ -153,5 +169,7 @@ private:
 };
 
 bool operator<(const MessageManager::SourceIdentifier& id1, const MessageManager::SourceIdentifier& id2);
+
+bool operator!=(const MessageManager::SourceIdentifier& id1, const MessageManager::SourceIdentifier& id2);
 
 }  // namespace hl_communication
