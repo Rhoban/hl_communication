@@ -47,6 +47,10 @@ message KickIntention {
    */
   optional KickType type = 4;
   repeated KickType allowed_kicks = 5;
+  /**
+   * If this kick is a target for a pass, specify the target robot
+   */
+   optional uint32 pass_target_id = 6;
 }
 
 /**
