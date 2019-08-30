@@ -126,6 +126,44 @@ int64_t getSteadyClockOffset()
   return system_ts - steady_ts;
 }
 
+std::string getPrettyDuration(uint64_t duration_us)
+{
+  std::ostringstream oss;
+  uint64_t millisecond_duration = 1000;
+  uint64_t sec_duration = 1000 * millisecond_duration;
+  uint64_t min_duration = 60 * sec_duration;
+  uint64_t hour_duration = 60 * min_duration;
+  uint64_t day_duration = 24 * hour_duration;
+  if (duration_us >= day_duration)
+  {
+    int nb_days = duration_us / day_duration;
+    duration_us -= nb_days * day_duration;
+    oss << nb_days << "d";
+  }
+  if (duration_us >= hour_duration)
+  {
+    int nb_hours = duration_us / hour_duration;
+    duration_us -= nb_hours * hour_duration;
+    oss << nb_hours << "h";
+  }
+  if (duration_us >= min_duration)
+  {
+    int nb_mins = duration_us / min_duration;
+    duration_us -= nb_mins * min_duration;
+    oss << nb_mins << "m";
+  }
+  if (duration_us >= sec_duration)
+  {
+    int nb_secs = duration_us / sec_duration;
+    duration_us -= nb_secs * sec_duration;
+    oss << nb_secs << "s";
+  }
+  int nb_milliseconds = duration_us / millisecond_duration;
+  duration_us -= nb_milliseconds * millisecond_duration;
+  oss << nb_milliseconds << "ms";
+  return oss.str();
+}
+
 std::string getBaseName(const std::string& path)
 {
   size_t idx = path.find_last_of('/');

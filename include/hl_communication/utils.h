@@ -77,6 +77,12 @@ uint64_t getUTCTimeStamp();
 int64_t getSteadyClockOffset();
 
 /**
+ * Show a duration [us] in a pretty format ..d:..h:..m:..s:...ms
+ * Only non-zero part are shown
+ */
+std::string getPrettyDuration(uint64_t duration_us);
+
+/**
  * Convert a human readable string to a 8 bytes ip address
  */
 uint64_t stringToIP(const std::string& str);
