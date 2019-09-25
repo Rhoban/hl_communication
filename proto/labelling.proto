@@ -64,6 +64,10 @@ message BallMsg {
    * (e.g. during training session)
    */
   optional uint32 ball_id = 4;
+  /**
+   * Position of the ball in the field referential
+   */
+  optional Point3DMsg center_in_field = 5;
 }
 
 message RobotMessage {
@@ -86,6 +90,11 @@ message RobotMessage {
     WAITING = 5;
   }
   optional RobotStatus robot_status = 4;
+
+  /**
+   * Position of the center of the robot on the field.
+   */
+  optional Point3DMsg robot_in_field = 5;
 }
 
 message LabelMsg {
