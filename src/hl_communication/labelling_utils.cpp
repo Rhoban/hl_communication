@@ -1,6 +1,8 @@
 #include <hl_communication/labelling_utils.h>
 
 #include <hl_communication/utils.h>
+#include <string>
+#include <iostream>
 
 namespace hl_communication
 {
@@ -15,7 +17,7 @@ bool sameRobot(const RobotMessage& msg1, const RobotMessage& msg2)
     return false;
   const RobotIdentifier& id1 = msg1.robot_id();
   const RobotIdentifier& id2 = msg2.robot_id();
-  return id1.robot_id() == id2.robot_id() && id1.team_id() && id2.team_id();
+  return id1.robot_id() == id2.robot_id() && id1.team_id() == id2.team_id();
 }
 
 void exportLabel(const LabelMsg& src, LabelMsg* dst)
@@ -53,7 +55,6 @@ void exportLabel(const LabelMsg& src, LabelMsg* dst)
       dst->add_balls()->CopyFrom(new_ball);
     }
   }
-  // TODO: Treat robots
   for (const RobotMessage& new_robot : src.robots())
   {
     bool replaced = false;
