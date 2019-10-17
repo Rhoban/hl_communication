@@ -182,6 +182,32 @@ MessageManager::Status MessageManager::getStatus(uint64_t time_stamp, uint64_t h
   return status;
 }
 
+MessageManager::TeamColor MessageManager::getTeamColor(uint64_t utc_ts, const RobotIdentifier& robot_id) const
+{
+  Status status = getStatus(utc_ts);
+  for (const GCTeamMsg& team_msg : status.gc_message.teams())
+  {
+    if (team_msg.team_number() == (int32_t)robot_id.team_id())
+    {
+      switch (team_msg.team_color())
+      {
+        case 0:
+          return BLUE;
+        case 1:
+          return RED;
+        default:
+          return UNKNOWN;
+      }
+    }
+  }
+  return UNKNOWN;
+}
+
+const std::map<RobotIdentifier, MessageManager::TeamColor>& MessageManager::getRobotsColors() const
+{
+  return active_robots_colors;
+}
+
 void MessageManager::push(const RobotMsg& msg)
 {
   if (!msg.has_robot_id())
@@ -192,7 +218,21 @@ void MessageManager::push(const RobotMsg& msg)
   {
     throw std::runtime_error("MessageManager can only handle utc time_stamped RobotMsg");
   }
-  messages_by_robot[msg.robot_id()][msg.utc_time_stamp()] = msg;
+  const RobotIdentifier& robot_id = msg.robot_id();
+  messages_by_robot[robot_id][msg.utc_time_stamp()] = msg;
+  TeamColor new_team_color = getTeamColor(msg.utc_time_stamp(), robot_id);
+  if (active_robots_colors.count(robot_id) == 0)
+  {
+    active_robots_colors[robot_id] = new_team_color;
+  }
+  else
+  {
+    TeamColor old_team_color = active_robots_colors[robot_id];
+    if (old_team_color == TeamColor::UNKNOWN)
+      active_robots_colors[robot_id] = new_team_color;
+    else if (old_team_color != new_team_color)
+      active_robots_colors[robot_id] = TeamColor::CONFLICT;
+  }
 }
 
 void MessageManager::push(const GCMsg& msg, bool isWantedMessage)
@@ -202,9 +242,25 @@ void MessageManager::push(const GCMsg& msg, bool isWantedMessage)
     throw std::runtime_error("MessageManager can only handle utc time_stamped GCMsg");
   }
   if (isWantedMessage)
+  {
     main_gc_messages[msg.utc_time_stamp()] = msg;
+    for (const GCTeamMsg& team_msg : msg.teams())
+    {
+      int team_id = team_msg.team_number();
+      for (int robot_idx = 0; robot_idx < team_msg.robots_size(); robot_idx++)
+      {
+        // TODO skip if robot is substitute
+        RobotIdentifier robot_id;
+        robot_id.set_team_id(team_id);
+        robot_id.set_robot_id(robot_idx + 1);
+        // TODO declare robots color
+      }
+    }
+  }
   else
+  {
     interfering_gc_messages[msg.utc_time_stamp()] = msg;
+  }
   if (auto_discover_ports)
   {
     for (const GCTeamMsg& team_msg : msg.teams())

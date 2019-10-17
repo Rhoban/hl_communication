@@ -35,6 +35,14 @@ public:
     std::map<uint32_t, std::vector<RobotMsg>> getRobotsByTeam() const;
   };
 
+  enum TeamColor
+  {
+    RED,
+    BLUE,
+    UNKNOWN,
+    CONFLICT
+  };
+
   /**
    * Default implementation: no receivers opened
    */
@@ -82,6 +90,10 @@ public:
    */
   Status getStatus(uint64_t time_stamp, uint64_t history_length, bool system_clock = false) const;
 
+  TeamColor getTeamColor(uint64_t utc_ts, const RobotIdentifier& robot_id) const;
+
+  const std::map<RobotIdentifier, TeamColor>& getRobotsColors() const;
+
   /**
    * Set the offset in us between steady_clock and system_clock (time_since_epoch)
    */
@@ -91,6 +103,8 @@ public:
    * Get the offset in us between steady_clock and system_clock (time_since_epoch)
    */
   int64_t getOffset() const;
+
+  void loadMessages(const std::string& file_path);
 
 private:
   /**
@@ -115,8 +129,6 @@ private:
   void push(const GCMsg& msg, bool isWantedMessage);
   void push(const GameMsg& msg);
   void push(const GameMsgCollection& collection);
-
-  void loadMessages(const std::string& file_path);
 
   /**
    * Gather all the received messages in a GameMsgCollection
@@ -166,6 +178,8 @@ private:
    * other ports
    */
   bool auto_discover_ports;
+
+  std::map<RobotIdentifier, TeamColor> active_robots_colors;
 };
 
 bool operator<(const MessageManager::SourceIdentifier& id1, const MessageManager::SourceIdentifier& id2);
