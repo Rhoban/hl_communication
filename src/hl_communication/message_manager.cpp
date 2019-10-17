@@ -231,6 +231,40 @@ bool MessageManager::hasMainGCSource()
   return !main_gc_messages.empty();
 }
 
+std::set<MessageManager::SourceIdentifier> MessageManager::getInterferingGCSource(uint64_t time_stamp,
+                                                                                  uint64_t history_length,
+                                                                                  bool system_clock) const
+{
+  if (system_clock)
+  {
+    time_stamp -= clock_offset;
+  }
+  std::set<SourceIdentifier> interfering_gc_id;
+
+  if (interfering_gc_messages.size() > 0)
+  {
+    auto it = interfering_gc_sources.upper_bound(time_stamp);
+    if (it == interfering_gc_sources.end())
+      it--;
+    if (it->first > time_stamp)
+    {
+      // There are no data prior to time_stamp
+      if (it == interfering_gc_sources.begin())
+        return interfering_gc_id;
+
+      it--;
+    }
+    while (it->first >= (time_stamp - history_length))
+    {
+      SourceIdentifier source_id;
+      source_id.src_ip = it->second.src_ip;
+      source_id.src_port = it->second.src_port;
+      interfering_gc_id.insert(source_id);
+    }
+  }
+  return interfering_gc_id;
+}
+
 void MessageManager::push(const GameMsg& msg)
 {
   // Avoid to store twice duplicated message and print warning
@@ -266,14 +300,11 @@ void MessageManager::push(const GameMsg& msg)
         oss << "main source : " << ipToString(main_gc_source.src_ip) << " port : " << main_gc_source.src_port
             << std::endl;
 
-        for (const SourceIdentifier& id : interfering_gc_sources)
-        {
-          oss << "\t"
-              << "ip: " << ipToString(id.src_ip) << " port: " << id.src_port << std::endl;
-        }
+        oss << "\t"
+            << "ip: " << ipToString(source_id.src_ip) << " port: " << source_id.src_port << std::endl;
 
         std::cerr << oss.str();
-        interfering_gc_sources.insert(source_id);
+        interfering_gc_sources[msg.gc_msg().utc_time_stamp()] = source_id;
         push(msg.gc_msg(), false);
       }
 

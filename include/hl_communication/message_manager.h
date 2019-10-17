@@ -83,6 +83,13 @@ public:
   Status getStatus(uint64_t time_stamp, uint64_t history_length, bool system_clock = false) const;
 
   /**
+   * Return all source_id of unwanted recieved messages
+   * Ignore messages older than "time_stamp - history_length"
+   */
+  std::set<MessageManager::SourceIdentifier> getInterferingGCSource(uint64_t time_stamp, uint64_t history_length,
+                                                                    bool system_clock = false) const;
+
+  /**
    * Set the offset in us between steady_clock and system_clock (time_since_epoch)
    */
   void setOffset(int64_t offset);
@@ -159,7 +166,7 @@ private:
   /**
    * Stores the list of unwanted provider of game controller messages.
    */
-  std::set<SourceIdentifier> interfering_gc_sources;
+  std::map<uint64_t, SourceIdentifier> interfering_gc_sources;
 
   /**
    * When activated, uses automatically game controller messages to open udp receivers for the default ports, and closes
