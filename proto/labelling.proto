@@ -1,6 +1,7 @@
 syntax="proto2";
 
 import "camera.proto";
+import "game_controller.proto";
 import "robot_estimation.proto";
 
 package hl_communication;
@@ -95,6 +96,8 @@ message RobotMessage {
    * Position of the center of the robot on the field.
    */
   optional Point3DMsg robot_in_field = 5;
+
+  optional TeamColor robot_color = 6;
 }
 
 message LabelMsg {

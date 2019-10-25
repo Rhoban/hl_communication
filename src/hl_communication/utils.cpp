@@ -260,6 +260,11 @@ bool isPenalized(const GCMsg& msg, int team_id, int robot_id)
   return false;
 }
 
+bool isSubstitute(const GCRobotMsg& msg)
+{
+  return msg.has_penalty() && msg.penalty() == hl_communication::Penalty::SUBSTITUTE;
+}
+
 std::string getFormattedTime()
 {
   system_clock::time_point now = system_clock::now();

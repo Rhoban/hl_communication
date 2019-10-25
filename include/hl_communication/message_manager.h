@@ -1,5 +1,6 @@
 #pragma once
 
+#include <hl_communication/robot_color_map.h>
 #include <hl_communication/udp_message_manager.h>
 #include <hl_communication/wrapper.pb.h>
 
@@ -33,14 +34,6 @@ public:
      * Get the robot messages ordered by team
      */
     std::map<uint32_t, std::vector<RobotMsg>> getRobotsByTeam() const;
-  };
-
-  enum TeamColor
-  {
-    RED,
-    BLUE,
-    UNKNOWN,
-    CONFLICT
   };
 
   /**
@@ -90,9 +83,7 @@ public:
    */
   Status getStatus(uint64_t time_stamp, uint64_t history_length, bool system_clock = false) const;
 
-  TeamColor getTeamColor(uint64_t utc_ts, const RobotIdentifier& robot_id) const;
-
-  const std::map<RobotIdentifier, TeamColor>& getRobotsColors() const;
+  const RobotColorMap& getRobotsColors() const;
 
   /**
    * Set the offset in us between steady_clock and system_clock (time_since_epoch)
@@ -129,6 +120,12 @@ private:
   void push(const GCMsg& msg, bool isWantedMessage);
   void push(const GameMsg& msg);
   void push(const GameMsgCollection& collection);
+
+  /**
+   * Attributes color 'c' to the robot.
+   * If robot has already another color specified, set it to CONFLICT
+   */
+  void pushRobotColor(const RobotIdentifier& id, TeamColor c);
 
   /**
    * Gather all the received messages in a GameMsgCollection
@@ -179,7 +176,7 @@ private:
    */
   bool auto_discover_ports;
 
-  std::map<RobotIdentifier, TeamColor> active_robots_colors;
+  RobotColorMap active_robots_colors;
 };
 
 bool operator<(const MessageManager::SourceIdentifier& id1, const MessageManager::SourceIdentifier& id2);

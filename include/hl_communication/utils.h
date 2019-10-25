@@ -121,6 +121,11 @@ bool exportUncertainty(const PositionDistribution& position, cv::Mat* out);
 bool isPenalized(const GCMsg& msg, int team_id, int robot_id);
 
 /**
+ * Return true
+ */
+bool isSubstitute(const GCRobotMsg& msg);
+
+/**
  * Uses system_clock to extract a formatted time: format is:
  * - YYYY_MM_DD_HHhMMmSSs Ex: 2018_09_25_17h23m12s
  * Function is reentrant

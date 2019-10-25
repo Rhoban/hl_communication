@@ -24,6 +24,19 @@ int getRedTeamColor()
   return 1;
 }
 
+TeamColor getTeamColor(int team_color_id)
+{
+  switch (team_color_id)
+  {
+    case 0:
+      return TeamColor::BLUE;
+    case 1:
+      return TeamColor::RED;
+    default:
+      return TeamColor::UNKNOWN;
+  }
+}
+
 int charsToInt(char const* str, int start, int end)
 {
   int sum = 0;
@@ -115,9 +128,9 @@ int Team::getTeamNumber() const
   return team_number;
 }
 
-int Team::getTeamColor() const
+TeamColor Team::getTeamColor() const
 {
-  return team_color;
+  return hl_communication::getTeamColor(team_color);
 }
 
 int Team::getScore() const

@@ -1,5 +1,7 @@
 #include <hl_communication/message_manager.h>
 
+#include <hl_communication/game_controller_utils.h>
+
 #include <fstream>
 #include <iostream>
 #include <sstream>
@@ -182,28 +184,7 @@ MessageManager::Status MessageManager::getStatus(uint64_t time_stamp, uint64_t h
   return status;
 }
 
-MessageManager::TeamColor MessageManager::getTeamColor(uint64_t utc_ts, const RobotIdentifier& robot_id) const
-{
-  Status status = getStatus(utc_ts);
-  for (const GCTeamMsg& team_msg : status.gc_message.teams())
-  {
-    if (team_msg.team_number() == (int32_t)robot_id.team_id())
-    {
-      switch (team_msg.team_color())
-      {
-        case 0:
-          return BLUE;
-        case 1:
-          return RED;
-        default:
-          return UNKNOWN;
-      }
-    }
-  }
-  return UNKNOWN;
-}
-
-const std::map<RobotIdentifier, MessageManager::TeamColor>& MessageManager::getRobotsColors() const
+const RobotColorMap& MessageManager::getRobotsColors() const
 {
   return active_robots_colors;
 }
@@ -220,19 +201,8 @@ void MessageManager::push(const RobotMsg& msg)
   }
   const RobotIdentifier& robot_id = msg.robot_id();
   messages_by_robot[robot_id][msg.utc_time_stamp()] = msg;
-  TeamColor new_team_color = getTeamColor(msg.utc_time_stamp(), robot_id);
-  if (active_robots_colors.count(robot_id) == 0)
-  {
-    active_robots_colors[robot_id] = new_team_color;
-  }
-  else
-  {
-    TeamColor old_team_color = active_robots_colors[robot_id];
-    if (old_team_color == TeamColor::UNKNOWN)
-      active_robots_colors[robot_id] = new_team_color;
-    else if (old_team_color != new_team_color)
-      active_robots_colors[robot_id] = TeamColor::CONFLICT;
-  }
+  TeamColor new_team_color = active_robots_colors.getColor(robot_id);
+  pushRobotColor(robot_id, new_team_color);
 }
 
 void MessageManager::push(const GCMsg& msg, bool isWantedMessage)
@@ -247,13 +217,16 @@ void MessageManager::push(const GCMsg& msg, bool isWantedMessage)
     for (const GCTeamMsg& team_msg : msg.teams())
     {
       int team_id = team_msg.team_number();
+      TeamColor team_color = hl_communication::getTeamColor(team_msg.team_color());
       for (int robot_idx = 0; robot_idx < team_msg.robots_size(); robot_idx++)
       {
-        // TODO skip if robot is substitute
+        const GCRobotMsg& robot_msg = team_msg.robots(robot_idx);
+        if (isSubstitute(robot_msg))
+          continue;
         RobotIdentifier robot_id;
         robot_id.set_team_id(team_id);
         robot_id.set_robot_id(robot_idx + 1);
-        // TODO declare robots color
+        pushRobotColor(robot_id, team_color);
       }
     }
   }
@@ -354,6 +327,11 @@ void MessageManager::push(const GameMsgCollection& collection)
   }
 }
 
+void MessageManager::pushRobotColor(const RobotIdentifier& id, TeamColor c)
+{
+  active_robots_colors.pushColor(id, c);
+}
+
 void MessageManager::loadMessages(const std::string& file_path)
 {
   std::ifstream in(file_path, std::ios::binary);
@@ -371,7 +349,7 @@ void MessageManager::loadMessages(const std::string& file_path)
     setOffset(messages_collection.time_offset());
   }
   std::cout << "Pushing " << messages_collection.messages_size() << " messages in MM" << std::endl;
-  for (const GameMsg msg : messages_collection.messages())
+  for (const GameMsg& msg : messages_collection.messages())
   {
     push(msg);
   }

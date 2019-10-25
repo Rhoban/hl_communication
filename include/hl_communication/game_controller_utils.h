@@ -14,6 +14,8 @@ int getRedTeamColor();
 
 int charsToInt(char const* str, int start, int end);
 
+TeamColor getTeamColor(int team_color_id);
+
 class Robot
 {
 public:
@@ -46,7 +48,7 @@ public:
   ~Team();
 
   int getTeamNumber() const;
-  int getTeamColor() const;
+  TeamColor getTeamColor() const;
   int getScore() const;
   int getNbRobots() const;
   const Robot& getRobot(int robot) const;
