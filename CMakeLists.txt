@@ -5,7 +5,7 @@ include(FindProtobuf)
 find_package(Protobuf REQUIRED)
 find_package(PkgConfig REQUIRED)
 pkg_check_modules(JSONCPP jsoncpp)
-find_package(OpenCV REQUIRED)
+find_package(OpenCV 4.2.0 REQUIRED)
 
 find_package(catkin REQUIRED
   eigen)
@@ -50,7 +50,7 @@ add_custom_command(
 
 set(DELEGATE_INCLUDE_DIRS
   include
-  ${OpenCV_DIR}
+  ${OpenCV_INCLUDE_DIRS}
   ${JSONCPP_INCLUDE_DIRS}
   ${PROTOBUF_INCLUDE_DIR}
   ${CATKIN_DEVEL_PREFIX}/${CATKIN_GLOBAL_INCLUDE_DESTINATION})
