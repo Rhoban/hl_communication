@@ -219,7 +219,7 @@ void MessageManager::push(const RobotMsg& msg)
     throw std::runtime_error("MessageManager can only handle utc time_stamped RobotMsg");
   }
   const RobotIdentifier& robot_id = msg.robot_id();
-  messages_by_robot[robot_id][msg.utc_time_stamp()] = msg;
+  messages_by_robot[robot_id][getUTCTimeStamp()] = msg;
   TeamColor new_team_color = getTeamColor(msg.utc_time_stamp(), robot_id);
   if (active_robots_colors.count(robot_id) == 0)
   {
