@@ -4,7 +4,7 @@
 
 namespace hl_communication
 {
-static const int nb_chars_by_robot = 4;
+static const int nb_chars_by_robot = 6;
 static const int nb_chars_by_team = 260 + nb_chars_by_robot * 12;
 static const int protocol_version = 12;
 static const char* game_state_header = "RGme";
@@ -77,8 +77,10 @@ void Robot::updateFromMessage(char const* message, int numRobot)
   int d = nb_chars_by_robot * numRobot;
   penalty = charsToInt(message, d + 0, d + 1);
   secs_till_unpenalised = charsToInt(message, d + 1, d + 2);
-  yellow_card_count = charsToInt(message, d + 2, d + 3);
-  red_card_count = charsToInt(message, d + 3, d + 4);
+  warning_count = charsToInt(message, d + 2, d + 3);
+  yellow_card_count = charsToInt(message, d + 3, d + 4);
+  red_card_count = charsToInt(message, d + 4, d + 5);
+  goal_keeper = charsToInt(message, d + 5, d + 6);
 }
 
 void Robot::exportToGCRobotMsg(GCRobotMsg* msg) const

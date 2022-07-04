@@ -376,8 +376,7 @@ Eigen::Affine3d getAffineFromProtobuf(const Pose3D& pose)
   {
     case 0:
       break;
-    case 3:
-    {
+    case 3: {
       // Rodrigues vector case
       Eigen::Vector3d rotation_axis(pose.rotation(0), pose.rotation(1), pose.rotation(2));
       double angle = 0;
@@ -393,8 +392,7 @@ Eigen::Affine3d getAffineFromProtobuf(const Pose3D& pose)
       rotation = Eigen::AngleAxisd(angle, rotation_axis);
       break;
     }
-    case 4:
-    {
+    case 4: {
       Eigen::Quaterniond q(pose.rotation(0), pose.rotation(1), pose.rotation(2), pose.rotation(3));
       rotation = Eigen::Matrix3d(q);
       break;

@@ -33,8 +33,10 @@ public:
 private:
   int penalty;
   int secs_till_unpenalised;
+  int warning_count;
   int yellow_card_count;
   int red_card_count;
+  int goal_keeper;
 };
 
 std::ostream& operator<<(std::ostream& flux, const Robot& r);
