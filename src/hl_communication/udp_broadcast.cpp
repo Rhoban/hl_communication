@@ -44,7 +44,7 @@ void UDPBroadcast::openRead()
   closeRead();
 
   // Open read socket
-  read_fd = socket(AF_INET, SOCK_DGRAM, 0);
+  read_fd = socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP);
   if (read_fd == -1)
   {
     std::cout << "ERROR: UDPBroadcast: Unable to open read socket" << std::endl;
@@ -54,11 +54,14 @@ void UDPBroadcast::openRead()
 
   // Set broadcast permission
   int opt = 1;
-  int error = setsockopt(read_fd, SOL_SOCKET, SO_BROADCAST, (const char*)&opt, sizeof(opt));
+  // int error = setsockopt(read_fd, SOL_SOCKET, SO_BROADCAST, (const char*)&opt, sizeof(opt));
+  int error = 0;
 
   if (error != -1)
   {
     error = setsockopt(read_fd, SOL_SOCKET, SO_REUSEPORT, (const char*)&opt, sizeof(opt));
+    if (error != -1)
+      error = setsockopt(read_fd, SOL_SOCKET, SO_REUSEADDR, (const char*)&opt, sizeof(opt));
   }
 
   if (error == -1)
@@ -90,7 +93,7 @@ void UDPBroadcast::openWrite()
   closeWrite();
 
   // Open read socket
-  write_fd = socket(AF_INET, SOCK_DGRAM, 0);
+  write_fd = socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP);
   if (write_fd == -1)
   {
     std::cout << "ERROR: UDPBroadcast: Unable to open write socket" << std::endl;
@@ -108,6 +111,13 @@ void UDPBroadcast::openWrite()
     closeWrite();
     return;
   }
+  /*
+  error = setsockopt(write_fd, SOL_SOCKET, SO_REUSEPORT, (const char*)&opt, sizeof(opt));
+  if (error == -1)
+  {
+    std::cout << "WARNING: can not set so_reuse on write socket" << std::endl;
+  }
+  */
 }
 
 void UDPBroadcast::closeRead()
