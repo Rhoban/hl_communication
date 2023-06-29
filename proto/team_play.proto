@@ -38,4 +38,6 @@ message TeamPlay {
    * Up to teams
    */
   optional bytes free_field = 3;
+
+  optional bool isplaying = 4;
 }
