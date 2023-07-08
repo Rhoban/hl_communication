@@ -6,9 +6,7 @@
 #include <arpa/inet.h>
 #include <unistd.h>
 #include <ifaddrs.h>
-#ifndef __APPLE__
 #include <linux/if.h>
-#endif
 #include <errno.h>
 #include <string.h>
 
