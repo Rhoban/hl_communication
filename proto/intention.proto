@@ -27,6 +27,7 @@ enum KickType {
   KICK_LATERAL     = 1;
   KICK_CLASSIC     = 2;
   KICK_HIGH        = 3;
+  KICK_DIAGONAL    = 4;	
 }
 
 message KickIntention {
@@ -89,4 +90,10 @@ message Intention {
    * Up to teams
    */
   optional bytes free_field = 5;
+
+  /**
+   * Current kick planned by the robot
+   */
+  optional string kick_planned = 6;
+
 }
