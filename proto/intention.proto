@@ -27,6 +27,7 @@ enum KickType {
   KICK_LATERAL     = 1;
   KICK_CLASSIC     = 2;
   KICK_HIGH        = 3;
+  KICK_DIAGONAL    = 4;	
 }
 
 message KickIntention {
@@ -51,6 +52,12 @@ message KickIntention {
    * If this kick is a target for a pass, specify the target robot
    */
    optional uint32 pass_target_id = 6;
+
+  /**
+   * Current kick planned by the robot
+   */
+  optional string kick_name = 7;
+
 }
 
 /**
@@ -89,4 +96,5 @@ message Intention {
    * Up to teams
    */
   optional bytes free_field = 5;
+
 }
