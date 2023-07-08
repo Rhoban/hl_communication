@@ -8,7 +8,8 @@
 
 #include <unistd.h>
 
-#define PACKET_MAX_SIZE 10000
+// #define PACKET_MAX_SIZE 10000
+#define PACKET_MAX_SIZE 40000
 
 using namespace std::chrono;
 
