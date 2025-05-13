@@ -25,8 +25,8 @@ UDPMessageManager::UDPMessageManager(int port_read, int port_write)
   packet_sent_no = 0;
   packet_gc_no = 0;
   continue_to_run = true;
-  port_read = port_read;
-  port_write = port_write;
+  this->port_read = port_read;
+  this->port_write = port_write;
   broadcaster.reset(new hl_communication::UDPBroadcast(port_read, port_write));
   if (port_read != -1)
   {
