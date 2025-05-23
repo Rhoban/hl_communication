@@ -6,7 +6,7 @@ find_package(Protobuf REQUIRED)
 find_package(OpenCV 4.2.0 REQUIRED)
 find_package(jsoncpp REQUIRED)
 
-#Enable C++17
+#Enable C++17 / for coverage add --coverage -fprofile-abs-path
 set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra -std=c++17")
 
 # Protobuf generate files with unused parameters
@@ -31,15 +31,15 @@ set(SOURCES_DIRECTORIES
   src/hl_communication
   )
 
-#Include Sources sub sources
-foreach (DIRECTORY ${SOURCES_DIRECTORIES})
-    include (${DIRECTORY}/Sources.cmake)
-    set (PREFIXED_SOURCES)
-    foreach (SOURCE ${SOURCES})
-        set (PREFIXED_SOURCES ${PREFIXED_SOURCES} ${DIRECTORY}/${SOURCE})
-    endforeach (SOURCE)
-    set (ALL_SOURCES ${ALL_SOURCES} ${PREFIXED_SOURCES})
-endforeach (DIRECTORY)
+set(ALL_SOURCES 
+  src/hl_communication/game_controller_utils.cpp
+  src/hl_communication/labelling_utils.cpp
+  src/hl_communication/message_manager.cpp
+  src/hl_communication/robot_msg_utils.cpp
+  src/hl_communication/udp_broadcast.cpp
+  src/hl_communication/udp_message_manager.cpp
+  src/hl_communication/utils.cpp
+)
 
 add_library (${PROJECT_NAME} SHARED 
   ${PROTO_SOURCES} 
@@ -48,7 +48,7 @@ add_library (${PROJECT_NAME} SHARED
 )
 target_link_libraries(${PROJECT_NAME} PUBLIC jsoncpp_lib Eigen3::Eigen protobuf::libprotobuf ${OpenCV_LIBS})
 target_include_directories(${PROJECT_NAME} PUBLIC
-  $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+  $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/src>
   ${OpenCV_INCLUDE_DIRS}
   ${PROTOBUF_INCLUDE_DIR}
   ${CMAKE_CURRENT_BINARY_DIR}/..
