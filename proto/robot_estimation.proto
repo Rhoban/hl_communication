@@ -27,5 +27,5 @@ message RobotEstimation {
   /**
    * Pose of the robots in self referential
    */
-  required PoseDistribution robot_in_self = 2;
+ required PoseDistribution robot_in_self = 2;
 }

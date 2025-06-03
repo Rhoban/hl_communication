@@ -29,21 +29,21 @@ message Match2D3DMsg
 /**
  * Represents a rotated rectangle inside an image
  */
-message RotatedRectMsg {
+//message RotatedRectMsg {
   /**
    * The center of the ball in the image. This is not the position of the ball
    * on the ground.
    */
-  optional Point2DMsg center = 1;
-  optional double length = 2;
-  optional double width = 3;
+///  optional Point2DMsg center = 1;
+//  optional double length = 2;
+//  optional double width = 3;
   /**
    * The direction of the 'length' axis [rad]
    * - angle:    0 -> length is aligned with 'x' axis
    * - angle: pi/2 -> length is aligned with 'y' axis
    */
-  optional double angle = 4;
-}
+//  optional double angle = 4;
+//}
 
 message BallMsg {
   /**
@@ -78,7 +78,7 @@ message RobotMessage {
   /**
    * Bounding box entirely containing the robot
    */
-  optional RotatedRectMsg bounding_box = 2;
+  //optional RotatedRectMsg bounding_box = 2;
 
   optional RobotIdentifier robot_id = 3;
 
@@ -120,23 +120,23 @@ message LabelCollection {
   repeated LabelMsg labels = 2;
 }
 
-message MovieLabelCollection {
-  required VideoSourceID source_id = 1;
+//message MovieLabelCollection {
+//  required VideoSourceID source_id = 1;
   /**
    * Should be unique for each source, lexical ordering should preserve time-based ordering
    */
-  optional string sequence_identifier = 2;
-  repeated LabelCollection label_collections = 3;
+//  optional string sequence_identifier = 2;
+//  repeated LabelCollection label_collections = 3;
   /**
    * Stores properties of the camera in the same message to make sure that a
    * MovieLabelCollection is self-contained
    */
-  optional VideoMetaInformation video_meta_information = 4;
-}
+//  optional VideoMetaInformation video_meta_information = 4;
+//}
 
 message GameLabelCollection {
   optional string date = 1;
   optional uint32 team1 = 2;
   optional uint32 team2 = 3;
-  repeated MovieLabelCollection movies = 4;
+//  repeated MovieLabelCollection movies = 4;
 }

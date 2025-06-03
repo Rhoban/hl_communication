@@ -15,10 +15,10 @@ import "team_play.proto";
  * Robots can send messages containing only part or all of the information at once
  */
 message RobotMsg {
-  optional Capabilities capabilities = 1;
+ // optional Capabilities capabilities = 1;
   optional Intention intention = 2;
   optional Perception perception = 3;
-  repeated RobotEstimation robot_estimation = 4;
+  //repeated RobotEstimation robot_estimation = 4;
   optional TeamPlay team_play = 5;
   optional RobotIdentifier robot_id = 6;
   /**

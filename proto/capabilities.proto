@@ -2,14 +2,14 @@ syntax = "proto2";
 
 package hl_communication;
 
-message Capabilities {
+//message Capabilities {
   // Maximal walking speed of the robot [m/s]
-  optional float max_walking_speed = 1;
+//  optional float max_walking_speed = 1;
   // Average kicking distance for robot kicks [m]
-  optional float avg_kick_distance = 2;
+//  optional float avg_kick_distance = 2;
 
   /**
    * Up to teams
    */
-  optional bytes free_field = 3;
-}
+//  optional bytes free_field = 3;
+//}
