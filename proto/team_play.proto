@@ -42,4 +42,5 @@ message TeamPlay {
   optional bool isplaying = 4;
   optional bool isCameraAlive = 5;
   optional bool areAllMotorsOk = 6;
+  optional bool isPressureOk = 7;
 }
