@@ -194,34 +194,6 @@ std::string ipToString(uint64_t ip)
   return oss.str();
 }
 
-void invertPosition(PositionDistribution* position)
-{
-  position->set_x(-position->x());
-  position->set_y(-position->y());
-}
-
-void invertAngle(AngleDistribution* angle)
-{
-  double alpha = angle->mean() + M_PI;
-  if (alpha > M_PI)
-  {
-    alpha -= 2 * M_PI;
-  }
-  angle->set_mean(alpha);
-}
-
-void invertPose(PoseDistribution* pose)
-{
-  if (pose->has_position())
-  {
-    invertPosition(pose->mutable_position());
-  }
-  if (pose->has_dir())
-  {
-    invertAngle(pose->mutable_dir());
-  }
-}
-
 bool exportUncertainty(const PositionDistribution& p, cv::Mat* out)
 {
   int nb_coeffs = p.uncertainty_size();

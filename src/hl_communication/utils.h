@@ -93,21 +93,6 @@ uint64_t stringToIP(const std::string& str);
 std::string ipToString(uint64_t ip_address);
 
 /**
- * Invert the side of the angle message (x-axis toward left or right of team area)
- */
-void invertPosition(PositionDistribution* position);
-
-/**
- * Invert the side of the angle message (x-axis toward left or right of team area)
- */
-void invertAngle(AngleDistribution* position);
-
-/**
- * Invert the side of the provided pose message (x-axis toward left or right of team area)
- */
-void invertPose(PoseDistribution* pose);
-
-/**
  * Export uncertainty from Pos Distribution to a covariance matrix, return true on success and false on failure (no
  * uncertainty or size invalid)
  */

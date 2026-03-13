@@ -371,7 +371,7 @@ void MessageManager::loadMessages(const std::string& file_path)
     setOffset(messages_collection.time_offset());
   }
   std::cout << "Pushing " << messages_collection.messages_size() << " messages in MM" << std::endl;
-  for (const GameMsg msg : messages_collection.messages())
+  for (const GameMsg &msg : messages_collection.messages())
   {
     push(msg);
   }
