@@ -2,13 +2,14 @@ syntax = "proto2";
 
 package hl_communication;
 
-import "capabilities.proto";
+//import "capabilities.proto";
 import "captain.proto";
 import "game_controller.proto";
 import "intention.proto";
 import "perception.proto";
 import "robot_estimation.proto";
 import "team_play.proto";
+import "extra_team_play.proto";
 
 
 /**

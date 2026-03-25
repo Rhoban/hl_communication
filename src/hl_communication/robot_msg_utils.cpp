@@ -1,5 +1,6 @@
 #include <hl_communication/robot_msg_utils.h>
-#include <hl_communication/utils.h>
+#include <hl_communication/udp_message_manager.h>
+//#include <hl_communication/utils.h>
 
 #include <cmath>
 
@@ -50,7 +51,7 @@ PositionDistribution fieldFromSelf(const PoseDistribution& robot_in_field, const
 {
   double robot_x = robot_in_field.position().x();
   double robot_y = robot_in_field.position().y();
-  double robot_dir = robot_in_field.dir().mean();
+  double robot_dir = robot_in_field.dir();
   double pos_x = pos_in_self.x();
   double pos_y = pos_in_self.y();
   PositionDistribution result;

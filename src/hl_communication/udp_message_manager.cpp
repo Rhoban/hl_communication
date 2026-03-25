@@ -1,7 +1,7 @@
 #include <hl_communication/udp_message_manager.h>
 
 #include <hl_communication/game_controller_utils.h>
-#include <hl_communication/utils.h>
+//#include <hl_communication/utils.h>
 
 #include <chrono>
 #include <iostream>
@@ -13,8 +13,20 @@
 
 using namespace std::chrono;
 
+
+
+
+
 namespace hl_communication
 {
+
+
+uint64_t getTimeStamp()
+{
+  return duration_cast<duration<uint64_t, std::micro>>(steady_clock::now().time_since_epoch()).count();
+}
+
+
 int getDefaultTeamPort(int team_id)
 {
   return 35000 + team_id;
@@ -103,7 +115,7 @@ void UDPMessageManager::run()
       gc_msg->set_time_stamp(time_stamp);
       if (!gc_msg->has_utc_time_stamp())
       {
-        gc_msg->set_utc_time_stamp(getUTCTimeStamp());
+        gc_msg->set_utc_time_stamp(getTimeStamp());
       }
     }
     if (game_msg.has_robot_msg())
@@ -151,7 +163,7 @@ void UDPMessageManager::sendMessage(hl_communication::GameMsg* message)
   message->mutable_identifier()->set_packet_no(packet_sent_no);
   if (message->has_robot_msg())
   {
-    message->mutable_robot_msg()->set_utc_time_stamp(getUTCTimeStamp());
+    message->mutable_robot_msg()->set_utc_time_stamp(getTimeStamp());
   }
   packet_sent_no++;
   sendMessage(*message);

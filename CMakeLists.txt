@@ -13,8 +13,8 @@ set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra -std=c++17")
 set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-unused-parameter")
 
 protobuf_generate_cpp(PROTO_SOURCES PROTO_HEADERS ${PROTOBUF_MESSAGES}
-  proto/camera.proto
-  proto/capabilities.proto
+#  proto/camera.proto
+#  proto/capabilities.proto
   proto/captain.proto
   proto/game_controller.proto
   proto/intention.proto
@@ -24,6 +24,7 @@ protobuf_generate_cpp(PROTO_SOURCES PROTO_HEADERS ${PROTOBUF_MESSAGES}
   proto/robot_estimation.proto
   proto/team_play.proto
   proto/wrapper.proto
+  proto/extra_team_play.proto
 )
 set_source_files_properties(${PROTO_SOURCES} ${PROTO_HEADERS} PROPERTIES GENERATED TRUE)
 
@@ -33,12 +34,9 @@ set(SOURCES_DIRECTORIES
 
 set(ALL_SOURCES 
   src/hl_communication/game_controller_utils.cpp
-  src/hl_communication/labelling_utils.cpp
-  src/hl_communication/message_manager.cpp
   src/hl_communication/robot_msg_utils.cpp
   src/hl_communication/udp_broadcast.cpp
   src/hl_communication/udp_message_manager.cpp
-  src/hl_communication/utils.cpp
   src/hl_communication/invert.cpp
 )
 

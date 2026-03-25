@@ -13,7 +13,7 @@ void invertPosition(PositionDistribution* position);
 /**
  * Invert the side of the angle message (x-axis toward left or right of team area)
  */
-void invertAngle(AngleDistribution* position);
+double invertAngle(double position);
 
 /**
  * Invert the side of the provided pose message (x-axis toward left or right of team area)

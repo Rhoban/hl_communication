@@ -12,15 +12,17 @@ void invertPosition(PositionDistribution* position)
   position->set_y(-position->y());
 }
 
-void invertAngle(AngleDistribution* angle)
+
+double invertAngle(double angle)
 {
-  double alpha = angle->mean() + M_PI;
+  double alpha = angle + M_PI;
   if (alpha > M_PI)
   {
     alpha -= 2 * M_PI;
   }
-  angle->set_mean(alpha);
+  return alpha;
 }
+
 
 void invertPose(PoseDistribution* pose)
 {
@@ -30,7 +32,7 @@ void invertPose(PoseDistribution* pose)
   }
   if (pose->has_dir())
   {
-    invertAngle(pose->mutable_dir());
+    pose->set_dir(invertAngle(pose->dir()));
   }
 }
 

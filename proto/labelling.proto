@@ -1,6 +1,6 @@
 syntax="proto2";
 
-import "camera.proto";
+//import "camera.proto";
 import "robot_estimation.proto";
 
 package hl_communication;
