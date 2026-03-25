@@ -5,51 +5,26 @@ package hl_communication;
 /**
  * Distribution for position of an object in 2D space
  */
-message PositionDistribution {
+message Position2d {
   /**
    * Position x [m]
    */
-  required float x = 1;
+  required double x = 1;
   /**
    * Position y [m]
    */
-  required float y = 2;
-
-  /**
-   * - If empty: not informed
-   * - If size 2: ( std_dev_x , std_dev_y )
-   * - If size 3: ( covar_x , covar_xy, covar_y)
-   */
-  repeated float uncertainty = 3;
+  required double y = 2;
 }
 
-/**
- * Distribution for angle, can use either std_dev for approximation or
- * von_mises_kappa for an accurate representation
- */
-message AngleDistribution {
-  /**
-   * Average angle [rad]
-   */
-  required double mean = 1;
-
-  /**
-   * Standard-deviation on direction [rad]
-   * - since the direction uses a cyclic space, this is an approximation
-   */
-  optional double std_dev = 2;
-
-  /**
-   * Value of the kappa parameter for a Von mises distribution
-   */
-  optional double von_mises_kappa = 3;
-}
 
 /**
  * Distribution for the position and orientation of an object.
  * Position and orientation are considered as independent
  */
-message PoseDistribution {
-  optional PositionDistribution position = 1;
-  optional AngleDistribution dir = 2;
+message Pose2d {
+  optional Position2d position = 1;
+  /**
+   * Average angle [rad]
+   */
+  optional double dir = 2;
 }

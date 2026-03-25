@@ -8,15 +8,15 @@ void invertField(hl_communication::RobotMsg* robot_msg);
 /**
  * Invert the side of the angle message (x-axis toward left or right of team area)
  */
-void invertPosition(PositionDistribution* position);
+void invertPosition(Position2d* position);
 
 /**
  * Invert the side of the angle message (x-axis toward left or right of team area)
  */
-void invertAngle(AngleDistribution* position);
+double invertAngle(double position);
 
 /**
  * Invert the side of the provided pose message (x-axis toward left or right of team area)
  */
-void invertPose(PoseDistribution* pose);
+void invertPose(Pose2d* pose);
 }

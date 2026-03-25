@@ -20,13 +20,13 @@ uint64_t getAge(const RobotMsg& msg);
  * Convert the given position distribution in self referential to world referential.
  * DISCLAIMER: currently, the resulting PositionDistribution does not take into account uncertainties
  */
-PositionDistribution fieldFromSelf(const PoseDistribution& robot_in_field, const PositionDistribution& pos_in_self);
+Position2d fieldFromSelf(const Pose2d& robot_in_field, const Position2d& pos_in_self);
 
 double getBallDistance(const RobotMsg& msg);
 
 /**
  * Uses the ball in the field 
  */
-PositionDistribution getBallInField(const RobotMsg& robot_msg);
+Position2d getBallInField(const RobotMsg& robot_msg);
 
 }

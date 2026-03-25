@@ -8,56 +8,7 @@ enum Action {
   UNDEFINED        = 0;// None of the action matches current action
   POSITIONING      = 1;// Robot is repositionning (but do not plan to kick immediately)
   GOING_TO_KICK    = 2;// Robot is moving toward the ball in order to kick
-  KICKING          = 3;// Robot is currently performing the kick motion
-  GOING_TO_DRIBBLE = 4;// Robot is moving toward the ball and plans to dribble
-  DRIBBLING        = 5;// Robot is actively dribbling
-  WAITING          = 6;// Robot is waiting for something to happen
-  SEARCHING_BALL   = 7;// Robot is trying to find the position of the ball on the field
-  INACTIVE         = 8;// Robot is not active and is not playing
-}
-
-enum KickMode {
-  KICK_AUTONOMOUS  = 0;// Robot tries to kick as soon as possible
-  KICK_PREPARE     = 1;// Once robot is placed, it waits for new order
-  KICK_VOLLEY      = 2;// Robot prepares to kick a moving ball
-}
-
-enum KickType {
-  KICK_SMALL       = 0;
-  KICK_LATERAL     = 1;
-  KICK_CLASSIC     = 2;
-  KICK_HIGH        = 3;
-  KICK_DIAGONAL    = 4;	
-}
-
-message KickIntention {
-  /**
-   * Expected position of the ball in field referential when the player will kick it
-   */
-  optional PositionDistribution start = 1;
-  /**
-   * Planned target for the ball in field referential
-   */
-  optional PositionDistribution target = 2;
-  /**
-   * Kick mode (see above)
-   */
-  optional KickMode mode = 3;
-  /**
-   * Kicks that are allowed
-   */
-  optional KickType type = 4;
-  repeated KickType allowed_kicks = 5;
-  /**
-   * If this kick is a target for a pass, specify the target robot
-   */
-   optional uint32 pass_target_id = 6;
-
-  /**
-   * Current kick planned by the robot
-   */
-  optional string kick_name = 7;
-
+  SEARCHING_BALL   = 3;// Robot is trying to find the position of the ball on the field
 }
 
 /**
@@ -66,35 +17,13 @@ message KickIntention {
  */
 message Intention {
   /**
-   * Destination of the robot in field referential
-   */
-  optional PoseDistribution target_pose_in_field = 1;
-
-  /**
-   * List of waypoints in field referential (useful when avoiding an obstacle
-   * for example), first element of the vector is the next waypoint
-   */
-  repeated PoseDistribution waypoints_in_field = 2;
-
-  /**
    * Current action planned by the robot
    */
-  optional Action action_planned = 3;
+  optional Action action_planned = 1;
 
   /**
    * Estimated result for the ball position after next kick, when ball has
    * stopped
    */
-  optional PositionDistribution kick_target_in_field = 4;
-
-  /**
-   * Intention of kicking, allows to specify position of ball at impact
-   */
-  optional KickIntention kick = 6;
-
-  /**
-   * Up to teams
-   */
-  optional bytes free_field = 5;
-
+  optional Position2d kick_target_in_field = 2;
 }

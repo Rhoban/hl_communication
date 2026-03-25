@@ -15,7 +15,7 @@ message CommonBall
    * Number of robots agreeing on this position
    */
   required uint32 nb_votes = 1;
-  required PositionDistribution position = 2;
+  required Position2d position = 2;
 }
 
 /**
@@ -28,7 +28,7 @@ message CommonOpponent
    * Number of robots agreeing on this position
    */
   required uint32 nb_votes = 1;
-  required PoseDistribution pose = 2;
+  required Pose2d pose = 2;
 }
 
 message StrategyOrder
@@ -40,7 +40,7 @@ message StrategyOrder
   /**
    * Target pose, distribution variance can be used to specify tolerances
    */
-  optional PoseDistribution target_pose = 2;
+  optional Pose2d target_pose = 2;
   /**
    * What is expected from the robot
    */
@@ -48,7 +48,7 @@ message StrategyOrder
   /**
    * Kick asked by captain
    */
-  optional KickIntention kick = 4;
+  //optional KickIntention kick = 4;
 }
 
 /**

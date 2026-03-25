@@ -6,23 +6,25 @@ namespace hl_communication
 {
 
 
-void invertPosition(PositionDistribution* position)
+void invertPosition(Position2d* position)
 {
   position->set_x(-position->x());
   position->set_y(-position->y());
 }
 
-void invertAngle(AngleDistribution* angle)
+
+double invertAngle(double angle)
 {
-  double alpha = angle->mean() + M_PI;
+  double alpha = angle + M_PI;
   if (alpha > M_PI)
   {
     alpha -= 2 * M_PI;
   }
-  angle->set_mean(alpha);
+  return alpha;
 }
 
-void invertPose(PoseDistribution* pose)
+
+void invertPose(Pose2d* pose)
 {
   if (pose->has_position())
   {
@@ -30,7 +32,7 @@ void invertPose(PoseDistribution* pose)
   }
   if (pose->has_dir())
   {
-    invertAngle(pose->mutable_dir());
+    pose->set_dir(invertAngle(pose->dir()));
   }
 }
 
@@ -44,19 +46,14 @@ void invertField(hl_communication::Perception* perception)
 
 void invertField(hl_communication::Intention* intention)
 {
-  if (intention->has_target_pose_in_field())
-    invertPose(intention->mutable_target_pose_in_field());
-  for (int idx = 0; idx < intention->waypoints_in_field_size(); idx++)
-  {
-    invertPose(intention->mutable_waypoints_in_field(idx));
-  }
+  //if (intention->has_target_pose_in_field())
+  //  invertPose(intention->mutable_target_pose_in_field());
+  //for (int idx = 0; idx < intention->waypoints_in_field_size(); idx++)
+  //{
+  //  invertPose(intention->mutable_waypoints_in_field(idx));
+  //}
   if (intention->has_kick_target_in_field())
     invertPosition(intention->mutable_kick_target_in_field());
-  if (intention->has_kick())
-  {
-    invertPosition(intention->mutable_kick()->mutable_start());
-    invertPosition(intention->mutable_kick()->mutable_target());
-  }
 }
 
 void invertField(hl_communication::Captain* captain)

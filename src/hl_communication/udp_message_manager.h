@@ -3,7 +3,7 @@
 #include <hl_communication/wrapper.pb.h>
 #include <google/protobuf/text_format.h>
 #include <queue>
-#include <hl_communication/utils.h>
+//#include <hl_communication/utils.h>
 #include <hl_communication/udp_broadcast.h>
 #include <mutex>
 #include <thread>
@@ -14,6 +14,8 @@ namespace hl_communication
  * Return the default team_port
  */
 int getDefaultTeamPort(int team_id);
+
+uint64_t getTimeStamp();
 
 class UDPMessageManager
 {

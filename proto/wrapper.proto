@@ -2,13 +2,14 @@ syntax = "proto2";
 
 package hl_communication;
 
-import "capabilities.proto";
+//import "capabilities.proto";
 import "captain.proto";
 import "game_controller.proto";
 import "intention.proto";
 import "perception.proto";
 import "robot_estimation.proto";
 import "team_play.proto";
+import "extra_team_play.proto";
 
 
 /**
@@ -35,7 +36,7 @@ message RobotMsg {
   /**
    * Local time_stamp of the robot emitting the message: nb microseconds since Jan 1st 1970 UTC
    */
-  optional uint64 utc_time_stamp = 10;
+  //optional uint64 utc_time_stamp = 10;
 }
 
 /**
