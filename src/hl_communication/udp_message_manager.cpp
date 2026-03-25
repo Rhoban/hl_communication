@@ -13,10 +13,6 @@
 
 using namespace std::chrono;
 
-
-
-
-
 namespace hl_communication
 {
 

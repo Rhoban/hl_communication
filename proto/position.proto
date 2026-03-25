@@ -16,7 +16,6 @@ message Position2d {
   required double y = 2;
 }
 
-
 /**
  * Distribution for the position and orientation of an object.
  * Position and orientation are considered as independent
