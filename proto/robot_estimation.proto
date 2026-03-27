@@ -19,13 +19,14 @@ message RobotIdentifier {
   optional uint32 robot_id = 2;
 }
 
-message RobotEstimation {
+
+//message RobotEstimation {
   /**
    * The identifier of the robot detected
    */
-  optional RobotIdentifier robot_id = 1;
+  //optional RobotIdentifier robot_id = 1;
   /**
    * Pose of the robots in self referential
    */
- required Pose2d robot_in_self = 2;
-}
+// required Pose2d robot_in_self = 2;
+//}

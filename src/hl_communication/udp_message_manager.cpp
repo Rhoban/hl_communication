@@ -25,7 +25,7 @@ uint64_t getTimeStamp()
 
 int getDefaultTeamPort(int team_id)
 {
-  return 35000 + team_id;
+  return 10000 + team_id;
 }
 
 UDPMessageManager::UDPMessageManager(int port_read, int port_write)

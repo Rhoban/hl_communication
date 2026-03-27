@@ -38,10 +38,10 @@ void invertPose(Pose2d* pose)
 
 void invertField(hl_communication::Perception* perception)
 {
-  for (int idx = 0; idx < perception->self_in_field_size(); idx++)
-  {
-    invertPose(perception->mutable_self_in_field(idx)->mutable_pose());
-  }
+  //for (int idx = 0; idx < perception->self_in_field_size(); idx++)
+  //{
+    invertPose(perception->mutable_self_in_field());
+  //}
 }
 
 void invertField(hl_communication::Intention* intention)

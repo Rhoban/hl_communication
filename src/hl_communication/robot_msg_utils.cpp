@@ -60,6 +60,6 @@ double getBallDistance(const RobotMsg& msg)
 
 Position2d getBallInField(const RobotMsg& msg)
 {
-  return fieldFromSelf(msg.perception().self_in_field(0).pose(), msg.perception().ball_in_self());
+  return fieldFromSelf(msg.perception().self_in_field(), msg.perception().ball_in_self());
 }
 }
