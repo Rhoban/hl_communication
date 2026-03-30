@@ -13,12 +13,8 @@ set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra -std=c++17")
 set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-unused-parameter")
 
 protobuf_generate_cpp(PROTO_SOURCES PROTO_HEADERS ${PROTOBUF_MESSAGES}
-#  proto/camera.proto
-#  proto/capabilities.proto
   proto/captain.proto
-  proto/game_controller.proto
   proto/intention.proto
-  proto/labelling.proto
   proto/perception.proto
   proto/position.proto
   proto/robot_estimation.proto
@@ -33,7 +29,6 @@ set(SOURCES_DIRECTORIES
   )
 
 set(ALL_SOURCES 
-  src/hl_communication/game_controller_utils.cpp
   src/hl_communication/robot_msg_utils.cpp
   src/hl_communication/udp_broadcast.cpp
   src/hl_communication/udp_message_manager.cpp

@@ -1,8 +1,5 @@
 #include <hl_communication/udp_message_manager.h>
 
-#include <hl_communication/game_controller_utils.h>
-//#include <hl_communication/utils.h>
-
 #include <chrono>
 #include <iostream>
 
@@ -84,17 +81,9 @@ void UDPMessageManager::run()
     game_msg.Clear();
     std::string string_data(data, len);
     uint64_t time_stamp = getTimeStamp();
-    GameState game_state;
-    // Disabling error message when ParseFromString fails
-    google::protobuf::LogSilencer silencer;
+//    google::protobuf::LogSilencer silencer;
     if (game_msg.ParseFromString(string_data))
     {
-    }
-    else if (game_state.updateFromMessage(data))
-    {
-      game_state.exportToGCMsg(game_msg.mutable_gc_msg());
-      game_msg.mutable_identifier()->set_packet_no(packet_gc_no);
-      packet_gc_no++;
     }
     else
     {
@@ -104,16 +93,6 @@ void UDPMessageManager::run()
 
     game_msg.mutable_identifier()->set_src_ip(src_address);
     game_msg.mutable_identifier()->set_src_port(ntohs(src_port));
-    // Assign reception timestamp
-    if (game_msg.has_gc_msg())
-    {
-      GCMsg* gc_msg = game_msg.mutable_gc_msg();
-      gc_msg->set_time_stamp(time_stamp);
-      if (!gc_msg->has_utc_time_stamp())
-      {
-        gc_msg->set_utc_time_stamp(getTimeStamp());
-      }
-    }
     if (game_msg.has_robot_msg())
     {
       game_msg.mutable_robot_msg()->set_time_stamp(time_stamp);
@@ -143,7 +122,7 @@ bool UDPMessageManager::receiveMessage(hl_communication::GameMsg* message)
   return res;
 }
 
-void UDPMessageManager::sendMessage(const hl_communication::GameMsg& message)
+void UDPMessageManager::sendMessageWithId(const hl_communication::GameMsg& message)
 {
   std::string raw_message;
   if (!message.SerializeToString(&raw_message))
@@ -154,7 +133,7 @@ void UDPMessageManager::sendMessage(const hl_communication::GameMsg& message)
   broadcaster->broadcastMessage(raw_message.c_str(), raw_message.size());
 }
 
-void UDPMessageManager::sendMessage(hl_communication::GameMsg* message)
+void UDPMessageManager::sendMessageWithoutId(hl_communication::GameMsg* message)
 {
   message->mutable_identifier()->set_packet_no(packet_sent_no);
   if (message->has_robot_msg())
@@ -162,7 +141,7 @@ void UDPMessageManager::sendMessage(hl_communication::GameMsg* message)
     message->mutable_robot_msg()->set_time_stamp(getTimeStamp());
   }
   packet_sent_no++;
-  sendMessage(*message);
+  sendMessageWithId(*message);
 }
 
 }  // namespace hl_communication

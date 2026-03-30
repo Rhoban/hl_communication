@@ -4,7 +4,7 @@ package hl_communication;
 
 //import "capabilities.proto";
 import "captain.proto";
-import "game_controller.proto";
+//import "game_controller.proto";
 import "intention.proto";
 import "perception.proto";
 import "robot_estimation.proto";
@@ -58,10 +58,10 @@ message MsgIdentifier {
 }
 
 message GameMsg {
-  oneof content {
-    RobotMsg robot_msg = 1;
-    GCMsg gc_msg = 2;
-  }
+  //oneof content {
+  required RobotMsg robot_msg = 1;
+  // GCMsg gc_msg = 2;
+  //}
   required MsgIdentifier identifier = 3;
 }
 
