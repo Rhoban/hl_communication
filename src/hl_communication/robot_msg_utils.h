@@ -22,11 +22,4 @@ uint64_t getAge(const RobotMsg& msg);
  */
 Position2d fieldFromSelf(const Pose2d& robot_in_field, const Position2d& pos_in_self);
 
-double getBallDistance(const RobotMsg& msg);
-
-/**
- * Uses the ball in the field 
- */
-Position2d getBallInField(const RobotMsg& robot_msg);
-
 }

@@ -50,16 +50,4 @@ Position2d fieldFromSelf(const Pose2d& robot_in_field, const Position2d& pos_in_
   return result;
 }
 
-double getBallDistance(const RobotMsg& msg)
-{
-  const Position2d& pos = msg.perception().ball_in_self();
-  double x = pos.x();
-  double y = pos.y();
-  return std::sqrt(pow(x,2) + pow(y,2));
-}
-
-Position2d getBallInField(const RobotMsg& msg)
-{
-  return fieldFromSelf(msg.perception().self_in_field(), msg.perception().ball_in_self());
-}
 }

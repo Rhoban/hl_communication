@@ -17,10 +17,8 @@ protobuf_generate_cpp(PROTO_SOURCES PROTO_HEADERS ${PROTOBUF_MESSAGES}
   proto/intention.proto
   proto/perception.proto
   proto/position.proto
-  proto/robot_estimation.proto
   proto/team_play.proto
   proto/wrapper.proto
-  proto/extra_team_play.proto
 )
 set_source_files_properties(${PROTO_SOURCES} ${PROTO_HEADERS} PROPERTIES GENERATED TRUE)
 
