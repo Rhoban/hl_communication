@@ -22,9 +22,6 @@ protobuf_generate_cpp(PROTO_SOURCES PROTO_HEADERS ${PROTOBUF_MESSAGES}
 )
 set_source_files_properties(${PROTO_SOURCES} ${PROTO_HEADERS} PROPERTIES GENERATED TRUE)
 
-set(SOURCES_DIRECTORIES
-  src/hl_communication
-  )
 
 set(ALL_SOURCES 
   src/hl_communication/robot_msg_utils.cpp
