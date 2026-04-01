@@ -9,6 +9,7 @@ enum Action {
   POSITIONING      = 1;// Robot is repositionning (but do not plan to kick immediately)
   GOING_TO_KICK    = 2;// Robot is moving toward the ball in order to kick
   SEARCHING_BALL   = 3;// Robot is trying to find the position of the ball on the field
+  WAITING          = 4;// Robot is waiting 
 }
 
 /**
