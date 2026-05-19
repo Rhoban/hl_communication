@@ -5,7 +5,7 @@
 namespace hl_communication
 {
 
-std::string action2str(Action a);
+// std::string action2str(Action a);
 
 int getRobotId(const RobotMsg& msg);
 

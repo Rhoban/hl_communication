@@ -7,20 +7,20 @@
 namespace hl_communication
 {
 
-std::string action2str(Action a)
-{
-  switch(a)
-  {
-    case Action::POSITIONING:
-      return "positioning";
-    case Action::GOING_TO_KICK:
-      return "going to kick";
-    case Action::SEARCHING_BALL:
-      return "searching ball";
-    default:
-      return "unknown";
-  }
-}
+// std::string action2str(Action a)
+// {
+//   switch(a)
+//   {
+//     case Action::POSITIONING:
+//       return "positioning";
+//     case Action::GOING_TO_KICK:
+//       return "going to kick";
+//     case Action::SEARCHING_BALL:
+//       return "searching ball";
+//     default:
+//       return "unknown";
+//   }
+// }
 
 int getRobotId(const RobotMsg& msg)
 {
