@@ -45,6 +45,27 @@ target_include_directories(${PROJECT_NAME} PUBLIC
 
 option(BUILD_HL_COMMUNICATION_EXAMPLES "Building hl_communication examples" OFF)
 
+# Generate Python protobuf bindings into python/hl_communication_proto/
+set(HL_PYTHON_OUT_DIR ${CMAKE_CURRENT_SOURCE_DIR}/python/hl_communication_proto)
+
+add_custom_target(hl_communication_python_proto ALL
+    COMMAND ${CMAKE_COMMAND} -E make_directory ${HL_PYTHON_OUT_DIR}
+    COMMAND ${PROTOBUF_PROTOC_EXECUTABLE}
+            --proto_path=${CMAKE_CURRENT_SOURCE_DIR}/proto
+            --python_out=${HL_PYTHON_OUT_DIR}
+            ${CMAKE_CURRENT_SOURCE_DIR}/proto/captain.proto
+            ${CMAKE_CURRENT_SOURCE_DIR}/proto/intention.proto
+            ${CMAKE_CURRENT_SOURCE_DIR}/proto/perception.proto
+            ${CMAKE_CURRENT_SOURCE_DIR}/proto/position.proto
+            ${CMAKE_CURRENT_SOURCE_DIR}/proto/team_play.proto
+            ${CMAKE_CURRENT_SOURCE_DIR}/proto/wrapper.proto
+    COMMAND bash -c "sed -i 's/^import \\([a-z_]*_pb2\\) as /from hl_communication_proto import \\1 as /' ${HL_PYTHON_OUT_DIR}/*_pb2.py"
+    COMMAND ${CMAKE_COMMAND} -E touch ${HL_PYTHON_OUT_DIR}/__init__.py
+    WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
+    COMMENT "Generating Python protobuf bindings for hl_communication"
+    VERBATIM
+)
+
 if (BUILD_HL_COMMUNICATION_EXAMPLES)
   add_executable(server_example examples/server_example.cpp)
   target_link_libraries(server_example ${PROJECT_NAME} )
