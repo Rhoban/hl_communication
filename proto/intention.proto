@@ -2,12 +2,10 @@ syntax = "proto2";
 
 package hl_communication;
 
-import "position.proto";
-
 enum Action {
-  UNDEFINED        = 0;// None of the action matches current action
+  INCAPABLE        = 0;// Robot is penalized, unlocalized, or handled
   POSITIONING      = 1;// Robot is repositionning (but do not plan to kick immediately)
-  GOING_TO_KICK    = 2;// Robot is moving toward the ball in order to kick
+  GOING_TO_BALL    = 2;// Robot is moving toward the ball in order to kick
   SEARCHING_BALL   = 3;// Robot is trying to find the position of the ball on the field
   WAITING          = 4;// Robot is waiting 
 }
@@ -22,9 +20,4 @@ message Intention {
    */
   optional Action action_planned = 1;
 
-  /**
-   * Estimated result for the ball position after next kick, when ball has
-   * stopped
-   */
-  optional Position2d kick_target_in_field = 2;
 }

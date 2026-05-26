@@ -33,4 +33,6 @@ message Perception {
    * Velocity of the ball in self referential [m/s]
    */
   optional Position2d ball_velocity_in_self = 8;
+
+  optional bool whistle_heard = 9;
 }

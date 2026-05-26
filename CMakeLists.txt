@@ -27,7 +27,7 @@ set(ALL_SOURCES
   src/hl_communication/robot_msg_utils.cpp
   src/hl_communication/udp_broadcast.cpp
   src/hl_communication/udp_message_manager.cpp
-  src/hl_communication/invert.cpp
+#  src/hl_communication/invert.cpp
 )
 
 add_library (${PROJECT_NAME} SHARED 
