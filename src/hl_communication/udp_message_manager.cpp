@@ -131,6 +131,7 @@ void UDPMessageManager::sendMessageWithId(const hl_communication::GameMsg& messa
     return;
   }
   broadcaster->broadcastMessage(raw_message.c_str(), raw_message.size());
+  //std::cerr << "message size: " << raw_message.size() << std::endl;
 }
 
 void UDPMessageManager::sendMessageWithoutId(hl_communication::GameMsg* message)
