@@ -35,4 +35,6 @@ message Perception {
   optional Position2d ball_velocity_in_self = 8;
 
   optional bool whistle_heard = 9;
+
+  optional bool kicked = 10;
 }
