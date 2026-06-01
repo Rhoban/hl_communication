@@ -43,7 +43,7 @@ target_include_directories(${PROJECT_NAME} PUBLIC
   ${CMAKE_CURRENT_BINARY_DIR}/..
 )
 
-option(BUILD_HL_COMMUNICATION_EXAMPLES "Building hl_communication examples" OFF)
+option(BUILD_TEAMPLAY_BIN "Building teamplay binaries" ON)
 
 # Generate Python protobuf bindings into python/hl_communication_proto/
 set(HL_PYTHON_OUT_DIR ${CMAKE_CURRENT_SOURCE_DIR}/python/hl_communication_proto)
@@ -66,10 +66,14 @@ add_custom_target(hl_communication_python_proto ALL
     VERBATIM
 )
 
-if (BUILD_HL_COMMUNICATION_EXAMPLES)
-  add_executable(server_example examples/server_example.cpp)
-  target_link_libraries(server_example ${PROJECT_NAME} )
+if (BUILD_TEAMPLAY_BIN)
+  set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin/tools)
+ # add_executable(server_example examples/server_example.cpp)
+ # target_link_libraries(server_example ${PROJECT_NAME} )
 
-  add_executable(client_example examples/client_example.cpp)
-  target_link_libraries(client_example ${PROJECT_NAME} )
+ # add_executable(client_example examples/client_example.cpp)
+ # target_link_libraries(client_example ${PROJECT_NAME} )
+
+  add_executable(tp_dump_msg examples/tp_dump_msg.cpp)
+  target_link_libraries(tp_dump_msg ${PROJECT_NAME} rhoban_utils)
 endif()

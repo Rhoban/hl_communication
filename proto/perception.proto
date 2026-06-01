@@ -20,7 +20,7 @@ message Perception {
    *
    * Note: might be inconsistent with 'self_in_field'
    */
-  optional Position2d opp_goal_in_self = 5;
+  //optional Position2d opp_goal_in_self = 5; TODO: unused => remove?
 
   /**
    * Belief regarding positions of other robots in self referential

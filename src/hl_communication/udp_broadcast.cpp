@@ -59,9 +59,9 @@ void UDPBroadcast::openRead()
 
   if (error != -1)
   {
-    error = setsockopt(read_fd, SOL_SOCKET, SO_REUSEPORT, (const char*)&opt, sizeof(opt));
-    if (error != -1)
-      error = setsockopt(read_fd, SOL_SOCKET, SO_REUSEADDR, (const char*)&opt, sizeof(opt));
+    //error = setsockopt(read_fd, SOL_SOCKET, SO_REUSEPORT, (const char*)&opt, sizeof(opt));
+    //if (error != -1)
+    error = setsockopt(read_fd, SOL_SOCKET, SO_REUSEADDR, (const char*)&opt, sizeof(opt));
   }
 
   if (error == -1)
