@@ -7,6 +7,16 @@ import "intention.proto";
 import "perception.proto";
 import "team_play.proto";
 
+message Monitoring {
+  required bool inGame = 1;
+  required bool canMove = 2;
+  required bool canKick = 3;
+  required bool canScore = 4;
+  required bool stayOurField = 5;
+  required bool ballClearing = 6;
+  required string refereePhase = 7;
+  required string captainPlacer = 8;
+}
 
 message RobotIdentifier {
   optional uint32 team_id = 1;
@@ -30,6 +40,7 @@ message RobotMsg {
   
   optional float time_since_last_kick = 8;
   optional Captain captain = 9;
+  required Monitoring monitoring = 10;
 }
 
 /**
