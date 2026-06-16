@@ -24,10 +24,8 @@ message Perception {
 
   /**
    * Belief regarding positions of other robots in self referential
-   * - First element represents the probability that the information is accurate
-   * - Second element describes the robot pose
    */
-  repeated Pose2d robots = 6;
+  repeated Position2d robots_field = 6;
 
   /**
    * Velocity of the ball in self referential [m/s]

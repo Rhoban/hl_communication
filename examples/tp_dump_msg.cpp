@@ -112,14 +112,13 @@ int main(int argc, char** argv)
           {
             std::cout << "\tNo self in perception" << std::endl;
           }
-          if (perception.robots_size() > 0)
+          if (perception.robots_field_size() > 0)
           {
             std::cout << "\tRobots in perception:" << std::endl;
-            for (int i = 0; i < perception.robots_size(); i++)
+            for (int i = 0; i < perception.robots_field_size(); i++)
             {
-              const hl_communication::Pose2d& robot = perception.robots(i);
-              std::cout << "\t - Robot " << i << ": (" << robot.position().x() << ", " << robot.position().y() << ")"
-                        << std::endl;
+              const hl_communication::Position2d& robot = perception.robots_field(i);
+              std::cout << "\t - Robot " << i << ": (" << robot.x() << ", " << robot.y() << ")" << std::endl;
             }
           }
           else
