@@ -40,7 +40,7 @@ message StrategyOrder
   /**
    * Target pose, distribution variance can be used to specify tolerances
    */
-  optional Pose2d target_pose = 2;
+  optional Pose2d target = 2;
   /**
    * What is expected from the robot
    */

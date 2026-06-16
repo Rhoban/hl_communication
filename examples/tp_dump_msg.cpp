@@ -212,10 +212,10 @@ int main(int argc, char** argv)
             const hl_communication::StrategyOrder& order = captain.orders(i);
             std::cout << "\t - Order for robot " << order.robot_id()
                       << ": action=" << hl_communication::Action_Name(order.action()) << std::endl;
-            if (order.has_target_pose())
+            if (order.has_target())
             {
-              std::cout << "\t\ttarget=(x=" << order.target_pose().position().x()
-                        << " y=" << order.target_pose().position().y() << " dir=" << order.target_pose().dir() << ")";
+              std::cout << "\t\ttarget=(x=" << order.target().position().x() << " y=" << order.target().position().y()
+                        << " dir=" << order.target().dir() << ")";
             }
             std::cout << std::endl;
           }
