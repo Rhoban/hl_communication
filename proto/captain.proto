@@ -14,7 +14,7 @@ message CommonBall
   /**
    * Number of robots agreeing on this position
    */
-  required uint32 nb_votes = 1;
+  required uint32     nb_votes = 1;
   required Position2d position = 2;
 }
 
@@ -28,7 +28,19 @@ message CommonOpponent
    * Number of robots agreeing on this position
    */
   required uint32 nb_votes = 1;
-  required Pose2d pose = 2;
+  required Pose2d pose     = 2;
+}
+
+message BallTarget
+{
+  /**
+   * Position of the ball target in field referential
+   */
+  required Position2d position = 1;
+  /**
+   * Kicker at full power if true
+   */
+  required bool strike = 2;
 }
 
 message StrategyOrder
@@ -38,7 +50,7 @@ message StrategyOrder
    */
   required uint32 robot_id = 1;
   /**
-   * Target pose, distribution variance can be used to specify tolerances
+   * Robot destination for positioning
    */
   optional Pose2d target = 2;
   /**
@@ -46,9 +58,9 @@ message StrategyOrder
    */
   optional Action action = 3;
   /**
-   * Kick asked by captain
+   * Ball target
    */
-  //optional KickIntention kick = 4;
+  optional BallTarget ball_target = 4;
 }
 
 /**
