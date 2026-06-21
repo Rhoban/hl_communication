@@ -61,6 +61,10 @@ message StrategyOrder
    * Ball target
    */
   optional BallTarget ball_target = 4;
+  /**
+   * Role of the robot
+   */
+  optional uint32 role = 5;
 }
 
 /**
