@@ -3,16 +3,6 @@ syntax = "proto2";
 package hl_communication;
 
 /**
- * Global task of the robot
- */
-enum Role {
-  UNSPECIFIED_ROLE = 0; // Unknown role
-  GOALIE           = 1; // The robot is a goalie
-  DEFENDER         = 2; // Robot is only defending its own goal
-  OFFENDER         = 3; // Robot is actively trying to score goals
-}
-
-/**
  * Current status of the robot
  */
 enum Status {
@@ -30,16 +20,14 @@ enum Status {
  * Should we include the possiblity of having a captain in the protocol?
  */
 message TeamPlay {
-  optional Role role = 1;
-
-  optional Status status = 2;
+  optional Status status = 1;
 
   /**
    * Up to teams
    */
   //optional bytes free_field = 3;
 
-  optional bool isplaying = 4;
+  optional bool isplaying = 2;
   //optional bool isCameraAlive = 5;
   //optional bool areAllMotorsOk = 6;
   //optional bool isPressureOk = 7;

@@ -42,6 +42,12 @@ message BallTarget
    */
   required bool strike = 2;
 }
+enum Role
+{
+  OFFENDER  = 0;
+  DEFENDER   = 1;
+  GOALIE   = 2;
+}
 
 message StrategyOrder
 {
@@ -64,7 +70,7 @@ message StrategyOrder
   /**
    * Role of the robot
    */
-  optional uint32 role = 5;
+  optional Role role = 5;
 }
 
 /**

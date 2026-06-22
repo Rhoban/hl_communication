@@ -153,14 +153,6 @@ int main(int argc, char** argv)
         {
           const hl_communication::TeamPlay& team_play = robot_msg.team_play();
           std::cout << "\tTeam play status: " << (team_play.isplaying() ? "Playing" : "Not playing") << std::endl;
-          if (team_play.has_role())
-          {
-            std::cout << "\tRole: " << hl_communication::Role_Name(team_play.role()) << std::endl;
-          }
-          else
-          {
-            std::cout << "\tNo role information in team play" << std::endl;
-          }
           if (team_play.has_status())
           {
             std::cout << "\tStatus: " << hl_communication::Status_Name(team_play.status()) << std::endl;
