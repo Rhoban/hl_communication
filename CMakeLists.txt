@@ -48,22 +48,36 @@ option(BUILD_TEAMPLAY_BIN "Building teamplay binaries" ON)
 # Generate Python protobuf bindings into python/hl_communication_proto/
 set(HL_PYTHON_OUT_DIR ${CMAKE_CURRENT_SOURCE_DIR}/python/hl_communication_proto)
 
-add_custom_target(hl_communication_python_proto ALL
+set(HL_PROTO_FILES
+    proto/captain.proto
+    proto/intention.proto
+    proto/perception.proto
+    proto/position.proto
+    proto/team_play.proto
+    proto/wrapper.proto
+)
+set(HL_GENERATED_PYTHON_FILES)
+foreach(PROTO_FILE ${HL_PROTO_FILES})
+    get_filename_component(PROTO_NAME ${PROTO_FILE} NAME_WE)
+    list(APPEND HL_GENERATED_PYTHON_FILES ${HL_PYTHON_OUT_DIR}/${PROTO_NAME}_pb2.py)
+endforeach()
+
+add_custom_command(
+    OUTPUT ${HL_GENERATED_PYTHON_FILES} ${HL_PYTHON_OUT_DIR}/__init__.py
     COMMAND ${CMAKE_COMMAND} -E make_directory ${HL_PYTHON_OUT_DIR}
     COMMAND ${PROTOBUF_PROTOC_EXECUTABLE}
-            --proto_path=${CMAKE_CURRENT_SOURCE_DIR}/proto
-            --python_out=${HL_PYTHON_OUT_DIR}
-            ${CMAKE_CURRENT_SOURCE_DIR}/proto/captain.proto
-            ${CMAKE_CURRENT_SOURCE_DIR}/proto/intention.proto
-            ${CMAKE_CURRENT_SOURCE_DIR}/proto/perception.proto
-            ${CMAKE_CURRENT_SOURCE_DIR}/proto/position.proto
-            ${CMAKE_CURRENT_SOURCE_DIR}/proto/team_play.proto
-            ${CMAKE_CURRENT_SOURCE_DIR}/proto/wrapper.proto
+    ARGS    --python_out=${HL_PYTHON_OUT_DIR}
+            --proto_path=proto
+            ${HL_PROTO_FILES}
     COMMAND bash -c "sed -i 's/^import \\([a-z_]*_pb2\\) as /from hl_communication_proto import \\1 as /' ${HL_PYTHON_OUT_DIR}/*_pb2.py"
     COMMAND ${CMAKE_COMMAND} -E touch ${HL_PYTHON_OUT_DIR}/__init__.py
+    DEPENDS ${HL_PROTO_FILES}
     WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
     COMMENT "Generating Python protobuf bindings for hl_communication"
-    VERBATIM
+)
+
+add_custom_target(hl_communication_python_proto ALL
+    DEPENDS ${HL_GENERATED_PYTHON_FILES} ${HL_PYTHON_OUT_DIR}/__init__.py
 )
 
 if (BUILD_TEAMPLAY_BIN)
