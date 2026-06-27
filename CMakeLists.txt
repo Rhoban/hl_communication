@@ -90,4 +90,7 @@ if (BUILD_TEAMPLAY_BIN)
 
   add_executable(tp_dump_msg examples/tp_dump_msg.cpp)
   target_link_libraries(tp_dump_msg ${PROJECT_NAME} rhoban_utils)
+
+  add_executable(network_scan examples/network_scan.cpp)
+  target_link_libraries(network_scan ${PROJECT_NAME} robocup_referee)
 endif()
