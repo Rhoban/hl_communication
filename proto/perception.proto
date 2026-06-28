@@ -35,4 +35,6 @@ message Perception {
   optional bool whistle_heard = 9;
 
   optional bool kicked = 10;
+
+  optional bool opponent_moved_ball = 11;
 }
