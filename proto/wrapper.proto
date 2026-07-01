@@ -16,6 +16,7 @@ message Monitoring {
   required bool ballClearing = 6;
   required string refereePhase = 7;
   required string captainPlacer = 8;
+  required bool opponent_moved_ball = 9;
 }
 
 message RobotIdentifier {

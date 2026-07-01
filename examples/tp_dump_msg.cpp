@@ -143,15 +143,6 @@ int main(int argc, char** argv)
           {
             std::cout << "\tNo whistle information in perception" << std::endl;
           }
-          if (perception.has_opponent_moved_ball())
-          {
-            if (perception.opponent_moved_ball())
-              std::cout << "\t\x1b[33mOpponent moved ball recently!\x1b[0m" << std::endl;
-          }
-          else
-          {
-            std::cout << "\tNo opponent_moved_ball information in perception" << std::endl;
-          }
         }
         else
         {
@@ -231,6 +222,7 @@ int main(int argc, char** argv)
                   << " canScore=" << m.canscore() << std::endl;
         std::cout << "\tstayOurField=" << m.stayourfield() << " ballClearing=" << m.ballclearing() << std::endl;
         std::cout << "\trefereePhase=" << m.refereephase() << " captainPlacer=" << m.captainplacer() << std::endl;
+        std::cout << "\topponentMovedBall=" << m.opponent_moved_ball() << std::endl;
       }
     }
   }
