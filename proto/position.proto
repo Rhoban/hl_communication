@@ -9,11 +9,11 @@ message Position2d {
   /**
    * Position x [m]
    */
-  required double x = 1;
+  required float x = 1;
   /**
    * Position y [m]
    */
-  required double y = 2;
+  required float y = 2;
 }
 
 /**
@@ -25,5 +25,5 @@ message Pose2d {
   /**
    * Average angle [rad]
    */
-  optional double dir = 2;
+  optional float dir = 2;
 }

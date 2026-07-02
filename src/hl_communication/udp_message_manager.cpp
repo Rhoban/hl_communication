@@ -13,12 +13,10 @@ using namespace std::chrono;
 namespace hl_communication
 {
 
-
 uint64_t getTimeStamp()
 {
   return duration_cast<duration<uint64_t, std::micro>>(steady_clock::now().time_since_epoch()).count();
 }
-
 
 int getDefaultTeamPort(int team_id)
 {
@@ -81,7 +79,7 @@ void UDPMessageManager::run()
     game_msg.Clear();
     std::string string_data(data, len);
     uint64_t time_stamp = getTimeStamp();
-//    google::protobuf::LogSilencer silencer;
+    //    google::protobuf::LogSilencer silencer;
     if (game_msg.ParseFromString(string_data))
     {
     }
@@ -130,8 +128,13 @@ void UDPMessageManager::sendMessageWithId(const hl_communication::GameMsg& messa
     std::cerr << "Invalid Message !" << std::endl;
     return;
   }
+  if (raw_message.size() >= 511)
+  {
+    std::cerr << "Error: message dropped, size " << raw_message.size() << " >= 511 bytes limit" << std::endl;
+    return;
+  }
   broadcaster->broadcastMessage(raw_message.c_str(), raw_message.size());
-  //std::cerr << "message size: " << raw_message.size() << std::endl;
+  // std::cerr << "message size: " << raw_message.size() << std::endl;
 }
 
 void UDPMessageManager::sendMessageWithoutId(hl_communication::GameMsg* message)
